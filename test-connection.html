@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supabase Connection Test</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Supabase Connection Test</h1>
+    <div id="result"></div>
+    
+    <script>
+        const { createClient } = supabase;
+        
+        // Test connection with your credentials
+        const supabaseClient = createClient(
+            'https://ztlclkijhmccqxfabkax.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0bGNsa2lqaG1jY3F4ZmFia2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwODU3NTUsImV4cCI6MjA4NzY2MTc1NX0.c_Gix9nNyw2SVIO4-0jk8iizfGeidMRLlJ6HZ-mR50s'
+        );
+        
+        async function testConnection() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Testing connection...</p>';
+            
+            try {
+                // Test basic connection
+                const { data, error } = await supabaseClient
+                    .from('games')
+                    .select('count')
+                    .single();
+                
+                if (error) {
+                    result.innerHTML = `<p style="color: red;">❌ Connection Failed: ${error.message}</p>`;
+                } else {
+                    result.innerHTML = `<p style="color: green;">✅ Connection Successful!</p>
+                        <p>Games count: ${data.count || 0}</p>
+                        <p>Your Supabase is properly connected.</p>`;
+                }
+                
+                // Test games specifically
+                const { data: games, error: gamesError } = await supabaseClient
+                    .from('games')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('name');
+                
+                if (gamesError) {
+                    result.innerHTML += `<p style="color: orange;">⚠️ Games query error: ${gamesError.message}</p>`;
+                } else {
+                    result.innerHTML += `<p style="color: blue;">📊 Available games: ${games.map(g => g.name).join(', ')}</p>`;
+                }
+                
+            } catch (err) {
+                result.innerHTML = `<p style="color: red;">❌ Error: ${err.message}</p>`;
+            }
+        }
+        
+        testConnection();
+    </script>
+</body>
+</html>
