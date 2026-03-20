@@ -45,7 +45,7 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 4000); // Change slide every 5 seconds
     
     return () => clearInterval(interval);
   }, [slides.length]);
@@ -151,7 +151,7 @@ const HeroSection = () => {
       </div>
 
       {/* 4. Carousel Arrow Controls */}
-      <button
+      {/* <button
         onClick={prevSlide}
         className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-300 group"
         aria-label="Previous slide"
@@ -169,7 +169,7 @@ const HeroSection = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
-      
+       */}
       {/* 5. Hero Content (Foreground) */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 w-full">
         <motion.div
