@@ -1,0 +1,243 @@
+# TECH X GAMING EXPO 2026 - Comprehensive BrandKit
+
+## Brand Identity Overview
+
+**Event Name:** TECH X GAMING EXPO 2026 (TXG 2026)  
+**Tagline:** Nagaland's First Professional Gaming Expo  
+**Location:** Nagaland, Northeast India  
+**Event Type:** Gaming & Esports Expo  
+**Primary Audience:** College students, gamers, tech enthusiasts, sponsors, partners  
+
+---
+
+## Visual Identity System
+
+### Primary Logo
+- **Main Logo:** TXG (Tech X Gaming) with gradient coloring
+- **Logo Variations:** Multiple logo files available (txg-logo.png, txg-logo2.png, txg-logo3.png, txg-nes.png)
+- **Logo Placement:** Prominent placement on all materials, consistent sizing across platforms
+
+### Color Palette
+
+#### Primary Colors
+- **Primary Green:** #50D075, #34A853 (success, gaming, growth)
+- **Primary Yellow:** #FFFF00 (energy, excitement, attention)
+- **Accent Blue:** #4285F4, #00FFFF (technology, innovation, trust)
+- **Accent Red/Magenta:** #EA4335, #FF00FF (passion, action, excitement)
+
+#### Base Colors
+- **Primary Black:** #0a0a0a (main background)
+- **Secondary Black:** #050505 (deep backgrounds)
+- **Dark Gray:** #1a1a1a (card backgrounds, secondary elements)
+- **Medium Gray:** #2a2a2a (borders, dividers)
+
+#### Gaming Accent Colors
+- **Neon Green:** #00ff88 (CTAs, highlights, interactive elements)
+- **Neon Cyan:** #00ffff (technology elements, accents)
+- **Neon Magenta:** #ff00ff (gaming action, energy)
+- **Neon Gold:** #ffff00 (premium elements, emphasis)
+- **Neon Orange:** #ff8800 (warm accents, calls-to-action)
+
+---
+
+## Typography System
+
+### Custom Font Family
+- **Primary Display Font:** Neo_Triad (futuristic, gaming aesthetic)
+- **Secondary Font:** Neiko (bold headlines, strong statements)
+- **Body Font:** Nonito (clean, readable content)
+- **Fallback Font:** Rajdhani (headings, tech-forward)
+- **System Font:** Inter (UI elements, forms)
+
+### Typography Hierarchy
+- **Hero Headlines:** Neo_Triad, 4rem+, gradient effects
+- **Section Headlines:** Neiko, 2.5rem+, bold, high contrast
+- **Sub-headlines:** Nonito, 1.5rem+, medium weight
+- **Body Content:** Nonito, 1rem, regular weight
+- **UI Elements:** Inter, system fonts for forms and interfaces
+
+---
+
+## Visual Style & Aesthetic
+
+### Design Philosophy
+- **Aesthetic:** Cyberpunk-meets-professional gaming
+- **Mood:** High-energy, futuristic, technologically advanced
+- **Visual Language:** Dark themes with neon accents, grid patterns, tech elements
+
+### Background Treatments
+- **Primary:** Dark gradients (linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%))
+- **Hero Section:** Video backgrounds with gradient overlays
+- **Sections:** Alternating dark and slightly lighter dark backgrounds
+- **Patterns:** Subtle tech grid patterns, circuit board designs
+
+### Visual Elements
+- **Particle Effects:** Animated floating particles in neon colors
+- **Glow Effects:** Neon glow on interactive elements (glow-primary, glow-cyan)
+- **Gradients:** Linear gradients using brand colors
+- **Geometric Shapes:** Tech-inspired geometric patterns
+- **Motion:** Smooth transitions, parallax scrolling effects
+
+---
+
+## Component Design System
+
+### Buttons & Interactive Elements
+- **Primary Buttons:** Black background, neon green border (#00ff88), hover fills with neon green
+- **Secondary Buttons:** Transparent background, neon borders, hover effects
+- **States:** Clear hover, active, and disabled states with smooth transitions
+
+### Form Elements
+- **Input Fields:** Black backgrounds, gray borders, neon green focus states
+- **Checkboxes:** Custom styled with neon green checked states
+- **Select Dropdowns:** Dark theme with neon accents
+- **Labels:** Light gray text for optimal contrast
+
+### Cards & Containers
+- **Background:** Dark gradients with subtle borders
+- **Borders:** rgba(42, 42, 42, 0.8) for subtle separation
+- **Shadows:** 0 8px 32px rgba(0, 0, 0, 0.4) for depth
+- **Border Radius:** 1rem for cards, 0.5rem for form elements
+
+---
+
+## Iconography & Graphics
+
+### Gaming Icons
+- **Style:** Modern, minimalist gaming-themed icons
+- **Colors:** Themed by category (green, cyan, magenta, gold, orange)
+- **Hover Effects:** Scale and glow effects on interaction
+- **Animation:** Subtle transitions and micro-interactions
+
+### Image Treatment
+- **Style:** High-quality gaming and technology photography
+- **Filters:** No filters, maintain natural colors
+- **Overlays:** Subtle gradient overlays for text readability
+- **Optimization:** Web-optimized for fast loading
+
+---
+
+## Voice & Tone
+
+### Brand Personality
+- **Innovative:** Cutting-edge technology and gaming culture
+- **Professional:** High-quality production and organization
+- **Inclusive:** Open to all colleges and gaming enthusiasts
+- **Visionary:** Building Nagaland's gaming ecosystem
+- **Exciting:** High-energy, competitive gaming experience
+
+### Communication Style
+- **Tone:** Energetic, professional, youth-focused, tech-savvy
+- **Language:** Clear, informative, well-structured
+- **Call-to-Actions:** Direct, action-oriented language
+- **Messaging:** Emphasis on opportunity, competition, and community
+
+---
+
+## Digital Applications
+
+### Website Design
+- **Layout:** Modern, responsive design with smooth scrolling
+- **Navigation:** Clean, intuitive navigation with gaming-inspired elements
+- **Sections:** Hero, About, Tournaments, Registration, Sponsors, Contact
+- **Effects:** Parallax scrolling, animated particles, smooth transitions
+
+### Social Media
+- **Profile:** Consistent logo usage across platforms
+- **Colors:** Brand color palette for all graphics
+- **Typography:** Consistent font usage for branded content
+- **Imagery:** Gaming action shots, event highlights, team photos
+
+---
+
+## Technical Specifications
+
+### CSS Variables
+```css
+--primary-green: #50D075;
+--neon-green: #00ff88;
+--neon-cyan: #00ffff;
+--neon-magenta: #ff00ff;
+--primary-black: #0a0a0a;
+--secondary-black: #1a1a1a;
+```
+
+### Font Loading
+- **Format:** OpenType (.otf) for custom fonts
+- **Display:** Swap for optimal loading
+- **Fallback:** System fonts for reliability
+
+### Responsive Design
+- **Breakpoints:** Mobile-first approach
+- **Containers:** Centered with responsive padding
+- **Typography:** Fluid scaling for readability
+
+---
+
+## Usage Guidelines
+
+### Do's
+- Use consistent color palette across all materials
+- Maintain dark theme with neon accent approach
+- Apply gradient effects to headlines and key elements
+- Use gaming-inspired imagery and graphics
+- Keep text high contrast for readability
+
+### Don'ts
+- Don't use bright or light backgrounds
+- Avoid non-gaming related imagery
+- Don't mix inconsistent color schemes
+- Avoid overly complex layouts
+- Don't compromise readability for style
+
+---
+
+## Brand Applications
+
+### Print Materials
+- **Brochures:** Tri-fold with dark backgrounds and neon accents
+- **Posters:** High-contrast designs with gaming imagery
+- **Banners:** Large format with bold typography
+- **Merchandise:** Consistent logo and color application
+
+### Digital Assets
+- **Website:** Dark theme with interactive elements
+- **Social Media:** Branded templates and graphics
+- **Email:** Dark backgrounds with neon CTAs
+- **Video:** Consistent intro/outro branding
+
+---
+
+## Key Messaging
+
+### Taglines & Slogans
+- "Experience the ultimate gaming festival in Northeast India"
+- "JOIN THE REVOLUTION"
+- "BE PART OF NAGALAND'S GAMING MOVEMENT"
+- "SPONSOR THE FUTURE OF GAMING"
+- "REGISTER NOW"
+
+### Brand Promise
+- Build a credible, scalable, annual gaming and esports property that represents Nagaland's growing digital youth ecosystem and positions the state as an emerging gaming hub in the Northeast.
+
+---
+
+## Event Specifics
+
+### Tournament Details
+- **Main Game:** Mobile Legends: Bang Bang
+- **Format:** 5v5 MOBA tournament
+- **Prize Pool:** ₹2,00,000
+- **Participation:** Inter-college competition across Nagaland
+- **Production:** Professional live streaming and shoutcasters
+
+### Unique Selling Points
+- First professional gaming expo in Nagaland
+- Inter-college competition format
+- Large prize pool for regional event
+- Professional production quality
+- Focus on youth engagement and digital careers
+
+---
+
+This comprehensive brandkit provides all the necessary guidelines for maintaining brand consistency across all TXG 2026 materials and digital platforms.
