@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import GamingIcon, { GamingIcons } from "./GamingIcons";
-
-const stats = [
-  { value: 200000, prefix: "₹", suffix: "", label: "Prize Pool", iconId: GamingIcons.TROPHY },
-  { value: 6000, prefix: "", suffix: "+", label: "Expected Attendees", iconId: GamingIcons.USERS },
-  { value: 200000, prefix: "", suffix: "+", label: "Digital Reach", iconId: GamingIcons.TRENDING_UP },
-  { value: 2, prefix: "", suffix: "", label: "Day Event", iconId: GamingIcons.GAMEPAD },
-];
+import useContentManagement from "@/hooks/useContentManagement";
 
 function useCountUp(target: number, inView: boolean) {
   const [count, setCount] = useState(0);
@@ -36,7 +30,7 @@ function useCountUp(target: number, inView: boolean) {
 const StatItem = ({ stat, inView }: { stat: any; inView: boolean }) => {
   const count = useCountUp(stat.value, inView);
   const formatted = stat.value >= 1000 ? count.toLocaleString("en-IN") : count;
-  
+
   return (
     <div className="text-center p-2 relative">
       {/* Dotted background pattern */}
@@ -47,16 +41,16 @@ const StatItem = ({ stat, inView }: { stat: any; inView: boolean }) => {
           backgroundPosition: '0 0, 10px 10px, 20px 20px, 30px 30px'
         }} />
       </div>
-      
+
       <div className="relative z-10">
         <div className="font-['Neiko'] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-1 md:mb-2 leading-none">
           {stat.prefix}{formatted}{stat.suffix}
         </div>
         <div className="flex items-center justify-center gap-2 mt-2">
-          <GamingIcon 
-            iconId={stat.iconId} 
-            size={20} 
-            color="#e7e706" 
+          <GamingIcon
+            iconId={stat.iconId}
+            size={20}
+            color="#e7e706"
           />
           <div className="text-[10px] md:text-xs font-semibold uppercase tracking-wider leading-tight text-white/80 font-['Nonito']">
             {stat.label}
@@ -68,6 +62,8 @@ const StatItem = ({ stat, inView }: { stat: any; inView: boolean }) => {
 };
 
 const StatsSection = () => {
+  const { getActiveStats } = useContentManagement();
+  const stats = getActiveStats();
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -100,10 +96,10 @@ const StatsSection = () => {
               y: [0, Math.random() * 20 - 10, 0],
               opacity: [0.3, 0.6, 0.3],
             }}
-            transition={{ 
-              duration: 3 + Math.random() * 2, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              ease: "easeInOut"
             }}
           />
         ))}

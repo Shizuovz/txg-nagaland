@@ -4,13 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Calendar, Gamepad2, Search, RefreshCw, FileText } from 'lucide-react';
+import { TrendingUp, Calendar, Gamepad2, Search, RefreshCw, FileText, Settings } from 'lucide-react';
 import GamingIcon, { GamingIcons } from "@/components/GamingIcons";
 import { useRegistrationAPI } from '@/hooks/useRegistrationAPI';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { TeamRegistration, SponsorRegistration, VisitorRegistration, MediaPersonRegistration } from '@/lib/firebase';
 import { sendApprovalEmail, getApprovalEmailContent } from '@/utils/firebaseEmailService';
 import EmailTestComponent from '@/components/EmailTestComponent';
+import ManualDataEntry from '@/components/ManualDataEntry';
+import ContentManagement from '@/components/ContentManagement';
 
 // Helper function to format dates in day/month/year format
 const formatDate = (dateString: string) => {
@@ -61,6 +63,31 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  
+  // Advanced filters for each registration type
+  const [teamFilters, setTeamFilters] = useState({
+    game: '',
+    college: '',
+    status: 'all',
+    dateRange: 'all'
+  });
+  
+  const [sponsorFilters, setSponsorFilters] = useState({
+    tier: '',
+    status: 'all',
+    dateRange: 'all'
+  });
+  
+  const [visitorFilters, setVisitorFilters] = useState({
+    type: 'all', // cosplayer, vendor, exhibitor
+    status: 'all',
+    dateRange: 'all'
+  });
+  
+  const [mediaFilters, setMediaFilters] = useState({
+    status: 'all',
+    dateRange: 'all'
+  });
 
   // Filtered registrations for different types
   const [cosplayerRegistrations, setCosplayerRegistrations] = useState<VisitorRegistration[]>([]);
@@ -390,7 +417,7 @@ const AdminDashboard = () => {
       'updatedAt'
     ];
 
-    const csvData = filterRegistrations(teamRegistrations).map(team => {
+    const csvData = filterTeamRegistrations(teamRegistrations).map(team => {
       // Extract team members IGNs and IDs
       const teamMemberIGNs = team.teamMembers?.map(member => member.ign || '').join('; ') || '';
       const teamMemberIDs = team.teamMembers?.map(member => member.gameId || '').join('; ') || '';
@@ -448,7 +475,7 @@ const AdminDashboard = () => {
       'updatedAt'
     ];
 
-    const csvData = filterRegistrations(sponsorRegistrations).map(sponsor => {
+    const csvData = filterSponsorRegistrations(sponsorRegistrations).map(sponsor => {
       // Enhanced sponsored amount calculation with tier mapping
       let tier = sponsorshipTiers.find(t => String(t.id) === String(sponsor.sponsorshipTierId));
       let sponsoredAmount = '';
@@ -505,7 +532,7 @@ const AdminDashboard = () => {
       'updatedAt'
     ];
 
-    const csvData = filterRegistrations(visitorRegistrations).map(visitor => ({
+    const csvData = filterVisitorRegistrations(visitorRegistrations).map(visitor => ({
       registrationId: visitor.registrationId || '',
       fullName: visitor.fullName || '',
       email: visitor.email || '',
@@ -539,7 +566,7 @@ const AdminDashboard = () => {
       'updatedAt'
     ];
 
-    const csvData = filterRegistrations(mediaRegistrations).map(media => ({
+    const csvData = filterMediaRegistrations(mediaRegistrations).map(media => ({
       registrationId: media.registrationId || '',
       fullName: media.fullName || '',
       email: media.email || '',
@@ -582,19 +609,97 @@ const AdminDashboard = () => {
     }
   };
 
-  const filterRegistrations = (registrations: any[]) => {
+  // Advanced filtering functions for each registration type
+  const filterTeamRegistrations = (registrations: TeamRegistration[]) => {
     return registrations.filter(reg => {
       const matchesSearch = searchTerm === '' || 
         reg.teamName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        reg.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        reg.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         reg.captainName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        reg.contactPerson?.toLowerCase().includes(searchTerm.toLowerCase());
+        reg.collegeName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.captainEmail?.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesStatus = statusFilter === 'all' || reg.status === statusFilter;
+      const matchesGame = teamFilters.game === '' || reg.gameId === teamFilters.game;
+      const matchesCollege = teamFilters.college === '' || reg.collegeName === teamFilters.college;
+      const matchesStatus = teamFilters.status === 'all' || reg.status === teamFilters.status;
+      const matchesDateRange = filterByDateRange(reg.createdAt?.toString() || '', teamFilters.dateRange);
       
-      return matchesSearch && matchesStatus;
+      return matchesSearch && matchesGame && matchesCollege && matchesStatus && matchesDateRange;
     });
+  };
+
+  const filterSponsorRegistrations = (registrations: SponsorRegistration[]) => {
+    return registrations.filter(reg => {
+      const matchesSearch = searchTerm === '' || 
+        reg.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.contactPerson?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.contactEmail?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesTier = sponsorFilters.tier === '' || reg.sponsorshipTierId === sponsorFilters.tier;
+      const matchesStatus = sponsorFilters.status === 'all' || reg.status === sponsorFilters.status;
+      const matchesDateRange = filterByDateRange(reg.createdAt?.toString() || '', sponsorFilters.dateRange);
+      
+      return matchesSearch && matchesTier && matchesStatus && matchesDateRange;
+    });
+  };
+
+  const filterVisitorRegistrations = (registrations: VisitorRegistration[]) => {
+    return registrations.filter(reg => {
+      const matchesSearch = searchTerm === '' || 
+        reg.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.phone?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesType = visitorFilters.type === 'all' || 
+        (visitorFilters.type === 'cosplayer' && reg.registrationId?.startsWith('COS')) ||
+        (visitorFilters.type === 'vendor' && reg.registrationId?.startsWith('VEN')) ||
+        (visitorFilters.type === 'exhibitor' && reg.registrationId?.startsWith('EXH'));
+      const matchesStatus = visitorFilters.status === 'all' || reg.status === visitorFilters.status;
+      const matchesDateRange = filterByDateRange(reg.createdAt?.toString() || '', visitorFilters.dateRange);
+      
+      return matchesSearch && matchesType && matchesStatus && matchesDateRange;
+    });
+  };
+
+  const filterMediaRegistrations = (registrations: MediaPersonRegistration[]) => {
+    return registrations.filter(reg => {
+      const matchesSearch = searchTerm === '' || 
+        reg.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.organization?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = mediaFilters.status === 'all' || reg.status === mediaFilters.status;
+      const matchesDateRange = filterByDateRange(reg.createdAt?.toString() || '', mediaFilters.dateRange);
+      
+      return matchesSearch && matchesStatus && matchesDateRange;
+    });
+  };
+
+  // Helper function to filter by date range
+  const filterByDateRange = (createdAt: string, dateRange: string) => {
+    if (dateRange === 'all') return true;
+    
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    switch (dateRange) {
+      case 'today':
+        return createdDate >= today;
+      case 'week':
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return createdDate >= weekAgo;
+      case 'month':
+        const monthAgo = new Date(today);
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        return createdDate >= monthAgo;
+      case 'quarter':
+        const quarterAgo = new Date(today);
+        quarterAgo.setMonth(quarterAgo.getMonth() - 3);
+        return createdDate >= quarterAgo;
+      default:
+        return true;
+    }
   };
 
   if (dashboardLoading) {
@@ -709,7 +814,7 @@ const AdminDashboard = () => {
           transition={{ delay: 0.2 }}
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-white/80 backdrop-blur-sm rounded-lg p-6">
-            <TabsList className="grid w-full grid-cols-6 mb-6">
+            <TabsList className="grid w-full grid-cols-9 mb-6">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="teams">Teams</TabsTrigger>
               <TabsTrigger value="sponsors">Sponsors</TabsTrigger>
@@ -717,6 +822,8 @@ const AdminDashboard = () => {
               <TabsTrigger value="vendors">Vendors</TabsTrigger>
               <TabsTrigger value="exhibitors">Exhibitors</TabsTrigger>
               <TabsTrigger value="media">Media</TabsTrigger>
+              <TabsTrigger value="manual-entry">Manual Entry</TabsTrigger>
+              <TabsTrigger value="content">Content</TabsTrigger>
             </TabsList>
 
             {/* Overview Tab */}
@@ -831,7 +938,7 @@ const AdminDashboard = () => {
             <TabsContent value="teams">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <div className="flex gap-4">
+                  <div className="flex gap-2 flex-wrap">
                     <div className="relative">
                       <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                       <input
@@ -844,14 +951,45 @@ const AdminDashboard = () => {
                     </div>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
+                      value={teamFilters.game}
+                      onChange={(e) => setTeamFilters(prev => ({ ...prev, game: e.target.value }))}
+                    >
+                      <option value="">All Games</option>
+                      {games.map(game => (
+                        <option key={game.id} value={game.id}>{game.name}</option>
+                      ))}
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={teamFilters.college}
+                      onChange={(e) => setTeamFilters(prev => ({ ...prev, college: e.target.value }))}
+                    >
+                      <option value="">All Colleges</option>
+                      {Array.from(new Set(teamRegistrations.map(t => t.collegeName).filter(Boolean))).map(college => (
+                        <option key={college} value={college}>{college}</option>
+                      ))}
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={teamFilters.status}
+                      onChange={(e) => setTeamFilters(prev => ({ ...prev, status: e.target.value }))}
                     >
                       <option value="all">All Status</option>
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
                       <option value="removed">Removed</option>
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={teamFilters.dateRange}
+                      onChange={(e) => setTeamFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">Last Week</option>
+                      <option value="month">Last Month</option>
+                      <option value="quarter">Last Quarter</option>
                     </select>
                   </div>
                   <div className="flex gap-2">
@@ -874,7 +1012,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="grid gap-4">
-                  {filterRegistrations(teamRegistrations).map((team) => (
+                  {filterTeamRegistrations(teamRegistrations).map((team) => (
                     <Card key={team.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -1102,7 +1240,7 @@ const AdminDashboard = () => {
             <TabsContent value="sponsors">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <div className="flex gap-4">
+                  <div className="flex gap-2 flex-wrap">
                     <div className="relative">
                       <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                       <input
@@ -1115,14 +1253,35 @@ const AdminDashboard = () => {
                     </div>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
+                      value={sponsorFilters.tier}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, tier: e.target.value }))}
+                    >
+                      <option value="">All Tiers</option>
+                      {sponsorshipTiers.map(tier => (
+                        <option key={tier.id} value={tier.id}>{tier.name}</option>
+                      ))}
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={sponsorFilters.status}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, status: e.target.value }))}
                     >
                       <option value="all">All Status</option>
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
                       <option value="removed">Removed</option>
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={sponsorFilters.dateRange}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">Last Week</option>
+                      <option value="month">Last Month</option>
+                      <option value="quarter">Last Quarter</option>
                     </select>
                   </div>
                   <div className="flex gap-2">
@@ -1145,7 +1304,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="grid gap-4">
-                  {filterRegistrations(sponsorRegistrations).map((sponsor) => (
+                  {filterSponsorRegistrations(sponsorRegistrations).map((sponsor) => (
                     <Card key={sponsor.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -1351,7 +1510,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="grid gap-4">
-                  {filterRegistrations(mediaRegistrations).map((media) => (
+                  {filterMediaRegistrations(mediaRegistrations).map((media) => (
                     <Card key={media.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -1477,6 +1636,11 @@ const AdminDashboard = () => {
               </div>
             </TabsContent>
 
+            {/* Manual Data Entry Tab */}
+            <TabsContent value="manual-entry">
+              <ManualDataEntry />
+            </TabsContent>
+
             {/* Cosplayers Tab */}
             <TabsContent value="cosplayers">
               <div className="space-y-6">
@@ -1497,8 +1661,45 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2 flex-wrap">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Search cosplayers..."
+                        className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={visitorFilters.status}
+                      onChange={(e) => setVisitorFilters(prev => ({ ...prev, status: e.target.value }))}
+                    >
+                      <option value="all">All Status</option>
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                      <option value="removed">Removed</option>
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={visitorFilters.dateRange}
+                      onChange={(e) => setVisitorFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">Last Week</option>
+                      <option value="month">Last Month</option>
+                      <option value="quarter">Last Quarter</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div className="grid gap-4">
-                  {filterRegistrations(cosplayerRegistrations).map((cosplayer) => (
+                  {filterVisitorRegistrations(cosplayerRegistrations).map((cosplayer) => (
                     <Card key={cosplayer.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -1581,8 +1782,55 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2 flex-wrap">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Search vendors..."
+                        className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={sponsorFilters.tier}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, tier: e.target.value }))}
+                    >
+                      <option value="">All Types</option>
+                      <option value="food">Food Vendor</option>
+                      <option value="beverage">Beverage Vendor</option>
+                      <option value="both">Food & Beverage</option>
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={sponsorFilters.status}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, status: e.target.value }))}
+                    >
+                      <option value="all">All Status</option>
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                      <option value="removed">Removed</option>
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={sponsorFilters.dateRange}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">Last Week</option>
+                      <option value="month">Last Month</option>
+                      <option value="quarter">Last Quarter</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div className="grid gap-4">
-                  {filterRegistrations(vendorRegistrations).map((vendor) => (
+                  {filterSponsorRegistrations(vendorRegistrations).map((vendor) => (
                     <Card key={vendor.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -1673,8 +1921,57 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2 flex-wrap">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Search exhibitors..."
+                        className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={sponsorFilters.tier}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, tier: e.target.value }))}
+                    >
+                      <option value="">All Types</option>
+                      <option value="technology">Technology</option>
+                      <option value="education">Education</option>
+                      <option value="gaming">Gaming</option>
+                      <option value="lifestyle">Lifestyle</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={sponsorFilters.status}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, status: e.target.value }))}
+                    >
+                      <option value="all">All Status</option>
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                      <option value="removed">Removed</option>
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={sponsorFilters.dateRange}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">Last Week</option>
+                      <option value="month">Last Month</option>
+                      <option value="quarter">Last Quarter</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div className="grid gap-4">
-                  {filterRegistrations(exhibitorRegistrations).map((exhibitor) => (
+                  {filterSponsorRegistrations(exhibitorRegistrations).map((exhibitor) => (
                     <Card key={exhibitor.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -1739,6 +2036,10 @@ const AdminDashboard = () => {
                   ))}
                 </div>
               </div>
+            </TabsContent>
+          {/* Content Management Tab */}
+            <TabsContent value="content">
+              <ContentManagement />
             </TabsContent>
           </Tabs>
         </motion.div>

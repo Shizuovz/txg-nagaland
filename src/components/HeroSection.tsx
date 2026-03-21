@@ -1,45 +1,19 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
+import useContentManagement from "@/hooks/useContentManagement";
 
 const HeroSection = () => {
   const { scrollYProgress } = useScroll();
   const [isHeroVisible, setIsHeroVisible] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { getActiveHeroSlides } = useContentManagement();
+  
+  // Get managed hero slides
+  const slides = getActiveHeroSlides();
   
   // Parallax effects for hero content
   const heroY = useTransform(scrollYProgress, [0, 0.5], [0, -100]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  
-  // Carousel slides data - Esports Tournament Results
-  const slides = [
-    {
-      id: 1,
-      title: "TECH X Gaming",
-      subtitle: "Expo Nagaland",
-      description: "Experience the ultimate gaming festival in Northeast India. Join us for tournaments, showcases, and the future of gaming.",
-      image: "/images/carousel/hero1.png",
-      gradient: "from-yellow-900/80 via-amber-900/80 to-orange-900/80",
-      particles: ['#FFD700', '#FFA500', '#FFFF00'],
-    },
-    {
-      id: 2,
-      title: "Gaming Tournaments",
-      subtitle: "Compete & Win",
-      description: "Join intense gaming competitions with massive prize pools and professional esports events.",
-      image: "/images/carousel/hero2.png",
-      gradient: "from-blue-900/80 via-cyan-900/80 to-indigo-900/80",
-      particles: ['#00FFFF', '#4285F4', '#74A9FF'],
-    },
-    {
-      id: 3,
-      title: "Tech Innovation",
-      subtitle: "Future of Gaming",
-      description: "Experience cutting-edge gaming technology, VR experiences, and the latest in gaming innovation.",
-      image: "/images/carousel/hero3.png",
-      gradient: "from-purple-900/80 via-violet-900/80 to-pink-900/80",
-      particles: ['#FF00FF', '#9333EA', '#EC4899'],
-    }
-  ];
   
   // Auto-advance slides
   useEffect(() => {
