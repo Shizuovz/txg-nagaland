@@ -284,7 +284,7 @@ export const useRegistrationAPI = () => {
   };
 
   // Status Update Methods
-  const updateTeamStatus = async (id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') => {
+  const updateTeamStatus = async (id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     console.log('=== updateTeamStatus Called ===');
     console.log('Team ID:', id, 'Status:', status);
     
@@ -316,7 +316,7 @@ export const useRegistrationAPI = () => {
     }
   };
 
-  const updateSponsorStatus = async (id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') => {
+  const updateSponsorStatus = async (id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     setLoading(true);
     setError(null);
 
@@ -334,7 +334,7 @@ export const useRegistrationAPI = () => {
     }
   };
 
-  const updateVisitorStatus = async (id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') => {
+  const updateVisitorStatus = async (id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     setLoading(true);
     setError(null);
 
@@ -352,7 +352,7 @@ export const useRegistrationAPI = () => {
     }
   };
 
-  const updateMediaStatus = async (id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') => {
+  const updateMediaStatus = async (id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     setLoading(true);
     setError(null);
 

@@ -106,7 +106,7 @@ export interface TeamRegistration {
   substitute?: { ign: string; gameId: string };
   additionalMessage?: string;
   termsAccepted: boolean;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed';
+  status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -124,7 +124,7 @@ export interface SponsorRegistration {
   state?: string;
   pinCode?: string;
   message?: string;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed';
+  status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -139,7 +139,10 @@ export interface VisitorRegistration {
   city?: string;
   state?: string;
   pinCode?: string;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed';
+  // Cosplayer specific fields
+  collegeName?: string; // Used for Cosplay Group/Team Name
+  message?: string; // Used for Cosplay Experience
+  status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -156,7 +159,7 @@ export interface MediaPersonRegistration {
   city?: string;
   state?: string;
   pinCode?: string;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed';
+  status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -316,7 +319,7 @@ export class FirebaseService {
   }
 
   // Status Update Methods
-  async updateTeamRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed'): Promise<void> {
+  async updateTeamRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn'): Promise<void> {
     console.log('=== Firebase updateTeamRegistrationStatus Called ===');
     console.log('Document ID (should be Firebase doc ID):', id, 'New Status:', status);
     
@@ -345,7 +348,7 @@ export class FirebaseService {
     }
   }
 
-  async updateSponsorRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed'): Promise<void> {
+  async updateSponsorRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn'): Promise<void> {
     const docRef = doc(this.sponsorRegistrationsCollection, id);
     await updateDoc(docRef, { 
       status, 
@@ -353,7 +356,7 @@ export class FirebaseService {
     });
   }
 
-  async updateVisitorRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed'): Promise<void> {
+  async updateVisitorRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn'): Promise<void> {
     const docRef = doc(this.visitorRegistrationsCollection, id);
     await updateDoc(docRef, { 
       status, 
@@ -444,7 +447,7 @@ export class FirebaseService {
       .reverse();
   }
 
-  async updateMediaRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed'): Promise<void> {
+  async updateMediaRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn'): Promise<void> {
     const docRef = doc(this.mediaRegistrationsCollection, id);
     await updateDoc(docRef, { 
       status, 

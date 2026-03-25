@@ -90,8 +90,8 @@ export class DatabaseService {
   private sponsorshipTiers: SponsorshipTier[] = [
     { 
       id: 1, 
-      name: 'Title Sponsor', 
-      price: '₹5,00,000+', 
+      name: '🏆 TITLE SPONSOR', 
+      price: '', 
       description: 'Top-tier sponsorship', 
       benefits: ['Naming rights', 'Premium branding'], 
       isActive: true, 
@@ -100,10 +100,30 @@ export class DatabaseService {
     },
     { 
       id: 2, 
-      name: 'Powered By Sponsor', 
-      price: '₹2,50,000', 
+      name: '🥈 POWERED BY SPONSOR', 
+      price: '', 
       description: 'Prominent branding', 
       benefits: ['Stage branding', 'Booth space'], 
+      isActive: true, 
+      createdAt: new Date().toISOString(), 
+      updatedAt: new Date().toISOString() 
+    },
+    { 
+      id: 3, 
+      name: '🥉 ASSOCIATE SPONSOR', 
+      price: '', 
+      description: 'Associate level sponsorship', 
+      benefits: ['Event branding', 'Promotional materials'], 
+      isActive: true, 
+      createdAt: new Date().toISOString(), 
+      updatedAt: new Date().toISOString() 
+    },
+    { 
+      id: 4, 
+      name: '🎮 CATEGORY PARTNERS', 
+      price: '', 
+      description: 'Category specific partnership', 
+      benefits: ['Category branding', 'Targeted promotion'], 
       isActive: true, 
       createdAt: new Date().toISOString(), 
       updatedAt: new Date().toISOString() 

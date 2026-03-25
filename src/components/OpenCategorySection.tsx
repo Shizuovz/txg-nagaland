@@ -22,7 +22,7 @@ const features = [
     desc: "Premium audience segment with greater purchasing power for sponsors and brands",
     gradient: "from-[#50D075]/10 to-transparent", 
     color: "#50D075" 
-  },
+  },  
   { 
     iconId: GamingIcons.TRENDING_UP,
     title: "Brand Value", 

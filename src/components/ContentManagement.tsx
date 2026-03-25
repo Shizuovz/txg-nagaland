@@ -123,6 +123,53 @@ const ContentManagement = () => {
     toast.success('Stat deleted');
   };
 
+  const handleClearCache = () => {
+    localStorage.removeItem('websiteContent');
+    toast.success('Cache cleared successfully');
+    // Reload the page to reset to defaults
+    window.location.reload();
+  };
+
+  const handleResetImages = () => {
+    const defaultSlides = [
+      {
+        id: '1',
+        title: 'TECH X Gaming',
+        subtitle: 'Expo Nagaland',
+        description: 'Experience the ultimate gaming festival in Northeast India. Join us for tournaments, showcases, and the future of gaming.',
+        image: '/images/carousel/hero1.png',
+        gradient: 'from-yellow-900/80 via-amber-900/80 to-orange-900/80',
+        particles: ['#FFD700', '#FFA500', '#FFFF00'],
+        isActive: true,
+        order: 1
+      },
+      {
+        id: '2',
+        title: 'Gaming Tournaments',
+        subtitle: 'Compete & Win',
+        description: 'Join intense gaming competitions with massive prize pools and professional esports events.',
+        image: '/images/carousel/hero2.png',
+        gradient: 'from-blue-900/80 via-cyan-900/80 to-indigo-900/80',
+        particles: ['#00FFFF', '#4285F4', '#74A9FF'],
+        isActive: true,
+        order: 2
+      },
+      {
+        id: '3',
+        title: 'Tech Innovation',
+        subtitle: 'Future of Gaming',
+        description: 'Experience cutting-edge gaming technology, VR experiences, and the latest in gaming innovation.',
+        image: '/images/carousel/hero3.png',
+        gradient: 'from-purple-900/80 via-violet-900/80 to-pink-900/80',
+        particles: ['#FF00FF', '#9333EA', '#EC4899'],
+        isActive: true,
+        order: 3
+      }
+    ];
+    updateHeroSlides(defaultSlides);
+    toast.success('Images reset to defaults');
+  };
+
   const handleSaveAllChanges = async () => {
     setLoading(true);
     setHookLoading(true);
@@ -142,11 +189,61 @@ const ContentManagement = () => {
     }
   };
 
-  const handleImageUpload = (slideId: string, file: File) => {
-    // Simulate image upload
-    const imageUrl = URL.createObjectURL(file);
-    handleUpdateSlide(slideId, { image: imageUrl });
-    toast.success('Image uploaded successfully');
+  const compressImage = (file: File, maxWidth = 1920, maxHeight = 1080, quality = 0.8): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'));
+        return;
+      }
+      
+      const img = document.createElement('img');
+      
+      img.onload = () => {
+        // Calculate new dimensions
+        let { width, height } = img;
+        
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width *= ratio;
+          height *= ratio;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw and compress image
+        ctx.drawImage(img, 0, 0, width, height);
+        try {
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressedDataUrl);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleImageUpload = async (slideId: string, file: File) => {
+    try {
+      // Check file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Image size must be less than 10MB');
+        return;
+      }
+      
+      // Compress image to base64
+      const compressedImage = await compressImage(file);
+      handleUpdateSlide(slideId, { image: compressedImage });
+      toast.success('Image uploaded and compressed successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+    }
   };
 
   return (
@@ -339,8 +436,15 @@ const ContentManagement = () => {
                             </div>
                             <p className="text-gray-600">{slide.description}</p>
                             <div className="flex items-center gap-4 text-sm text-gray-500">
-                              <span>Image: {slide.image}</span>
+                              <span className="truncate max-w-xs">
+                                Image: {slide.image.startsWith('data:') ? 'Base64 Image' : slide.image}
+                              </span>
                               <div className={`w-8 h-8 rounded bg-gradient-to-r ${slide.gradient}`} />
+                              {slide.image.startsWith('data:') && (
+                                <Badge variant="secondary" className="text-xs">
+                                  Uploaded
+                                </Badge>
+                              )}
                             </div>
                           </div>
                         )}
@@ -624,13 +728,17 @@ const ContentManagement = () => {
                   <div className="mt-6 pt-6 border-t">
                     <h3 className="font-semibold mb-4">Cache Management</h3>
                     <div className="flex gap-2">
-                      <Button variant="outline">
+                      <Button variant="outline" onClick={handleClearCache}>
                         <RefreshCw className="w-4 h-4 mr-2" />
                         Clear Cache
                       </Button>
+                      <Button variant="outline" onClick={handleResetImages}>
+                        <Image className="w-4 h-4 mr-2" />
+                        Reset Images
+                      </Button>
                       <Button variant="outline" onClick={resetToDefault}>
                         <FileText className="w-4 h-4 mr-2" />
-                        Reset to Default
+                        Reset All
                       </Button>
                     </div>
                   </div>

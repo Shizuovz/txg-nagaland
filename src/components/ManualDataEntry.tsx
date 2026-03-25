@@ -604,10 +604,10 @@ const ManualDataEntry = () => {
                         <SelectValue placeholder="Select sponsorship tier" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="title">Title Sponsor</SelectItem>
-                        <SelectItem value="powered-by">Powered By</SelectItem>
-                        <SelectItem value="associate">Associate</SelectItem>
-                        <SelectItem value="category">Category Partner</SelectItem>
+                        <SelectItem value="title">🏆 TITLE SPONSOR</SelectItem>
+                        <SelectItem value="powered-by">🥈 POWERED BY SPONSOR</SelectItem>
+                        <SelectItem value="associate">🥉 ASSOCIATE SPONSOR</SelectItem>
+                        <SelectItem value="category">🎮 CATEGORY PARTNERS</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

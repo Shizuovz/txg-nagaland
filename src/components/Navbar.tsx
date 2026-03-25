@@ -156,7 +156,7 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Button 
+                {/* <Button 
                   variant="ghost" 
                   size="sm" 
                   className={`transition-all duration-200 hover:bg-[#1a1a1a]/30 hover:text-[#00ff88] font-['Nonito'] ${
@@ -165,7 +165,7 @@ const Navbar = () => {
                   onClick={() => navigate('/login')}
                 >
                   Login
-                </Button>
+                </Button> */}
                 <Button 
                   size="sm" 
                   className={`transition-all duration-200 font-['Nonito'] bg-gradient-to-r from-[#50D075] to-[#FFFF00]/70 text-black hover:bg-[#00ff88]/90`}

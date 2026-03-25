@@ -183,6 +183,8 @@ const RegistrationSection = () => {
           city: formData.city,
           state: formData.state,
           pinCode: formData.pinCode,
+          collegeName: formData.collegeName, // Cosplay Group/Team Name
+          message: formData.message, // Cosplay Experience
           registrationId: registrationId
         }, 'Cosplayer registration submitted successfully!');
       } else if (registrationType === 'vendor') {
@@ -202,7 +204,6 @@ const RegistrationSection = () => {
         }, 'Vendor registration submitted successfully!');
       } else if (registrationType === 'exhibitor') {
         // Use sponsor registration for exhibitors with custom success message
-        
         await submitSponsorRegistration({
           companyName: formData.collegeName,
           sponsorshipTierId: '2', // Default tier for exhibitors
@@ -213,7 +214,7 @@ const RegistrationSection = () => {
           city: formData.city,
           state: formData.state,
           pinCode: formData.pinCode,
-          message: formData.message,
+          message: `Exhibition Description: ${formData.message}\n\nBooth/Space Requirements: ${formData.teamName}`, // Include both fields
           registrationId: registrationId
         }, 'Exhibitor registration submitted successfully!');
       } else if (registrationType === 'media') {
@@ -1023,10 +1024,10 @@ const RegistrationSection = () => {
                   required
                 >
                   <option value="">Select sponsorship tier</option>
-                  <option value="1">Title Sponsor</option>
-                  <option value="2">Gold Sponsor</option>
-                  <option value="3">Silver Sponsor</option>
-                  <option value="4">Bronze Sponsor</option>
+                  <option value="1">🏆 TITLE SPONSOR</option>
+                  <option value="2">🥈 POWERED BY SPONSOR</option>
+                  <option value="3">🥉 ASSOCIATE SPONSOR</option>
+                  <option value="4">🎮 CATEGORY PARTNERS</option>
                 </select>
               </div>
 

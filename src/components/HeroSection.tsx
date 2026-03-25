@@ -72,10 +72,12 @@ const HeroSection = () => {
             }}
           >
             {/* Background Image for each slide */}
-            <div 
-              className="absolute inset-0 w-full h-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${slide.image})` }}
-            />
+            {slide.image && (
+              <div 
+                className="absolute inset-0 w-full h-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${slide.image})` }}
+              />
+            )}
           </motion.div>
         ))}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 z-0"></div>

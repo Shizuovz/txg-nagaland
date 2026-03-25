@@ -1,5 +1,6 @@
 import { FirebaseService } from './firebase';
 import { TeamRegistration, SponsorRegistration, VisitorRegistration, MediaPersonRegistration } from './firebase';
+import { sendAdminNotificationEmail } from '../utils/firebaseEmailService';
 
 // API service for handling registration operations with Firebase
 export class RegistrationAPI {
@@ -37,6 +38,16 @@ export class RegistrationAPI {
       };
       
       const result = await this.firebaseService.createTeamRegistration(cleanData);
+      
+      // Send admin notification email
+      try {
+        await sendAdminNotificationEmail(cleanData, data.registrationType);
+        console.log('Admin notification sent for team registration');
+      } catch (emailError) {
+        console.error('Failed to send admin notification for team registration:', emailError);
+        // Don't fail the registration if email fails
+      }
+      
       return {
         success: true,
         data: result,
@@ -76,6 +87,16 @@ export class RegistrationAPI {
       };
       
       const result = await this.firebaseService.createSponsorRegistration(cleanData);
+      
+      // Send admin notification email
+      try {
+        await sendAdminNotificationEmail(cleanData, 'sponsor');
+        console.log('Admin notification sent for sponsor registration');
+      } catch (emailError) {
+        console.error('Failed to send admin notification for sponsor registration:', emailError);
+        // Don't fail the registration if email fails
+      }
+      
       return {
         success: true,
         data: result,
@@ -110,6 +131,16 @@ export class RegistrationAPI {
         status: 'pending' as const
       };
       const result = await this.firebaseService.createVisitorRegistration(cleanData);
+      
+      // Send admin notification email
+      try {
+        await sendAdminNotificationEmail(cleanData, 'visitor');
+        console.log('Admin notification sent for visitor registration');
+      } catch (emailError) {
+        console.error('Failed to send admin notification for visitor registration:', emailError);
+        // Don't fail the registration if email fails
+      }
+      
       return {
         success: true,
         data: result,
@@ -146,6 +177,16 @@ export class RegistrationAPI {
         status: 'pending' as const
       };
       const result = await this.firebaseService.createMediaRegistration(cleanData);
+      
+      // Send admin notification email
+      try {
+        await sendAdminNotificationEmail(cleanData, 'media');
+        console.log('Admin notification sent for media registration');
+      } catch (emailError) {
+        console.error('Failed to send admin notification for media registration:', emailError);
+        // Don't fail the registration if email fails
+      }
+      
       return {
         success: true,
         data: result,
@@ -301,7 +342,7 @@ export class RegistrationAPI {
   }
 
   // Status Update Methods
-  async updateTeamRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') {
+  async updateTeamRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn') {
     console.log('=== API updateTeamRegistrationStatus Called ===');
     console.log('ID:', id, 'Status:', status);
     
@@ -331,7 +372,7 @@ export class RegistrationAPI {
     }
   }
 
-  async updateSponsorRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') {
+  async updateSponsorRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn') {
     try {
       await this.firebaseService.updateSponsorRegistrationStatus(id, status);
       return {
@@ -348,7 +389,7 @@ export class RegistrationAPI {
     }
   }
 
-  async updateVisitorRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') {
+  async updateVisitorRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn') {
     try {
       await this.firebaseService.updateVisitorRegistrationStatus(id, status);
       return {
@@ -365,7 +406,7 @@ export class RegistrationAPI {
     }
   }
 
-  async updateMediaRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') {
+  async updateMediaRegistrationStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'withdrawn') {
     try {
       await this.firebaseService.updateMediaRegistrationStatus(id, status);
       return {

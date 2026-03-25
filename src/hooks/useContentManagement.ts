@@ -123,9 +123,17 @@ const useContentManagement = () => {
   // Save content to localStorage
   const saveContentToStorage = (data: ContentData) => {
     try {
-      localStorage.setItem('websiteContent', JSON.stringify(data));
+      const jsonString = JSON.stringify(data);
+      // Check if data is too large for localStorage (typically 5-10MB limit)
+      if (jsonString.length > 4 * 1024 * 1024) { // 4MB limit
+        console.warn('Content data is large, may exceed localStorage limits');
+      }
+      localStorage.setItem('websiteContent', jsonString);
     } catch (error) {
       console.error('Error saving content to localStorage:', error);
+      if (error instanceof Error && error.name === 'QuotaExceededError') {
+        console.error('localStorage quota exceeded. Consider reducing image sizes or using server storage.');
+      }
     }
   };
 

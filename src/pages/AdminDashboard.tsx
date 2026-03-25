@@ -8,15 +8,15 @@ import { TrendingUp, Calendar, Gamepad2, Search, RefreshCw, FileText, Settings }
 import GamingIcon, { GamingIcons } from "@/components/GamingIcons";
 import { useRegistrationAPI } from '@/hooks/useRegistrationAPI';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
-import { TeamRegistration, SponsorRegistration, VisitorRegistration, MediaPersonRegistration } from '@/lib/firebase';
+import { TeamRegistration, SponsorRegistration, MediaPersonRegistration } from '@/lib/firebase';
 import { sendApprovalEmail, getApprovalEmailContent } from '@/utils/firebaseEmailService';
 import EmailTestComponent from '@/components/EmailTestComponent';
 import ManualDataEntry from '@/components/ManualDataEntry';
 import ContentManagement from '@/components/ContentManagement';
 
 // Helper function to format dates in day/month/year format
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
+const formatDate = (dateInput: string | Date) => {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   return date.toLocaleString('en-GB', {
     day: '2-digit',
     month: '2-digit',
@@ -30,10 +30,6 @@ const AdminDashboard = () => {
   const { adminUser, logout } = useAdminAuth();
   const { 
     loading, 
-    error, 
-    submitTeamRegistration, 
-    submitSponsorRegistration, 
-    submitVisitorRegistration,
     getGames,
     getColleges,
     getSponsorshipTiers,
@@ -48,14 +44,12 @@ const AdminDashboard = () => {
     updateMediaStatus,
     deleteTeamRegistration,
     deleteSponsorRegistration,
-    deleteVisitorRegistration,
     deleteMediaRegistration
   } = useRegistrationAPI();
 
   const [stats, setStats] = useState<any>(null);
   const [teamRegistrations, setTeamRegistrations] = useState<TeamRegistration[]>([]);
   const [sponsorRegistrations, setSponsorRegistrations] = useState<SponsorRegistration[]>([]);
-  const [visitorRegistrations, setVisitorRegistrations] = useState<VisitorRegistration[]>([]);
   const [mediaRegistrations, setMediaRegistrations] = useState<MediaPersonRegistration[]>([]);
   const [games, setGames] = useState<any[]>([]);
   const [sponsorshipTiers, setSponsorshipTiers] = useState<any[]>([]);
@@ -78,21 +72,16 @@ const AdminDashboard = () => {
     dateRange: 'all'
   });
   
-  const [visitorFilters, setVisitorFilters] = useState({
-    type: 'all', // cosplayer, vendor, exhibitor
-    status: 'all',
-    dateRange: 'all'
-  });
-  
   const [mediaFilters, setMediaFilters] = useState({
     status: 'all',
     dateRange: 'all'
   });
 
   // Filtered registrations for different types
-  const [cosplayerRegistrations, setCosplayerRegistrations] = useState<VisitorRegistration[]>([]);
+  const [cosplayerRegistrations, setCosplayerRegistrations] = useState<any[]>([]);
   const [vendorRegistrations, setVendorRegistrations] = useState<SponsorRegistration[]>([]);
   const [exhibitorRegistrations, setExhibitorRegistrations] = useState<SponsorRegistration[]>([]);
+  const [visitorRegistrations, setVisitorRegistrations] = useState<any[]>([]);
 
   useEffect(() => {
     loadDashboardData();
@@ -236,22 +225,22 @@ const AdminDashboard = () => {
     
     // Fallback mapping for common tier IDs
     const tierMap: { [key: string]: string } = {
-      '1': 'Title Sponsor',
-      '2': 'Powered By Sponsor',
-      '3': 'Associate Sponsor',
-      '4': 'Category Partner',
-      'title': 'Title Sponsor',
-      'powered': 'Powered By Sponsor',
-      'associate': 'Associate Sponsor',
-      'category': 'Category Partner',
-      'gold': 'Title Sponsor',
-      'silver': 'Powered By Sponsor',
-      'bronze': 'Associate Sponsor',
-      'platinum': 'Category Partner',
-      'tier_1': 'Title Sponsor',
-      'tier_2': 'Powered By Sponsor',
-      'tier_3': 'Associate Sponsor',
-      'tier_4': 'Category Partner'
+      '1': '🏆 TITLE SPONSOR',
+      '2': '🥈 POWERED BY SPONSOR',
+      '3': '🥉 ASSOCIATE SPONSOR',
+      '4': '🎮 CATEGORY PARTNERS',
+      'title': '🏆 TITLE SPONSOR',
+      'powered': '🥈 POWERED BY SPONSOR',
+      'associate': '🥉 ASSOCIATE SPONSOR',
+      'category': '🎮 CATEGORY PARTNERS',
+      'gold': '🏆 TITLE SPONSOR',
+      'silver': '🥈 POWERED BY SPONSOR',
+      'bronze': '🥉 ASSOCIATE SPONSOR',
+      'platinum': '🎮 CATEGORY PARTNERS',
+      'tier_1': '🏆 TITLE SPONSOR',
+      'tier_2': '🥈 POWERED BY SPONSOR',
+      'tier_3': '🥉 ASSOCIATE SPONSOR',
+      'tier_4': '🎮 CATEGORY PARTNERS'
     };
     
     const fallbackName = tierMap[tierId] || 'Unknown Tier';
@@ -259,7 +248,7 @@ const AdminDashboard = () => {
   };
 
   // Status Management Functions
-  const handleStatusUpdate = async (id: string, type: 'team' | 'sponsor' | 'visitor' | 'media', status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'withdrawn' | 'removed') => {
+  const handleStatusUpdate = async (id: string, type: 'team' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     let success = false;
     let registrationData: any = null;
     
@@ -274,9 +263,17 @@ const AdminDashboard = () => {
           registrationData = sponsorRegistrations.find(s => s.id === id);
           success = await updateSponsorStatus(id, status);
           break;
-        case 'visitor':
-          registrationData = visitorRegistrations.find(v => v.id === id);
+        case 'cosplayer':
+          registrationData = cosplayerRegistrations.find(c => c.id === id);
           success = await updateVisitorStatus(id, status);
+          break;
+        case 'vendor':
+          registrationData = vendorRegistrations.find(v => v.id === id);
+          success = await updateSponsorStatus(id, status);
+          break;
+        case 'exhibitor':
+          registrationData = exhibitorRegistrations.find(e => e.id === id);
+          success = await updateSponsorStatus(id, status);
           break;
         case 'media':
           registrationData = mediaRegistrations.find(m => m.id === id);
@@ -287,7 +284,37 @@ const AdminDashboard = () => {
       if (success) {
         // Send email notification for approval/rejection
         if ((status === 'approved' || status === 'rejected') && registrationData) {
-          const emailData = getApprovalEmailContent(registrationData, status);
+          // Create a copy of registration data with the correct registration type
+          let finalRegistrationType = type;
+          
+          // Map admin dashboard types to email service types
+          switch (type) {
+            case 'team':
+              finalRegistrationType = registrationData.registrationType || 'college'; // 'college' or 'open_category'
+              break;
+            case 'sponsor':
+              finalRegistrationType = 'sponsor';
+              break;
+            case 'cosplayer':
+              finalRegistrationType = 'cosplayer';
+              break;
+            case 'vendor':
+              finalRegistrationType = 'vendor';
+              break;
+            case 'exhibitor':
+              finalRegistrationType = 'exhibitor';
+              break;
+            case 'media':
+              finalRegistrationType = 'media';
+              break;
+          }
+          
+          const registrationDataWithType = {
+            ...registrationData,
+            registrationType: finalRegistrationType
+          };
+          
+          const emailData = getApprovalEmailContent(registrationDataWithType, status);
           const emailSent = await sendApprovalEmail(emailData);
           if (emailSent) {
             console.log(`Email notification sent for ${status} registration`);
@@ -330,7 +357,7 @@ const AdminDashboard = () => {
     try {
       const registrationsToDelete = {
         teams: teamRegistrations,
-        sponsors: sponsorRegistrations,
+        sponsors: getPureSponsorRegistrations(),
         cosplayers: cosplayerRegistrations,
         vendors: vendorRegistrations,
         exhibitors: exhibitorRegistrations,
@@ -346,8 +373,6 @@ const AdminDashboard = () => {
           return deleteTeamRegistration(reg.id);
         } else if ('companyName' in reg) {
           return deleteSponsorRegistration(reg.id);
-        } else if ('fullName' in reg && !('organization' in reg)) {
-          return deleteVisitorRegistration(reg.id);
         } else if ('fullName' in reg && 'organization' in reg) {
           return deleteMediaRegistration(reg.id);
         }
@@ -475,9 +500,9 @@ const AdminDashboard = () => {
       'updatedAt'
     ];
 
-    const csvData = filterSponsorRegistrations(sponsorRegistrations).map(sponsor => {
+    const csvData = filterSponsorRegistrations(getPureSponsorRegistrations()).map(sponsor => {
       // Enhanced sponsored amount calculation with tier mapping
-      let tier = sponsorshipTiers.find(t => String(t.id) === String(sponsor.sponsorshipTierId));
+      const tier = sponsorshipTiers.find(t => String(t.id) === String(sponsor.sponsorshipTierId || ''));
       let sponsoredAmount = '';
       
       if (!tier) {
@@ -489,7 +514,7 @@ const AdminDashboard = () => {
           4: 'Custom/In-Kind' // Category Partner
         };
         
-        const mappedAmount = tierMapping[sponsor.sponsorshipTierId as keyof typeof tierMapping];
+        const mappedAmount = tierMapping[Number(sponsor.sponsorshipTierId) as keyof typeof tierMapping];
         sponsoredAmount = mappedAmount || 'Not specified';
       } else {
         sponsoredAmount = `₹${(tier.price || 0).toLocaleString()}`;
@@ -517,38 +542,7 @@ const AdminDashboard = () => {
     downloadCSV(csvData, 'sponsor_registrations', headers);
   };
 
-  const downloadVisitorRegistrationsCSV = () => {
-    const headers = [
-      'registrationId',
-      'fullName',
-      'email',
-      'phone',
-      'address',
-      'city',
-      'state',
-      'pinCode',
-      'status',
-      'createdAt',
-      'updatedAt'
-    ];
-
-    const csvData = filterVisitorRegistrations(visitorRegistrations).map(visitor => ({
-      registrationId: visitor.registrationId || '',
-      fullName: visitor.fullName || '',
-      email: visitor.email || '',
-      phone: visitor.phone || '',
-      address: visitor.address || '',
-      city: visitor.city || '',
-      state: visitor.state || '',
-      pinCode: visitor.pinCode || '',
-      status: visitor.status || '',
-      createdAt: formatDate(visitor.createdAt),
-      updatedAt: formatDate(visitor.updatedAt)
-    }));
-
-    downloadCSV(csvData, 'visitor_registrations', headers);
-  };
-
+  
   const downloadMediaRegistrationsCSV = () => {
     const headers = [
       'registrationId',
@@ -585,13 +579,99 @@ const AdminDashboard = () => {
     downloadCSV(csvData, 'media_registrations', headers);
   };
 
+  const downloadCosplayerRegistrationsCSV = () => {
+    const headers = [
+      'registrationId',
+      'fullName',
+      'email',
+      'phone',
+      'address',
+      'city',
+      'state',
+      'pinCode',
+      'cosplayGroupTeamName', // Cosplay Group/Team Name
+      'cosplayExperience', // Cosplay Experience
+      'status',
+      'createdAt'
+    ];
+
+    const csvData = cosplayerRegistrations.map((cosplayer) => ({
+      registrationId: cosplayer.registrationId || '',
+      fullName: cosplayer.fullName || '',
+      email: cosplayer.email || cosplayer.captainEmail,
+      phone: cosplayer.phone || cosplayer.captainPhone,
+      address: cosplayer.address || '',
+      city: cosplayer.city || '',
+      state: cosplayer.state || '',
+      pinCode: cosplayer.pinCode || '',
+      cosplayGroupTeamName: cosplayer.collegeName || '', // Cosplay Group/Team Name
+      cosplayExperience: cosplayer.message || '', // Cosplay Experience
+      status: cosplayer.status || '',
+      createdAt: formatDate(cosplayer.createdAt)
+    }));
+
+    downloadCSV(csvData, 'cosplayer_registrations', headers);
+  };
+
+  const downloadVendorRegistrationsCSV = () => {
+    const headers = [
+      'registrationId',
+      'companyName',
+      'contactPerson',
+      'contactEmail',
+      'contactPhone',
+      'address',
+      'city',
+      'state',
+      'pinCode',
+      'vendorType', // Extracted from message
+      'productsServices', // Extracted from message
+      'status',
+      'createdAt'
+    ];
+
+    const csvData = vendorRegistrations.map((vendor) => {
+      // Extract vendor type and products/services from message
+      let vendorType = 'Not specified';
+      let productsServices = '';
+      
+      if (vendor.message?.includes('Vendor Type:')) {
+        vendorType = vendor.message.includes('Vendor Type: food') ? 'Food' :
+                     vendor.message.includes('Vendor Type: beverage') ? 'Beverage' :
+                     vendor.message.includes('Vendor Type: both') ? 'Both Food & Beverage' : 'Not specified';
+        
+        // Extract products/services after vendor type
+        const parts = vendor.message.split('\n\n');
+        if (parts.length > 1) {
+          productsServices = parts[1] || '';
+        }
+      }
+
+      return {
+        registrationId: vendor.registrationId || '',
+        companyName: vendor.companyName || '',
+        contactPerson: vendor.contactPerson || '',
+        contactEmail: vendor.contactEmail || '',
+        contactPhone: vendor.contactPhone || '',
+        address: vendor.address || '',
+        city: vendor.city || '',
+        state: vendor.state || '',
+        pinCode: vendor.pinCode || '',
+        vendorType: vendorType,
+        productsServices: productsServices,
+        status: vendor.status || '',
+        createdAt: formatDate(vendor.createdAt)
+      };
+    });
+
+    downloadCSV(csvData, 'vendor_registrations', headers);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved': return 'bg-green-100 text-green-800';
       case 'rejected': return 'bg-red-100 text-red-800';
-      case 'cancelled': return 'bg-orange-100 text-orange-800';
-      case 'withdrawn': return 'bg-purple-100 text-purple-800';
-      case 'removed': return 'bg-gray-100 text-gray-800';
+      case 'withdrawn': return 'bg-gray-100 text-gray-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -601,9 +681,7 @@ const AdminDashboard = () => {
     switch (status) {
       case 'approved': return <span className="w-4 h-4 text-green-600">✓</span>;
       case 'rejected': return <span className="w-4 h-4 text-red-600">✗</span>;
-      case 'cancelled': return <span className="w-4 h-4 text-orange-600">⊘</span>;
       case 'withdrawn': return <span className="w-4 h-4 text-gray-600">←</span>;
-      case 'removed': return <span className="w-4 h-4 text-red-600">🗑</span>;
       case 'pending': return <span className="w-4 h-4 text-blue-600">⏱</span>;
       default: return <span className="w-4 h-4 text-blue-600">⏱</span>;
     }
@@ -642,24 +720,49 @@ const AdminDashboard = () => {
     });
   };
 
-  const filterVisitorRegistrations = (registrations: VisitorRegistration[]) => {
-    return registrations.filter(reg => {
-      const matchesSearch = searchTerm === '' || 
-        reg.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        reg.phone?.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filter for pure sponsor registrations (exclude vendors and exhibitors)
+  const getPureSponsorRegistrations = () => {
+    return sponsorRegistrations.filter(reg => {
+      // Exclude vendors and exhibitors
+      const isVendor = (reg.registrationId && reg.registrationId.startsWith('VEN')) || 
+                      (reg.message && reg.message.includes('Vendor Type:'));
+      const isExhibitor = reg.registrationId && reg.registrationId.startsWith('EXH');
       
-      const matchesType = visitorFilters.type === 'all' || 
-        (visitorFilters.type === 'cosplayer' && reg.registrationId?.startsWith('COS')) ||
-        (visitorFilters.type === 'vendor' && reg.registrationId?.startsWith('VEN')) ||
-        (visitorFilters.type === 'exhibitor' && reg.registrationId?.startsWith('EXH'));
-      const matchesStatus = visitorFilters.status === 'all' || reg.status === visitorFilters.status;
-      const matchesDateRange = filterByDateRange(reg.createdAt?.toString() || '', visitorFilters.dateRange);
-      
-      return matchesSearch && matchesType && matchesStatus && matchesDateRange;
+      return !isVendor && !isExhibitor;
     });
   };
 
+  // Clean up sponsor message to remove any vendor/exhibitor content
+  const cleanSponsorMessage = (message: string) => {
+    if (!message) return message;
+    
+    // Remove vendor/exhibitor specific content
+    let cleanedMessage = message;
+    
+    // Remove vendor type prefixes
+    if (cleanedMessage.includes('Vendor Type:')) {
+      const parts = cleanedMessage.split('\n\n');
+      if (parts.length > 1) {
+        cleanedMessage = parts.slice(1).join('\n\n').trim();
+      } else {
+        cleanedMessage = '';
+      }
+    }
+    
+    // Remove exhibition descriptions
+    if (cleanedMessage.includes('Exhibition Description:')) {
+      const parts = cleanedMessage.split('\n\n');
+      if (parts.length > 1) {
+        cleanedMessage = parts.slice(1).join('\n\n').trim();
+      } else {
+        cleanedMessage = '';
+      }
+    }
+    
+    return cleanedMessage || '';
+  };
+
+  
   const filterMediaRegistrations = (registrations: MediaPersonRegistration[]) => {
     return registrations.filter(reg => {
       const matchesSearch = searchTerm === '' || 
@@ -742,7 +845,7 @@ const AdminDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
         >
           <Card className="bg-white/80 backdrop-blur-sm border-purple-200">
             <CardContent className="p-6">
@@ -761,21 +864,9 @@ const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Total Sponsors</p>
-                  <p className="text-3xl font-bold text-green-600">{stats?.totalSponsors || 0}</p>
+                  <p className="text-3xl font-bold text-green-600">{getPureSponsorRegistrations().length}</p>
                 </div>
-                <GamingIcon iconId={GamingIcons.PARTNERSHIP} size={32} color="#16a34a" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border-blue-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Visitors</p>
-                  <p className="text-3xl font-bold text-blue-600">{stats?.totalVisitors || 0}</p>
-                </div>
-                <GamingIcon iconId={GamingIcons.EYE} size={32} color="#2563eb" />
+                <GamingIcon iconId={GamingIcons.PARTNERSHIP} size={32} color="#07f85f" />
               </div>
             </CardContent>
           </Card>
@@ -798,7 +889,7 @@ const AdminDashboard = () => {
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Pending</p>
                   <p className="text-3xl font-bold text-orange-600">
-                    {(stats?.pendingTeams || 0) + (stats?.pendingSponsors || 0) + (stats?.pendingVisitors || 0) + mediaRegistrations.filter(m => m.status === 'pending').length}
+                    {(stats?.pendingTeams || 0) + (stats?.pendingSponsors || 0) + mediaRegistrations.filter(m => m.status === 'pending').length}
                   </p>
                 </div>
                 <GamingIcon iconId={GamingIcons.CLOCK_ICON} size={32} color="#ea580c" />
@@ -814,16 +905,16 @@ const AdminDashboard = () => {
           transition={{ delay: 0.2 }}
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-white/80 backdrop-blur-sm rounded-lg p-6">
-            <TabsList className="grid w-full grid-cols-9 mb-6">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="teams">Teams</TabsTrigger>
-              <TabsTrigger value="sponsors">Sponsors</TabsTrigger>
-              <TabsTrigger value="cosplayers">Cosplayers</TabsTrigger>
-              <TabsTrigger value="vendors">Vendors</TabsTrigger>
-              <TabsTrigger value="exhibitors">Exhibitors</TabsTrigger>
-              <TabsTrigger value="media">Media</TabsTrigger>
-              <TabsTrigger value="manual-entry">Manual Entry</TabsTrigger>
-              <TabsTrigger value="content">Content</TabsTrigger>
+            <TabsList className="flex flex-wrap w-full mb-6 gap-1">
+              <TabsTrigger value="overview" className="flex-1 min-w-fit">Overview</TabsTrigger>
+              <TabsTrigger value="teams" className="flex-1 min-w-fit">Teams</TabsTrigger>
+              <TabsTrigger value="sponsors" className="flex-1 min-w-fit">Sponsors</TabsTrigger>
+              <TabsTrigger value="cosplayers" className="flex-1 min-w-fit">Cosplayers</TabsTrigger>
+              <TabsTrigger value="vendors" className="flex-1 min-w-fit">Vendors</TabsTrigger>
+              <TabsTrigger value="exhibitors" className="flex-1 min-w-fit">Exhibitors</TabsTrigger>
+              <TabsTrigger value="media" className="flex-1 min-w-fit">Media</TabsTrigger>
+              <TabsTrigger value="manual-entry" className="flex-1 min-w-fit">Manual Entry</TabsTrigger>
+              <TabsTrigger value="content" className="flex-1 min-w-fit">Content</TabsTrigger>
             </TabsList>
 
             {/* Overview Tab */}
@@ -851,12 +942,6 @@ const AdminDashboard = () => {
                         </Badge>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Visitors Approved</span>
-                        <Badge className="bg-green-100 text-green-800">
-                          {stats?.approvedVisitors || 0}
-                        </Badge>
-                      </div>
-                      <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">Media Approved</span>
                         <Badge className="bg-green-100 text-green-800">
                           {mediaRegistrations.filter(m => m.status === 'approved').length}
@@ -875,7 +960,7 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {[...teamRegistrations.slice(0, 3), ...sponsorRegistrations.slice(0, 2)].map((reg, index) => (
+                      {[...teamRegistrations.slice(0, 3), ...getPureSponsorRegistrations().slice(0, 2)].map((reg, index) => (
                         <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                           <span className="text-sm">
                             {(reg as any).teamName || (reg as any).companyName || (reg as any).fullName}
@@ -914,7 +999,7 @@ const AdminDashboard = () => {
                   <CardContent>
                     <div className="space-y-4">
                       <p className="text-sm text-red-700">
-                        <strong>Warning:</strong> These actions will permanently mark all test data as removed. This cannot be undone.
+                        <strong>Warning:</strong> These actions will permanently mark all test data. This cannot be undone.
                       </p>
                       <div className="flex gap-2 flex-wrap">
                         <Button 
@@ -925,7 +1010,7 @@ const AdminDashboard = () => {
                           🗑️ Permanently Delete All Test Data
                         </Button>
                         <div className="text-sm text-gray-600 flex items-center">
-                          Total: {teamRegistrations.length + sponsorRegistrations.length + cosplayerRegistrations.length + vendorRegistrations.length + exhibitorRegistrations.length + mediaRegistrations.length} registrations
+                          Total: {teamRegistrations.length + getPureSponsorRegistrations().length + cosplayerRegistrations.length + vendorRegistrations.length + exhibitorRegistrations.length + mediaRegistrations.length} registrations
                         </div>
                       </div>
                     </div>
@@ -978,7 +1063,7 @@ const AdminDashboard = () => {
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
-                      <option value="removed">Removed</option>
+                      <option value="withdrawn">Withdrawn</option>
                     </select>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -1128,7 +1213,6 @@ const AdminDashboard = () => {
                                     <div className="font-medium text-gray-800">Player {index + 1}</div>
                                     <div className="text-gray-600">IGN: {member.ign || 'N/A'}</div>
                                     <div className="text-gray-600">Game ID: {member.gameId || 'N/A'}</div>
-                                    <div className="text-gray-600">Game: {member.gameId ? getGameName(member.gameId) : 'Game Not Selected'}</div>
                                   </div>
                                 </div>
                               ))}
@@ -1164,7 +1248,7 @@ const AdminDashboard = () => {
                         {/* Status Management */}
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex gap-2 flex-wrap">
-                            {team.status !== 'approved' && team.status !== 'cancelled' && team.status !== 'withdrawn' && team.status !== 'removed' && (
+                            {team.status !== 'approved' && team.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
                                 onClick={() => {
@@ -1179,7 +1263,7 @@ const AdminDashboard = () => {
                                 Approve
                               </Button>
                             )}
-                            {team.status !== 'rejected' && team.status !== 'cancelled' && team.status !== 'withdrawn' && team.status !== 'removed' && (
+                            {team.status !== 'rejected' && team.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
                                 onClick={() => handleStatusUpdate(team.id, 'team', 'rejected')}
@@ -1188,7 +1272,7 @@ const AdminDashboard = () => {
                                 Reject
                               </Button>
                             )}
-                            {team.status !== 'pending' && team.status !== 'cancelled' && team.status !== 'withdrawn' && team.status !== 'removed' && (
+                            {team.status !== 'pending' && (
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -1197,34 +1281,14 @@ const AdminDashboard = () => {
                                 Reset to Pending
                               </Button>
                             )}
-                            {team.status !== 'cancelled' && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleStatusUpdate(team.id, 'team', 'cancelled')}
-                                className="bg-orange-600 hover:bg-orange-700 text-white"
-                              >
-                                Cancel
-                              </Button>
-                            )}
                             {team.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => handleStatusUpdate(team.id, 'team', 'withdrawn')}
-                                className="bg-purple-600 hover:bg-purple-700 text-white"
-                              >
-                                Withdrawn
-                              </Button>
-                            )}
-                            {team.status !== 'removed' && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleStatusUpdate(team.id, 'team', 'removed')}
                                 className="bg-gray-600 hover:bg-gray-700 text-white"
                               >
-                                Remove
+                                Withdraw
                               </Button>
                             )}
                           </div>
@@ -1270,7 +1334,7 @@ const AdminDashboard = () => {
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
-                      <option value="removed">Removed</option>
+                      <option value="withdrawn">Withdrawn</option>
                     </select>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -1304,7 +1368,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="grid gap-4">
-                  {filterSponsorRegistrations(sponsorRegistrations).map((sponsor) => (
+                  {filterSponsorRegistrations(getPureSponsorRegistrations()).map((sponsor) => (
                     <Card key={sponsor.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -1334,41 +1398,10 @@ const AdminDashboard = () => {
                                 <span className="text-gray-600">Sponsorship Tier:</span>
                                 <span className="font-medium">{getSponsorshipTierName(sponsor.sponsorshipTierId || '')}</span>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">Sponsored Amount:</span>
-                                <span className="font-medium text-green-600">
-                                  {(() => {
-                                    // Try to find tier by ID first
-                                    let tier = sponsorshipTiers.find(t => String(t.id) === String(sponsor.sponsorshipTierId));
-                                    
-                                    // If not found, try to match by tier name or create mapping
-                                    if (!tier) {
-                                      // Map common tier IDs to amounts
-                                      const tierMapping = {
-                                        1: '₹5,00,000+',  // Title Sponsor
-                                        2: '₹2,50,000',  // Powered By Sponsor  
-                                        3: '₹1,00,000',  // Associate Sponsor
-                                        4: 'Custom/In-Kind' // Category Partner
-                                      };
-                                      
-                                      const mappedAmount = tierMapping[sponsor.sponsorshipTierId as keyof typeof tierMapping];
-                                      if (mappedAmount) {
-                                        return mappedAmount;
-                                      }
-                                    }
-                                    
-                                    // Fallback: use first available tier
-                                    const fallbackTier = tier || sponsorshipTiers[0];
-                                    const amount = fallbackTier?.price || 0;
-                                    
-                                    return amount > 0 ? amount : 'Not specified';
-                                  })()}
-                                </span>
-                              </div>
-                              {sponsor.message && (
+                              {sponsor.message && cleanSponsorMessage(sponsor.message) && (
                                 <div className="flex justify-between">
                                   <span className="text-gray-600">Message:</span>
-                                  <span className="font-medium text-xs max-w-xs">{sponsor.message}</span>
+                                  <span className="font-medium text-xs max-w-xs">{cleanSponsorMessage(sponsor.message)}</span>
                                 </div>
                               )}
                             </div>
@@ -1427,7 +1460,7 @@ const AdminDashboard = () => {
                         {/* Status Management */}
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex gap-2">
-                            {sponsor.status !== 'approved' && (
+                            {sponsor.status !== 'approved' && sponsor.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
                                 onClick={() => handleStatusUpdate(sponsor.id, 'sponsor', 'approved')}
@@ -1436,7 +1469,7 @@ const AdminDashboard = () => {
                                 Approve
                               </Button>
                             )}
-                            {sponsor.status !== 'rejected' && (
+                            {sponsor.status !== 'rejected' && sponsor.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
                                 onClick={() => handleStatusUpdate(sponsor.id, 'sponsor', 'rejected')}
@@ -1452,6 +1485,16 @@ const AdminDashboard = () => {
                                 onClick={() => handleStatusUpdate(sponsor.id, 'sponsor', 'pending')}
                               >
                                 Reset to Pending
+                              </Button>
+                            )}
+                            {sponsor.status !== 'withdrawn' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(sponsor.id, 'sponsor', 'withdrawn')}
+                                className="bg-gray-600 hover:bg-gray-700 text-white"
+                              >
+                                Withdraw
                               </Button>
                             )}
                           </div>
@@ -1487,7 +1530,7 @@ const AdminDashboard = () => {
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
-                      <option value="removed">Removed</option>
+                      <option value="withdrawn">Withdrawn</option>
                     </select>
                   </div>
                   <div className="flex gap-2">
@@ -1600,7 +1643,7 @@ const AdminDashboard = () => {
                         {/* Status Management */}
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex gap-2">
-                            {media.status !== 'approved' && (
+                            {media.status !== 'approved' && media.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
                                 onClick={() => handleStatusUpdate(media.id, 'media', 'approved')}
@@ -1609,7 +1652,7 @@ const AdminDashboard = () => {
                                 Approve
                               </Button>
                             )}
-                            {media.status !== 'rejected' && (
+                            {media.status !== 'rejected' && media.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
                                 onClick={() => handleStatusUpdate(media.id, 'media', 'rejected')}
@@ -1625,6 +1668,16 @@ const AdminDashboard = () => {
                                 onClick={() => handleStatusUpdate(media.id, 'media', 'pending')}
                               >
                                 Reset to Pending
+                              </Button>
+                            )}
+                            {media.status !== 'withdrawn' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(media.id, 'media', 'withdrawn')}
+                                className="bg-gray-600 hover:bg-gray-700 text-white"
+                              >
+                                Withdraw
                               </Button>
                             )}
                           </div>
@@ -1651,6 +1704,10 @@ const AdminDashboard = () => {
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Refresh
                     </Button>
+                    <Button onClick={downloadCosplayerRegistrationsCSV} variant="outline">
+                      <FileText className="w-4 h-4 mr-2" />
+                      Download CSV
+                    </Button>
                     <Button 
                       onClick={() => handleBulkDelete('cosplayers')} 
                       variant="destructive"
@@ -1675,19 +1732,19 @@ const AdminDashboard = () => {
                     </div>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      value={visitorFilters.status}
-                      onChange={(e) => setVisitorFilters(prev => ({ ...prev, status: e.target.value }))}
+                      value={sponsorFilters.status}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, status: e.target.value }))}
                     >
                       <option value="all">All Status</option>
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
-                      <option value="removed">Removed</option>
+                      <option value="withdrawn">Withdrawn</option>
                     </select>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      value={visitorFilters.dateRange}
-                      onChange={(e) => setVisitorFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                      value={sponsorFilters.dateRange}
+                      onChange={(e) => setSponsorFilters(prev => ({ ...prev, dateRange: e.target.value }))}
                     >
                       <option value="all">All Time</option>
                       <option value="today">Today</option>
@@ -1699,7 +1756,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="grid gap-4">
-                  {filterVisitorRegistrations(cosplayerRegistrations).map((cosplayer) => (
+                  {filterSponsorRegistrations(cosplayerRegistrations).map((cosplayer) => (
                     <Card key={cosplayer.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -1715,16 +1772,40 @@ const AdminDashboard = () => {
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span className="text-gray-600">Email:</span>
-                            <span className="font-medium">{cosplayer.email}</span>
+                            <span className="font-medium">{cosplayer.email || cosplayer.captainEmail}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-600">Phone:</span>
-                            <span className="font-medium">{cosplayer.phone}</span>
+                            <span className="font-medium">{cosplayer.phone || cosplayer.captainPhone}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-600">Address:</span>
-                            <span className="font-medium text-xs max-w-xs truncate">{cosplayer.address}</span>
+                            <span className="font-medium text-xs max-w-xs truncate">
+                              {cosplayer.address && cosplayer.city && cosplayer.state 
+                                ? `${cosplayer.address}, ${cosplayer.city}, ${cosplayer.state}`
+                                : cosplayer.address || 'N/A'
+                              }
+                            </span>
                           </div>
+                          {cosplayer.collegeName && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Cosplay Group/Team:</span>
+                              <span className="font-medium">{cosplayer.collegeName}</span>
+                            </div>
+                          )}
+                          {cosplayer.message && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Cosplay Experience:</span>
+                              <span className="font-medium text-xs max-w-xs truncate" title={cosplayer.message}>
+                                {cosplayer.message}
+                              </span>
+                            </div>
+                          )}
+                          {!cosplayer.collegeName && !cosplayer.message && (
+                            <div className="text-xs text-orange-600 italic">
+                              Cosplay-specific details not available (may be from older registration)
+                            </div>
+                          )}
                         </div>
 
                         <div className="mt-4 pt-4 border-t">
@@ -1735,22 +1816,41 @@ const AdminDashboard = () => {
 
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex gap-2">
-                            {cosplayer.status !== 'approved' && (
+                            {cosplayer.status !== 'approved' && cosplayer.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
-                                onClick={() => handleStatusUpdate(cosplayer.id, 'visitor', 'approved')}
+                                onClick={() => handleStatusUpdate(cosplayer.id, 'cosplayer', 'approved')}
                                 className="bg-green-600 hover:bg-green-700"
                               >
                                 Approve
                               </Button>
                             )}
-                            {cosplayer.status !== 'rejected' && (
+                            {cosplayer.status !== 'rejected' && cosplayer.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
-                                onClick={() => handleStatusUpdate(cosplayer.id, 'visitor', 'rejected')}
+                                onClick={() => handleStatusUpdate(cosplayer.id, 'cosplayer', 'rejected')}
                                 className="bg-red-600 hover:bg-red-700"
                               >
                                 Reject
+                              </Button>
+                            )}
+                            {cosplayer.status !== 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(cosplayer.id, 'cosplayer', 'pending')}
+                              >
+                                Reset to Pending
+                              </Button>
+                            )}
+                            {cosplayer.status !== 'withdrawn' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(cosplayer.id, 'cosplayer', 'withdrawn')}
+                                className="bg-gray-600 hover:bg-gray-700 text-white"
+                              >
+                                Withdraw
                               </Button>
                             )}
                           </div>
@@ -1771,6 +1871,10 @@ const AdminDashboard = () => {
                     <Button onClick={() => loadDashboardData()} variant="outline" size="sm">
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Refresh
+                    </Button>
+                    <Button onClick={downloadVendorRegistrationsCSV} variant="outline">
+                      <FileText className="w-4 h-4 mr-2" />
+                      Download CSV
                     </Button>
                     <Button 
                       onClick={() => handleBulkDelete('vendors')} 
@@ -1813,7 +1917,7 @@ const AdminDashboard = () => {
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
-                      <option value="removed">Removed</option>
+                      <option value="withdrawn">Withdrawn</option>
                     </select>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -1861,7 +1965,24 @@ const AdminDashboard = () => {
                             <span className="font-medium">
                               {vendor.message?.includes('Vendor Type: food') ? 'Food' :
                                vendor.message?.includes('Vendor Type: beverage') ? 'Beverage' :
-                               vendor.message?.includes('Vendor Type: both') ? 'Both' : 'Not specified'}
+                               vendor.message?.includes('Vendor Type: both') ? 'Both Food & Beverage' : 'Not specified'}
+                            </span>
+                          </div>
+                          {vendor.message && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Products/Services:</span>
+                              <span className="font-medium text-xs max-w-xs truncate" title={vendor.message.split('\n\n')[1]}>
+                                {vendor.message.split('\n\n')[1] || 'Not specified'}
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Business Address:</span>
+                            <span className="font-medium text-xs max-w-xs truncate">
+                              {vendor.address && vendor.city && vendor.state 
+                                ? `${vendor.address}, ${vendor.city}, ${vendor.state} - ${vendor.pinCode || 'N/A'}`
+                                : vendor.address || 'Not specified'
+                              }
                             </span>
                           </div>
                         </div>
@@ -1874,22 +1995,41 @@ const AdminDashboard = () => {
 
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex gap-2">
-                            {vendor.status !== 'approved' && (
+                            {vendor.status !== 'approved' && vendor.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
-                                onClick={() => handleStatusUpdate(vendor.id, 'sponsor', 'approved')}
+                                onClick={() => handleStatusUpdate(vendor.id, 'vendor', 'approved')}
                                 className="bg-green-600 hover:bg-green-700"
                               >
                                 Approve
                               </Button>
                             )}
-                            {vendor.status !== 'rejected' && (
+                            {vendor.status !== 'rejected' && vendor.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
-                                onClick={() => handleStatusUpdate(vendor.id, 'sponsor', 'rejected')}
+                                onClick={() => handleStatusUpdate(vendor.id, 'vendor', 'rejected')}
                                 className="bg-red-600 hover:bg-red-700"
                               >
                                 Reject
+                              </Button>
+                            )}
+                            {vendor.status !== 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(vendor.id, 'vendor', 'pending')}
+                              >
+                                Reset to Pending
+                              </Button>
+                            )}
+                            {vendor.status !== 'withdrawn' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(vendor.id, 'vendor', 'withdrawn')}
+                                className="bg-gray-600 hover:bg-gray-700 text-white"
+                              >
+                                Withdraw
                               </Button>
                             )}
                           </div>
@@ -1954,7 +2094,7 @@ const AdminDashboard = () => {
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
-                      <option value="removed">Removed</option>
+                      <option value="withdrawn">Withdrawn</option>
                     </select>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -1998,8 +2138,25 @@ const AdminDashboard = () => {
                             <span className="font-medium">{exhibitor.contactPhone}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-600">Description:</span>
-                            <span className="font-medium text-xs max-w-xs truncate">{exhibitor.message}</span>
+                            <span className="text-gray-600">Exhibition Description:</span>
+                            <span className="font-medium text-xs max-w-xs truncate" title={exhibitor.message?.includes('Exhibition Description:') ? exhibitor.message.split('Exhibition Description:')[1]?.split('\n\n')[0]?.trim() : 'Not specified'}>
+                              {exhibitor.message?.includes('Exhibition Description:') ? exhibitor.message.split('Exhibition Description:')[1]?.split('\n\n')[0]?.trim() : 'Not specified'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Booth/Space Requirements:</span>
+                            <span className="font-medium text-xs max-w-xs truncate" title={exhibitor.message?.includes('Booth/Space Requirements:') ? exhibitor.message.split('Booth/Space Requirements:')[1]?.trim() : 'Not specified'}>
+                              {exhibitor.message?.includes('Booth/Space Requirements:') ? exhibitor.message.split('Booth/Space Requirements:')[1]?.trim() : 'Not specified'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Organization Address:</span>
+                            <span className="font-medium text-xs max-w-xs truncate">
+                              {exhibitor.address && exhibitor.city && exhibitor.state 
+                                ? `${exhibitor.address}, ${exhibitor.city}, ${exhibitor.state} - ${exhibitor.pinCode || 'N/A'}`
+                                : exhibitor.address || 'Not specified'
+                              }
+                            </span>
                           </div>
                         </div>
 
@@ -2011,22 +2168,41 @@ const AdminDashboard = () => {
 
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex gap-2">
-                            {exhibitor.status !== 'approved' && (
+                            {exhibitor.status !== 'approved' && exhibitor.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
-                                onClick={() => handleStatusUpdate(exhibitor.id, 'sponsor', 'approved')}
+                                onClick={() => handleStatusUpdate(exhibitor.id, 'exhibitor', 'approved')}
                                 className="bg-green-600 hover:bg-green-700"
                               >
                                 Approve
                               </Button>
                             )}
-                            {exhibitor.status !== 'rejected' && (
+                            {exhibitor.status !== 'rejected' && exhibitor.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
-                                onClick={() => handleStatusUpdate(exhibitor.id, 'sponsor', 'rejected')}
+                                onClick={() => handleStatusUpdate(exhibitor.id, 'exhibitor', 'rejected')}
                                 className="bg-red-600 hover:bg-red-700"
                               >
                                 Reject
+                              </Button>
+                            )}
+                            {exhibitor.status !== 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(exhibitor.id, 'exhibitor', 'pending')}
+                              >
+                                Reset to Pending
+                              </Button>
+                            )}
+                            {exhibitor.status !== 'withdrawn' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(exhibitor.id, 'exhibitor', 'withdrawn')}
+                                className="bg-gray-600 hover:bg-gray-700 text-white"
+                              >
+                                Withdraw
                               </Button>
                             )}
                           </div>
