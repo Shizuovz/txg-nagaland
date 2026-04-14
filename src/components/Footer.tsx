@@ -107,12 +107,12 @@ const Footer = () => {
                 </div>
                 <span className="pt-3">nagalandesportsociety@gmail.com</span>
               </a>
-              <a href="tel:+919876543210" className="flex items-center gap-4 font-['Nonito'] group hover:text-gray-300 transition-colors">
+              {/* <a href="tel:+919876543210" className="flex items-center gap-4 font-['Nonito'] group hover:text-gray-300 transition-colors">
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 opacity-80 group-hover:opacity-100 group-hover:border-[#34A853]/30 group-hover:bg-[#34A853]/10 transition-all duration-300">
                   <GamingIcon iconId={GamingIcons.PHONE} size={20} color="#34A853" />
                 </div>
                 <span className="pt-3">+91 98765 43210</span>
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

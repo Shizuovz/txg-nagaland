@@ -1,17 +1,40 @@
 import { motion } from "framer-motion";
 import GamingIcon, { GamingIcons } from "./GamingIcons";
 
-const games = [
+const tournaments = [
   {
-    title: "Moba Legends: 5v5!",
-    subtitle: "Vizta Games",
-    desc: "Join your friends in Moba Legends: 5v5!, the brand new 5v5 MOBA showdown, and fight against real players! Choose your favourite heroes and build the perfect team.",
-    // Updated color overlay for better blending with the image
+    title: "Inter-College Championship",
+    subtitle: "Prize Pool: INR 60,000",
+    desc: "Colleges across Nagaland compete for the ultimate bragging rights and championship title. Represent your college and claim victory!",
     color: "from-[#50D075]/20 to-[#FFFF00]/20",
     border: "hover:border-[#50D075]/50 border-white/10",
-    // Add your local image path here (e.g., "/images/moba-bg.jpg")
-    bgImage: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop", 
+    bgImage: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop",
+    type: "inter-college"
   },
+  {
+    title: "Open MOBA 5v5 Tournament",
+    subtitle: "Prize Pool: INR 120,000",
+    desc: "Join the ultimate 5v5 MOBA showdown! Build the perfect team, choose your heroes, and fight against real players for massive prizes.",
+    color: "from-[#FF00FF]/20 to-[#50D075]/20",
+    border: "hover:border-[#FF00FF]/50 border-white/10",
+    bgImage: "/logos/Moba_Legends_5v5_logo.webp",
+    type: "open"
+  }
+];
+
+const miniTournaments = [
+  { name: "Clash Royale", logo: "/logos/Clash Royale.png", color: "white" },
+  { name: "Street Fighter 6", logo: "/logos/Street_Fighter_6_Logo.png", color: "black" },
+  { name: "Dragon Ball Fighter Z", logo: "/logos/Dragon Ball Fighter Z.png", color: "white" },
+  { name: "FC 26", logo: "/logos/FC26 White.png", color: "black" },
+  { name: "Guilty Gear Strive", logo: "/logos/Guilty Gear Black.png", color: "white" },
+  { name: "King Of Fighters XV", logo: "/logos/King Of Fighters XV.png", color: "black" },
+  { name: "Mortal Kombat 1", logo: "/logos/Mortal Kombat 1 Blue.png", color: "black" },
+  { name: "Ludo", logo: "/logos/Ludo Logo.png", color: "white" },
+  { name: "NBA 2K26", logo: "/logos/NBA 2K26.png", color: "black" },
+  { name: "Dirt Rally 2.0", logo: "/logos/Dirt_Rally_2.0_Logo.svg.png", color: "white" },
+  { name: "Tekken 8", logo: "/logos/Tekken-8-logo White.png", color: "black" },
+  { name: "Tetris", logo: "/logos/Tetris_logo.png", color: "black" },
 ];
 
 const GamesSection = () => {
@@ -151,20 +174,20 @@ const GamesSection = () => {
           viewport={{ once: false }}
           transition={{ duration: 0.8 }}
         >
-          <span className="text-sm font-semibold uppercase tracking-widest text-[#808080] mb-2 block font-['Nonito']">Inter-College State E-Sports Showcase</span>
+          <span className="text-sm font-semibold uppercase tracking-widest text-[#808080] mb-2 block font-['Nonito']">Tournament Categories</span>
           <h2 className="font-['Neiko'] text-4xl md:text-6xl font-bold text-white">
-            Tournament <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#50D075] to-[#FFFF00]">Games</span>
+            Gaming <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#50D075] to-[#FFFF00]">Tournaments</span>
           </h2>
           <p className="text-[#d0d0d0] max-w-3xl mx-auto text-lg mt-4 font-['Nonito']">
-            Colleges across Nagaland compete in Moba Legends: 5v5 for ultimate bragging rights and the championship title
+            Compete in inter-college championships, open tournaments, and exciting mini-games for massive prize pools and glory
           </p>
         </motion.div>
 
-        <div className="max-w-2xl mx-auto">
-          {games.map((game, i) => (
+        <div className="space-y-8 mb-12 max-w-4xl mx-auto">
+          {tournaments.map((tournament, i) => (
             <motion.div
               key={i}
-              className={`relative rounded-2xl border ${game.border} p-8 sm:p-12 transition-all group hover:shadow-lg hover:shadow-[#50D075]/25 overflow-hidden`}
+              className={`relative rounded-2xl border ${tournament.border} overflow-hidden transition-all group hover:shadow-xl hover:shadow-[#50D075]/30`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
@@ -179,14 +202,14 @@ const GamesSection = () => {
               <div 
                 className="absolute inset-0 z-0 transition-transform duration-700 ease-in-out group-hover:scale-110"
                 style={{
-                  backgroundImage: `url(${game.bgImage})`,
+                  backgroundImage: `url(${tournament.bgImage})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center'
                 }}
               />
               
               {/* Gradient Overlay for the color styling */}
-              <div className={`absolute inset-0 z-0 bg-gradient-to-r ${game.color} mix-blend-overlay opacity-90`} />
+              <div className={`absolute inset-0 z-0 bg-gradient-to-r ${tournament.color} mix-blend-overlay opacity-90`} />
               
               {/* Darkening Overlay for text readability */}
               <div className="absolute inset-0 z-0 bg-black/60 transition-colors duration-500 group-hover:bg-black/40" />
@@ -200,15 +223,95 @@ const GamesSection = () => {
                 />
               </div>
 
-              {/* Content Card */}
-              <div className="relative z-10 bg-black/40 backdrop-blur-md rounded-xl p-6 border border-white/5 shadow-2xl">
-                <h3 className="font-['Neiko'] text-3xl font-bold text-white mb-1 drop-shadow-md">{game.title}</h3>
-                <p className="text-sm text-[#50D075] font-medium mb-4 font-['Nonito'] drop-shadow-md">{game.subtitle}</p>
-                <p className="text-gray-300 text-sm leading-relaxed font-['Nonito']">{game.desc}</p>
+              {/* Content Container */}
+              <div className="relative z-10 p-8 sm:p-12 flex items-center min-h-[200px]">
+                <div className="bg-black/40 backdrop-blur-md rounded-xl p-6 border border-white/5 shadow-2xl max-w-lg">
+                  <h3 className="font-['Neiko'] text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-md leading-tight">{tournament.title}</h3>
+                  <p className="text-sm text-[#50D075] font-medium mb-4 font-['Nonito'] drop-shadow-md">{tournament.subtitle}</p>
+                  <p className="text-gray-300 text-sm leading-relaxed font-['Nonito']">{tournament.desc}</p>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
+
+        {/* Mini Tournaments Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ delay: 0.6 }}
+        >
+          <div className="text-center mb-8">
+            <h3 className="font-['Neiko'] text-2xl md:text-3xl font-bold text-white mb-2">
+              Mini <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFFF00] to-[#FF00FF]">Tournaments</span>
+            </h3>
+            <p className="text-[#d0d0d0] font-['Nonito']">Quick action games with instant rewards</p>
+          </div>
+          
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 max-w-6xl mx-auto">
+            {miniTournaments.map((mini, i) => (
+              <motion.div
+                key={i}
+                className="relative group"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: false }}
+                transition={{ delay: 0.8 + i * 0.1 }}
+                whileHover={{ scale: 1.05, y: -5 }}
+              >
+                <div className="relative aspect-[4/3] rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm overflow-hidden transition-all duration-300 group-hover:border-[#50D075]/50 group-hover:shadow-lg group-hover:shadow-[#50D075]/20">
+                  {/* Logo Container */}
+                  <div className="absolute inset-0 flex items-center justify-center p-3">
+                    <div className={`w-full h-full flex items-center justify-center ${mini.color === 'white' ? 'bg-white/90' : 'bg-black/90'} rounded-lg p-2 transition-all duration-300 group-hover:scale-105`}>
+                      {/* Actual Logo Image */}
+                      <img 
+                        src={mini.logo} 
+                        alt={mini.name}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          // Fallback to text if image fails to load
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          if (target.nextElementSibling) {
+                            (target.nextElementSibling as HTMLElement).style.display = 'flex';
+                          }
+                        }}
+                      />
+                      {/* Fallback Text */}
+                      <div className={`absolute inset-0 flex flex-col items-center justify-center text-xs font-bold ${mini.color === 'white' ? 'text-black' : 'text-white'}`} style={{ display: 'none' }}>
+                        <div className="text-lg mb-1">
+                          {mini.name.includes('Clash') ? 'CR' : 
+                           mini.name.includes('Dirt') ? 'DR' : 
+                           mini.name.includes('Dragon') ? 'DBFZ' : 
+                           mini.name.includes('FC') ? 'FC' : 
+                           mini.name.includes('Guilty') ? 'GGS' : 
+                           mini.name.includes('King') ? 'KOF' : 
+                           mini.name.includes('Ludo') ? 'LUDO' : 
+                           mini.name.includes('Mortal') ? 'MK' : 
+                           mini.name.includes('NBA') ? 'NBA' : 
+                           mini.name.includes('Street') ? 'SF' : 
+                           mini.name.includes('Tekken') ? 'TEK' : 'TETRIS'}
+                        </div>
+                        <div className="text-center">
+                          {mini.name.split(' ')[0]}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Game Name on Hover */}
+                  <div className="absolute bottom-3 left-3 right-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-white text-xs font-bold font-['Nonito'] drop-shadow-md">{mini.name}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* CTA Button */}
         <motion.div
