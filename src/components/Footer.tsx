@@ -101,11 +101,11 @@ const Footer = () => {
           <div>
             <h4 className="font-['Neiko'] text-lg font-bold mb-6 text-white tracking-wider">Contact NES</h4>
             <div className="space-y-5 text-sm text-[#808080]">
-              <a href="mailto:contact@nesesports.in" className="flex items-center gap-4 font-['Nonito'] group hover:text-gray-300 transition-colors">
+              <a href="mailto:nagalandesportsociety@gmail.com" className="flex items-center gap-4 font-['Nonito'] group hover:text-gray-300 transition-colors">
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 opacity-80 group-hover:opacity-100 group-hover:border-[#34A853]/30 group-hover:bg-[#34A853]/10 transition-all duration-300">
                   <GamingIcon iconId={GamingIcons.MAIL} size={20} color="#34A853" />
                 </div>
-                <span className="pt-3">contact@nesesports.in</span>
+                <span className="pt-3">nagalandesportsociety@gmail.com</span>
               </a>
               <a href="tel:+919876543210" className="flex items-center gap-4 font-['Nonito'] group hover:text-gray-300 transition-colors">
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 opacity-80 group-hover:opacity-100 group-hover:border-[#34A853]/30 group-hover:bg-[#34A853]/10 transition-all duration-300">

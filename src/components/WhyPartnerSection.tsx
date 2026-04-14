@@ -35,7 +35,7 @@ const partnershipBenefits = [
 ];
 
 const brandMetrics = [
-  { iconId: GamingIcons.USERS, metric: "10,000+", description: "Expected Visitors" },
+  { iconId: GamingIcons.USERS, metric: "20,000-30,000", description: "Expected Visitors" },
   { iconId: GamingIcons.TROPHY, metric: "₹2,00,000", description: "Prize Pool" },
   { iconId: GamingIcons.GLOBE, metric: "50+", description: "Colleges" },
   { iconId: GamingIcons.TARGET, metric: "100+", description: "Exhibitors" }

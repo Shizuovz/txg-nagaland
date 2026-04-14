@@ -32,7 +32,7 @@ const StatItem = ({ stat, inView }: { stat: any; inView: boolean }) => {
   const formatted = stat.value >= 1000 ? count.toLocaleString("en-IN") : count;
 
   return (
-    <div className="text-center p-2 relative">
+    <div className="text-center py-3 px-4 md:py-4 md:px-6 relative min-h-[120px] md:min-h-[140px] flex flex-col justify-center">
       {/* Dotted background pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="h-full w-full" style={{
@@ -43,7 +43,7 @@ const StatItem = ({ stat, inView }: { stat: any; inView: boolean }) => {
       </div>
 
       <div className="relative z-10">
-        <div className="font-['Neiko'] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-1 md:mb-2 leading-none">
+        <div className="font-['Neiko'] text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-1 md:mb-2 leading-none whitespace-nowrap">
           {stat.prefix}{formatted}{stat.suffix}
         </div>
         <div className="flex items-center justify-center gap-2 mt-2">
@@ -117,8 +117,8 @@ const StatsSection = () => {
           </h2>
         </motion.div>
 
-        {/* Improved Grid: Smaller gap on mobile to prevent overflow */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-2 md:gap-6 max-w-6xl mx-auto">
+        {/* Improved Grid: Better spacing to prevent overlap */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 lg:gap-6 max-w-7xl mx-auto px-4">
           {stats.map((s, i) => (
             <motion.div
               key={i}
