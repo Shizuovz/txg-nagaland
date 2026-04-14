@@ -1209,7 +1209,7 @@ const RegistrationSection = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0 * 0.15 }}
@@ -1218,15 +1218,17 @@ const RegistrationSection = () => {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.USERS} size={24} color="#00ff88" />
             </div>
-            <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Inter College</h3>
-            <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
-              Register your college team for Mobile Legends tournament
-            </p>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Inter College</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Register your college team for Mobile Legends tournament
+              </p>
+            </div>
             <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
@@ -1235,15 +1237,17 @@ const RegistrationSection = () => {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#ec4899" />
             </div>
-            <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Cosplayers</h3>
-            <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
-              Register as a cosplayer and showcase your talent
-            </p>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Cosplayers</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Register as a cosplayer and showcase your talent
+              </p>
+            </div>
             <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -1252,15 +1256,17 @@ const RegistrationSection = () => {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.TARGET} size={24} color="#3b82f6" />
             </div>
-            <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Vendors</h3>
-            <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
-              Sell your products and services at the event
-            </p>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Vendors</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Sell your products and services at the event
+              </p>
+            </div>
             <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
@@ -1269,15 +1275,17 @@ const RegistrationSection = () => {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-yellow-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.MONITOR} size={24} color="#eab308" />
             </div>
-            <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Exhibitor</h3>
-            <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
-              Exhibit your products and connect with attendees
-            </p>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Exhibitor</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Exhibit your products and connect with attendees
+              </p>
+            </div>
             <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
@@ -1286,15 +1294,17 @@ const RegistrationSection = () => {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.VIDEO} size={24} color="#a855f7" />
             </div>
-            <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Media</h3>
-            <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
-              Press access for journalists, photographers, and content creators
-            </p>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Media</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Press access for journalists, photographers, and content creators
+              </p>
+            </div>
             <Button className="w-full text-sm sm:text-base" variant="outline">Register as Media</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             data-registration-type="sponsor"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1304,10 +1314,12 @@ const RegistrationSection = () => {
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.PARTNERSHIP} size={24} color="#50D075" />
             </div>
-            <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Sponsors</h3>
-            <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
-              Partner with us and showcase your brand
-            </p>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Sponsors</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Partner with us and showcase your brand
+              </p>
+            </div>
             <Button className="w-full text-sm sm:text-base" variant="outline">Become Partner</Button>
           </motion.div>
         </div>
