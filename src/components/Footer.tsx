@@ -1,4 +1,7 @@
+import React, { useState } from 'react';
 import GamingIcon, { GamingIcons } from "./GamingIcons";
+import PrivacyPolicy from "./PrivacyPolicy";
+import TermsOfService from "./TermsOfService";
 
 const quickLinks = [
   { label: "Vision", href: "#introduction-vision" },
@@ -11,6 +14,9 @@ const quickLinks = [
 ];
 
 const Footer = () => {
+  const [isPrivacyPolicyOpen, setIsPrivacyPolicyOpen] = useState(false);
+  const [isTermsOfServiceOpen, setIsTermsOfServiceOpen] = useState(false);
+
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const targetId = href.replace('#', '');
@@ -20,6 +26,16 @@ const Footer = () => {
     } else {
       window.location.href = href;
     }
+  };
+
+  const handlePrivacyPolicyClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsPrivacyPolicyOpen(true);
+  };
+
+  const handleTermsOfServiceClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsTermsOfServiceOpen(true);
   };
 
   return (
@@ -113,9 +129,9 @@ const Footer = () => {
                 <h5 className="font-semibold text-white mb-3 font-['Nonito']">Find Us</h5>
                 <div className="rounded-lg overflow-hidden border border-white/10">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25.6708!2d94.1066!3d15.2994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0x0!2s25.6708%2C94.1066!5e0!3m2!1sen!2sin!4v1733385270874!5m2!1sen!2sin"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3587.828555806283!2d93.75881067535565!3d25.881908477271444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x37460937175fbbcd%3A0xa113c7855a541f09!2sDUG%20Studio!5e0!3m2!1sen!2sin!4v1713360000000!5m2!1sen!2sin"
                     width="100%"
-                    height="200"
+                    height="250"
                     style={{ border: 0 }}
                     allowFullScreen={true}
                     loading="lazy"
@@ -136,14 +152,26 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/5 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#606060] font-['Nonito']">
+        <div className="border-t border-white/5 mt-16 pt-8 flex flex-col md:flex-row justify-around items-center gap-4 text-xs text-[#606060] font-['Nonito']">
           <p>© 2026 Nagaland E-Sports Society. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-[#34A853] transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-[#34A853] transition-colors">Terms of Service</a>
+            <a href="#" onClick={handlePrivacyPolicyClick} className="hover:text-[#34A853] transition-colors cursor-pointer">Privacy Policy</a>
+            <a href="#" onClick={handleTermsOfServiceClick} className="hover:text-[#34A853] transition-colors cursor-pointer">Terms of Service</a>
           </div>
         </div>
       </div>
+
+      {/* Privacy Policy Modal */}
+      <PrivacyPolicy 
+        isOpen={isPrivacyPolicyOpen}
+        onClose={() => setIsPrivacyPolicyOpen(false)}
+      />
+
+      {/* Terms of Service Modal */}
+      <TermsOfService 
+        isOpen={isTermsOfServiceOpen}
+        onClose={() => setIsTermsOfServiceOpen(false)}
+      />
     </footer>
   );
 };
