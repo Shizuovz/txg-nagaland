@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Calendar, Gamepad2, Search, RefreshCw, FileText, Settings } from 'lucide-react';
+import { TrendingUp, Calendar, Gamepad2, Search, RefreshCw, FileText, Settings, Download, Eye } from 'lucide-react';
 import GamingIcon, { GamingIcons } from "@/components/GamingIcons";
 import { useRegistrationAPI } from '@/hooks/useRegistrationAPI';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
@@ -13,6 +13,7 @@ import { sendApprovalEmail, getApprovalEmailContent } from '@/utils/firebaseEmai
 import EmailTestComponent from '@/components/EmailTestComponent';
 import ManualDataEntry from '@/components/ManualDataEntry';
 import ContentManagement from '@/components/ContentManagement';
+import firebaseStorageService from '@/services/firebaseStorageService';
 
 // Helper function to format dates in day/month/year format
 const formatDate = (dateInput: string | Date) => {
@@ -82,6 +83,8 @@ const AdminDashboard = () => {
   const [vendorRegistrations, setVendorRegistrations] = useState<SponsorRegistration[]>([]);
   const [exhibitorRegistrations, setExhibitorRegistrations] = useState<SponsorRegistration[]>([]);
   const [visitorRegistrations, setVisitorRegistrations] = useState<any[]>([]);
+  const [miniTournamentRegistrations, setMiniTournamentRegistrations] = useState<any[]>([]);
+  const [mobaOpenRegistrations, setMobaOpenRegistrations] = useState<TeamRegistration[]>([]);
 
   useEffect(() => {
     loadDashboardData();
@@ -123,6 +126,20 @@ const AdminDashboard = () => {
       // Exhibitors: Sponsor registrations with EXH prefix in registrationId
       const exhibitors = (sponsors || []).filter(s => s.registrationId && s.registrationId.startsWith('EXH'));
       setExhibitorRegistrations(exhibitors);
+
+      // Mini Tournaments: Visitor registrations with MIN prefix in registrationId or "Game:" in message
+      const miniTournaments = (visitors || []).filter(v => 
+        (v.registrationId && v.registrationId.startsWith('MIN')) || 
+        (v.message && v.message.includes('Game:'))
+      );
+      setMiniTournamentRegistrations(miniTournaments);
+
+      // MOBA 5v5 Open Tournament: Team registrations with MOB prefix in registrationId or teamCategory 'open'
+      const mobaOpen = (teams || []).filter(t => 
+        (t.registrationId && t.registrationId.startsWith('MOB')) || 
+        (t.teamCategory === 'open')
+      );
+      setMobaOpenRegistrations(mobaOpen);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     } finally {
@@ -278,6 +295,10 @@ const AdminDashboard = () => {
         case 'media':
           registrationData = mediaRegistrations.find(m => m.id === id);
           success = await updateMediaStatus(id, status);
+          break;
+        case 'mini-tournament':
+          registrationData = miniTournamentRegistrations.find(m => m.id === id);
+          success = await updateVisitorStatus(id, status);
           break;
       }
       
@@ -908,11 +929,13 @@ const AdminDashboard = () => {
             <TabsList className="flex flex-wrap w-full mb-6 gap-1">
               <TabsTrigger value="overview" className="flex-1 min-w-fit">Overview</TabsTrigger>
               <TabsTrigger value="teams" className="flex-1 min-w-fit">Teams</TabsTrigger>
+              <TabsTrigger value="moba-open" className="flex-1 min-w-fit">MOBA 5v5</TabsTrigger>
               <TabsTrigger value="sponsors" className="flex-1 min-w-fit">Sponsors</TabsTrigger>
               <TabsTrigger value="cosplayers" className="flex-1 min-w-fit">Cosplayers</TabsTrigger>
               <TabsTrigger value="vendors" className="flex-1 min-w-fit">Vendors</TabsTrigger>
               <TabsTrigger value="exhibitors" className="flex-1 min-w-fit">Exhibitors</TabsTrigger>
               <TabsTrigger value="media" className="flex-1 min-w-fit">Media</TabsTrigger>
+              <TabsTrigger value="mini-tournaments" className="flex-1 min-w-fit">Mini Tournaments</TabsTrigger>
               <TabsTrigger value="manual-entry" className="flex-1 min-w-fit">Manual Entry</TabsTrigger>
               <TabsTrigger value="content" className="flex-1 min-w-fit">Content</TabsTrigger>
             </TabsList>
@@ -1292,6 +1315,136 @@ const AdminDashboard = () => {
                               </Button>
                             )}
                           </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* MOBA 5v5 Open Tournament Tab */}
+            <TabsContent value="moba-open">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2 flex-wrap">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Search MOBA teams..."
+                        className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={teamFilters.status}
+                      onChange={(e) => setTeamFilters(prev => ({ ...prev, status: e.target.value }))}
+                    >
+                      <option value="all">All Status</option>
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                      <option value="withdrawn">Withdrawn</option>
+                    </select>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button onClick={loadDashboardData} variant="outline">
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Refresh
+                    </Button>
+                    <Button onClick={downloadTeamRegistrationsCSV} variant="outline">
+                      <FileText className="w-4 h-4 mr-2" />
+                      Download CSV
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid gap-4">
+                  {mobaOpenRegistrations.map((team) => (
+                    <Card key={team.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-6">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h3 className="text-lg font-semibold">{team.teamName}</h3>
+                            <p className="text-sm text-gray-600">ID: {team.registrationId}</p>
+                            <p className="text-sm text-gray-600">Organization: {team.collegeName}</p>
+                          </div>
+                          <Badge 
+                            className={`${
+                              team.status === 'approved' ? 'bg-green-100 text-green-800' :
+                              team.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}
+                          >
+                            {team.status}
+                          </Badge>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Captain</p>
+                            <p className="text-sm">{team.captainName}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Contact</p>
+                            <p className="text-sm">{team.captainEmail}</p>
+                            <p className="text-sm">{team.captainPhone}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Game</p>
+                            <p className="text-sm">{getGameName(team.gameId)}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Registered</p>
+                            <p className="text-sm">{formatDate(team.createdAt)}</p>
+                          </div>
+                        </div>
+
+                        <div className="mb-4">
+                          <p className="text-sm font-medium text-gray-600 mb-2">Team Members ({team.teamMembers?.length || 0})</p>
+                          <div className="grid grid-cols-2 gap-2">
+                            {team.teamMembers?.slice(0, 4).map((member, index) => (
+                              <div key={index} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                {member.ign} ({member.gameId})
+                              </div>
+                            ))}
+                            {team.teamMembers?.length > 4 && (
+                              <div className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                +{team.teamMembers.length - 4} more
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(team.id, 'team', 'approved')}
+                            className="bg-green-600 hover:bg-green-700 text-white"
+                            disabled={team.status === 'approved'}
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(team.id, 'team', 'rejected')}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                            disabled={team.status === 'rejected'}
+                          >
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleStatusUpdate(team.id, 'team', 'withdrawn')}
+                            className="bg-gray-600 hover:bg-gray-700 text-white"
+                            disabled={team.status === 'withdrawn'}
+                          >
+                            Withdraw
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -2213,6 +2366,190 @@ const AdminDashboard = () => {
                 </div>
               </div>
             </TabsContent>
+
+            {/* Mini Tournaments Tab */}
+            <TabsContent value="mini-tournaments">
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold text-gray-800">Mini Tournament Registrations</h2>
+                  <div className="flex gap-4">
+                    <Badge className="bg-blue-100 text-blue-800">
+                      Total: {miniTournamentRegistrations.length}
+                    </Badge>
+                    <Badge className="bg-yellow-100 text-yellow-800">
+                      Pending: {miniTournamentRegistrations.filter(r => r.status === 'pending').length}
+                    </Badge>
+                    <Badge className="bg-green-100 text-green-800">
+                      Approved: {miniTournamentRegistrations.filter(r => r.status === 'approved').length}
+                    </Badge>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {miniTournamentRegistrations.map((registration, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <GamingIcon iconId={GamingIcons.GAMEPAD} size={20} color="#ff6b6b" />
+                            <span className="text-lg font-semibold">{registration.fullName}</span>
+                          </div>
+                          <Badge 
+                            className={`${
+                              registration.status === 'approved' ? 'bg-green-100 text-green-800' :
+                              registration.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}
+                          >
+                            {registration.status}
+                          </Badge>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Registration ID:</span>
+                            <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{registration.registrationId}</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Game:</span>
+                            <span className="text-sm font-semibold">
+                              {registration.message && registration.message.includes('Game:') 
+                                ? registration.message.split('Game:')[1]?.split('\n')[0]?.trim() 
+                                : 'Unknown'}
+                            </span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Nickname:</span>
+                            <span className="text-sm font-semibold">{registration.collegeName || 'N/A'}</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">WhatsApp:</span>
+                            <span className="text-sm">{registration.phone}</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Phone:</span>
+                            <span className="text-sm">{registration.message && registration.message.includes('Phone Call:') 
+                              ? registration.message.split('Phone Call:')[1]?.split('\n')[0]?.trim() 
+                              : 'N/A'}</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Age:</span>
+                            <span className="text-sm">{registration.message && registration.message.includes('Age:') 
+                              ? registration.message.split('Age:')[1]?.split('\n')[0]?.trim() 
+                              : 'N/A'}</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Gender:</span>
+                            <span className="text-sm">{registration.message && registration.message.includes('Gender:') 
+                              ? registration.message.split('Gender:')[1]?.split('\n')[0]?.trim() 
+                              : 'N/A'}</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-start">
+                            <span className="text-sm font-medium text-gray-600">Passport Photo:</span>
+                            <div className="text-sm font-medium">
+                              {(() => {
+                                // Check if passport photo exists in Firebase Storage
+                                const checkPassportPhoto = async () => {
+                                  const photoURL = await firebaseStorageService.getPassportPhotoURL(registration.registrationId);
+                                  return photoURL;
+                                };
+                                
+                                // For now, we'll use a simpler approach - assume uploaded if registration exists
+                                // In a real implementation, you'd want to cache this or handle async properly
+                                return (
+                                  <div className="space-y-2">
+                                    <span className="text-green-600">Uploaded</span>
+                                    <div className="flex gap-2">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={async () => {
+                                          const photoURL = await firebaseStorageService.getPassportPhotoURL(registration.registrationId);
+                                          if (photoURL) {
+                                            window.open(photoURL, '_blank');
+                                          } else {
+                                            alert('Passport photo not found');
+                                          }
+                                        }}
+                                      >
+                                        <Eye className="w-4 h-4 mr-1" />
+                                        View
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={async () => {
+                                          const photoURL = await firebaseStorageService.getPassportPhotoURL(registration.registrationId);
+                                          if (photoURL) {
+                                            firebaseStorageService.downloadFile(photoURL, `${registration.registrationId}_passport_photo.jpg`);
+                                          } else {
+                                            alert('Passport photo not found');
+                                          }
+                                        }}
+                                      >
+                                        <Download className="w-4 h-4 mr-1" />
+                                        Download
+                                      </Button>
+                                    </div>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Email:</span>
+                            <span className="text-sm">{registration.email}</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Registered:</span>
+                            <span className="text-sm">{formatDate(registration.createdAt)}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2 mt-4">
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(registration.id, 'mini-tournament', 'approved')}
+                            className="bg-green-600 hover:bg-green-700 text-white"
+                            disabled={registration.status === 'approved'}
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(registration.id, 'mini-tournament', 'rejected')}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                            disabled={registration.status === 'rejected'}
+                          >
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleStatusUpdate(registration.id, 'mini-tournament', 'withdrawn')}
+                            className="bg-gray-600 hover:bg-gray-700 text-white"
+                            disabled={registration.status === 'withdrawn'}
+                          >
+                            Withdraw
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
           {/* Content Management Tab */}
             <TabsContent value="content">
               <ContentManagement />

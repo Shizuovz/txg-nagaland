@@ -25,6 +25,14 @@ import {
   DocumentSnapshot,
   QuerySnapshot
 } from 'firebase/firestore';
+import { 
+  getStorage, 
+  ref, 
+  uploadBytes, 
+  getDownloadURL, 
+  deleteObject,
+  StorageReference
+} from 'firebase/storage';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -41,11 +49,13 @@ const firebaseConfig = {
 let app: ReturnType<typeof initializeApp> | null = null;
 let db: ReturnType<typeof getFirestore> | null = null;
 let auth: ReturnType<typeof getAuth> | null = null;
+let storage: ReturnType<typeof getStorage> | null = null;
 
 try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   auth = getAuth(app);
+  storage = getStorage(app);
 } catch (error: unknown) {
   // If app already exists, get the existing app
   const firebaseError = error as { code?: string };
@@ -53,8 +63,9 @@ try {
     app = getApp();
     db = getFirestore(app);
     auth = getAuth(app);
+    storage = getStorage(app);
   } else {
-    throw error;
+    console.error('Firebase initialization error:', error);
   }
 }
 
@@ -501,7 +512,7 @@ export class FirebaseService {
   }
 }
 
-export { app, db, auth };
+export { app, db, auth, storage };
 
 // Create and export a singleton instance
 export const firebaseService = new FirebaseService();

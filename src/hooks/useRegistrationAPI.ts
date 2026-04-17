@@ -23,10 +23,15 @@ export interface TeamRegistrationData {
   city?: string;
   state?: string;
   pinCode?: string;
-  teamMembers: { ign: string; gameId: string }[];
-  substitute?: { ign: string; gameId: string };
+  teamMembers: { ign: string; gameId: string; fullName: string }[];
+  substitute?: { ign: string; gameId: string; fullName: string };
   additionalMessage?: string;
   termsAccepted: boolean;
+  studentIdUpload?: File | null;
+  institutionDeclaration?: boolean;
+  livestreamConsent?: boolean;
+  coordinatorName?: string;
+  coordinatorPhone?: string;
 }
 
 export interface SponsorRegistrationData {

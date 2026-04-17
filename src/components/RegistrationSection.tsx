@@ -9,11 +9,28 @@ import { Textarea } from "@/components/ui/textarea";
 import GamingIcon, { GamingIcons } from "./GamingIcons";
 import { useRegistrationAPI } from "@/hooks/useRegistrationAPI";
 import { Game, College, SponsorshipTier } from '@/lib/firebase';
+
+// Mini tournaments data
+const miniTournaments = [
+  { name: "Clash Royale", logo: "/logos/Clash Royale.png" },
+  { name: "Street Fighter 6", logo: "/logos/Street_Fighter_6_Logo.png" },
+  { name: "Dragon Ball Fighter Z", logo: "/logos/Dragon Ball Fighter Z.png" },
+  { name: "FC 26", logo: "/logos/FC26 White.png" },
+  { name: "Guilty Gear Strive", logo: "/logos/Guilty Gear Black.png" },
+  { name: "King Of Fighters XV", logo: "/logos/King Of Fighters XV.png" },
+  { name: "Mortal Kombat 1", logo: "/logos/Mortal Kombat 1 Blue.png" },
+  { name: "Ludo", logo: "/logos/Ludo Logo.png" },
+  { name: "NBA 2K26", logo: "/logos/NBA 2K26.png" },
+  { name: "Dirt Rally 2.0", logo: "/logos/Dirt_Rally_2.0_Logo.svg.png" },
+  { name: "Tekken 8", logo: "/logos/Tekken-8-logo White.png" },
+  { name: "Tetris", logo: "/logos/Tetris_logo.png" },
+];
 import { useState, useEffect } from "react";
 import TermsAndConditions from "./TermsAndConditions";
+import firebaseStorageService from "@/services/firebaseStorageService";
 
 const RegistrationSection = () => {
-  const [registrationType, setRegistrationType] = useState<"college" | "cosplayer" | "vendor" | "exhibitor" | "media" | "sponsor" | null>(null);
+  const [registrationType, setRegistrationType] = useState<"college" | "moba-open" | "cosplayer" | "vendor" | "exhibitor" | "media" | "sponsor" | "mini-tournament" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationId, setRegistrationId] = useState("");
   
@@ -84,13 +101,26 @@ const RegistrationSection = () => {
     state: "",
     pinCode: "",
     teamMembers: [
-      { ign: "", gameId: "" },
-      { ign: "", gameId: "" },
-      { ign: "", gameId: "" },
-      { ign: "", gameId: "" },
-      { ign: "", gameId: "" }
+      { ign: "", gameId: "", fullName: "" },
+      { ign: "", gameId: "", fullName: "" },
+      { ign: "", gameId: "", fullName: "" },
+      { ign: "", gameId: "", fullName: "" },
+      { ign: "", gameId: "", fullName: "" }
     ],
-    substitute: { ign: "", gameId: "" }
+    substitute: { ign: "", gameId: "", fullName: "" },
+    // Mini tournament specific fields
+    nickName: "",
+    whatsappPhone: "",
+    phoneCallNumber: "",
+    age: "",
+    gender: "",
+    passportPhoto: null as File | null,
+    // New mandatory fields for inter-college and MOBA tournaments
+    studentIdUpload: null as File | null,
+    institutionDeclaration: false,
+    livestreamConsent: false,
+    coordinatorName: "",
+    coordinatorPhone: ""
   });
 
   // Generate registration ID and set default game when type is selected
@@ -98,11 +128,13 @@ const RegistrationSection = () => {
     if (registrationType && !registrationId) {
       const generateId = () => {
         const prefix = registrationType === 'college' ? 'CLG' : 
+                       registrationType === 'moba-open' ? 'MOB' :
                        registrationType === 'cosplayer' ? 'COS' :
                        registrationType === 'vendor' ? 'VEN' :
                        registrationType === 'exhibitor' ? 'EXH' :
                        registrationType === 'sponsor' ? 'SPN' : 
-                       registrationType === 'media' ? 'MDA' : 'VST';
+                       registrationType === 'media' ? 'MDA' : 
+                       registrationType === 'mini-tournament' ? 'MIN' : 'VST';
         const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
         const id = `${prefix}${randomNum}`;
         setRegistrationId(id);
@@ -123,13 +155,13 @@ const RegistrationSection = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleTeamMemberChange = (index: number, field: 'ign' | 'gameId', value: string) => {
+  const handleTeamMemberChange = (index: number, field: 'ign' | 'gameId' | 'fullName', value: string) => {
     const updatedMembers = [...formData.teamMembers];
     updatedMembers[index] = { ...updatedMembers[index], [field]: value };
     setFormData(prev => ({ ...prev, teamMembers: updatedMembers }));
   };
 
-  const handleSubstituteChange = (field: 'ign' | 'gameId', value: string) => {
+  const handleSubstituteChange = (field: 'ign' | 'gameId' | 'fullName', value: string) => {
     setFormData(prev => ({
       ...prev,
       substitute: { ...prev.substitute, [field]: value }
@@ -154,6 +186,38 @@ const RegistrationSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Validation for college and MOBA open tournaments
+    if ((registrationType === 'college' || registrationType === 'moba-open')) {
+      // Check if all team members have full names
+      const teamMembersWithFullName = getTeamMemberFields();
+      for (let i = 0; i < teamMembersWithFullName.length; i++) {
+        if (!teamMembersWithFullName[i].fullName.trim()) {
+          alert(`Please enter the full name for Player ${i + 1}`);
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // Check mandatory fields
+      if (!formData.studentIdUpload) {
+        alert('Please upload student/institution ID documents');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!formData.institutionDeclaration) {
+        alert('Please confirm the institution declaration');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!formData.livestreamConsent) {
+        alert('Please provide consent for livestream and photography');
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     try {
       if (registrationType === 'college') {
         await submitTeamRegistration({
@@ -171,7 +235,35 @@ const RegistrationSection = () => {
           pinCode: formData.pinCode,
           teamMembers: formData.teamMembers,
           substitute: formData.substitute,
-          termsAccepted: formData.agreeTerms
+          termsAccepted: formData.agreeTerms,
+          studentIdUpload: formData.studentIdUpload,
+          institutionDeclaration: formData.institutionDeclaration,
+          livestreamConsent: formData.livestreamConsent,
+          coordinatorName: formData.coordinatorName,
+          coordinatorPhone: formData.coordinatorPhone
+        });
+      } else if (registrationType === 'moba-open') {
+        await submitTeamRegistration({
+          teamName: formData.teamName,
+          collegeName: formData.collegeName,
+          captainName: formData.captainName,
+          captainEmail: formData.captainEmail,
+          captainPhone: formData.captainPhone,
+          gameId: formData.game,
+          teamCategory: 'open',
+          registrationType: 'open_category',
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pinCode: formData.pinCode,
+          teamMembers: formData.teamMembers,
+          substitute: formData.substitute,
+          termsAccepted: formData.agreeTerms,
+          studentIdUpload: formData.studentIdUpload,
+          institutionDeclaration: formData.institutionDeclaration,
+          livestreamConsent: formData.livestreamConsent,
+          coordinatorName: formData.coordinatorName,
+          coordinatorPhone: formData.coordinatorPhone
         });
       } else if (registrationType === 'cosplayer') {
         // Use visitor registration for cosplayers with custom success message
@@ -183,8 +275,6 @@ const RegistrationSection = () => {
           city: formData.city,
           state: formData.state,
           pinCode: formData.pinCode,
-          collegeName: formData.collegeName, // Cosplay Group/Team Name
-          message: formData.message, // Cosplay Experience
           registrationId: registrationId
         }, 'Cosplayer registration submitted successfully!');
       } else if (registrationType === 'vendor') {
@@ -242,10 +332,50 @@ const RegistrationSection = () => {
           pinCode: formData.pinCode,
           message: formData.message
         });
+      } else if (registrationType === 'mini-tournament') {
+        // Handle passport photo upload and store in Firebase Storage
+        let passportPhotoData = null;
+        if (formData.passportPhoto) {
+          try {
+            console.log('Attempting to upload passport photo to Firebase Storage...');
+            passportPhotoData = await firebaseStorageService.uploadPassportPhoto(
+              formData.passportPhoto,
+              registrationId
+            );
+            console.log('Passport photo uploaded to Firebase Storage:', passportPhotoData);
+          } catch (error) {
+            console.error('Error uploading passport photo to Firebase Storage:', error);
+            console.log('This might be due to Firebase Storage security rules or CORS issues.');
+            console.log('Registration will continue without photo upload for now.');
+            
+            // For now, store a placeholder to indicate photo was attempted
+            // In production, you'd want to handle this more gracefully
+            passportPhotoData = {
+              url: '',
+              fileName: `${registrationId}_passport_photo.jpg`,
+              uploadedAt: new Date(),
+              error: 'Upload failed - likely due to Firebase Storage rules'
+            };
+          }
+        }
+
+        // Submit visitor registration
+        await submitVisitorRegistration({
+          fullName: formData.captainName,
+          email: formData.captainEmail,
+          phone: formData.whatsappPhone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pinCode: formData.pinCode,
+          registrationId: registrationId
+        }, 'Mini tournament registration submitted successfully!');
+
+        console.log('Mini tournament registration completed');
       }
     } catch (err) {
       console.error('Registration error:', err);
-    } finally {
+    } finally { 
       setIsSubmitting(false);
     }
   };
@@ -385,7 +515,17 @@ const RegistrationSection = () => {
                   </Label>
                   <div className="space-y-4">
                     {getTeamMemberFields().map((member, index) => (
-                      <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card">
+                      <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-border rounded-lg bg-card">
+                        <div>
+                          <Label htmlFor={`member-${index}-fullName`}>Player {index + 1} Full Name *</Label>
+                          <Input
+                            id={`member-${index}-fullName`}
+                            value={member.fullName}
+                            onChange={(e) => handleTeamMemberChange(index, 'fullName', e.target.value)}
+                            placeholder="Full name"
+                            required
+                          />
+                        </div>
                         <div>
                           <Label htmlFor={`member-${index}-ign`}>Player {index + 1} IGN *</Label>
                           <Input
@@ -414,7 +554,16 @@ const RegistrationSection = () => {
 
               <div>
                 <Label className="text-base font-semibold mb-4 block">Substitute Player (Optional)</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-border rounded-lg bg-card">
+                  <div>
+                    <Label htmlFor="sub-fullName">Substitute Full Name</Label>
+                    <Input
+                      id="sub-fullName"
+                      value={formData.substitute.fullName}
+                      onChange={(e) => handleSubstituteChange('fullName', e.target.value)}
+                      placeholder="Substitute full name"
+                    />
+                  </div>
                   <div>
                     <Label htmlFor="sub-ign">Substitute IGN</Label>
                     <Input
@@ -436,6 +585,81 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
+              {/* New Mandatory Fields */}
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="studentIdUpload" className="text-base font-semibold">Student/Institution ID Upload *</Label>
+                  <Input
+                    id="studentIdUpload"
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleInputChange("studentIdUpload", e.target.files?.[0] || null)}
+                    className="mt-2"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Upload student ID cards, bonafide certificates, or admission records for all team members
+                  </p>
+                </div>
+
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="institutionDeclaration"
+                    checked={formData.institutionDeclaration}
+                    onChange={(e) => handleInputChange("institutionDeclaration", e.target.checked)}
+                    required
+                    className="w-5 h-5 mt-0.5"
+                  />
+                  <div>
+                    <Label htmlFor="institutionDeclaration" className="text-sm font-medium">
+                      Declaration that all players belong to the same institution *
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      I declare that all registered players belong to the same institution unless otherwise permitted by the organizers
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="livestreamConsent"
+                    checked={formData.livestreamConsent}
+                    onChange={(e) => handleInputChange("livestreamConsent", e.target.checked)}
+                    required
+                    className="w-5 h-5 mt-0.5"
+                  />
+                  <div>
+                    <Label htmlFor="livestreamConsent" className="text-sm font-medium">
+                      Consent for livestream, photography, and recording *
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      I consent to photographs, videos, and livestreaming of tournament participation for promotional purposes
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="coordinatorName">Institutional Coordinator Name (Optional)</Label>
+                    <Input
+                      id="coordinatorName"
+                      value={formData.coordinatorName}
+                      onChange={(e) => handleInputChange("coordinatorName", e.target.value)}
+                      placeholder="Faculty coordinator or institutional representative name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="coordinatorPhone">Institutional Coordinator Phone (Optional)</Label>
+                    <Input
+                      id="coordinatorPhone"
+                      value={formData.coordinatorPhone}
+                      onChange={(e) => handleInputChange("coordinatorPhone", e.target.value)}
+                      placeholder="Coordinator phone number"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <TermsAndConditions 
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
@@ -444,6 +668,284 @@ const RegistrationSection = () => {
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
                 {isSubmitting ? "Submitting..." : "Submit College Registration"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      ),
+
+      'moba-open': (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GamingIcon iconId={GamingIcons.TROPHY} size={20} color="#ff6b6b" />
+              MOBA 5v5 Open Tournament Registration
+            </CardTitle>
+            {registrationId && (
+              <p className="text-sm text-muted-foreground">Registration ID: {registrationId}</p>
+            )}
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="teamName">Team Name *</Label>
+                  <Input
+                    id="teamName"
+                    value={formData.teamName}
+                    onChange={(e) => handleInputChange("teamName", e.target.value)}
+                    placeholder="Enter your team name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="collegeName">Organization/Team Name *</Label>
+                  <Input
+                    id="collegeName"
+                    value={formData.collegeName}
+                    onChange={(e) => handleInputChange("collegeName", e.target.value)}
+                    placeholder="Enter your organization or team name"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="captainName">Team Captain Name *</Label>
+                  <Input
+                    id="captainName"
+                    value={formData.captainName}
+                    onChange={(e) => handleInputChange("captainName", e.target.value)}
+                    placeholder="Captain's full name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="captainEmail">Captain Email *</Label>
+                  <Input
+                    id="captainEmail"
+                    type="email"
+                    value={formData.captainEmail}
+                    onChange={(e) => handleInputChange("captainEmail", e.target.value)}
+                    placeholder="captain@email.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="captainPhone">Captain Phone *</Label>
+                <Input
+                  id="captainPhone"
+                  value={formData.captainPhone}
+                  onChange={(e) => handleInputChange("captainPhone", e.target.value)}
+                  placeholder="+91 98765 43210"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="address">Address *</Label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => handleInputChange("address", e.target.value)}
+                  placeholder="Street address"
+                  required
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="city">City *</Label>
+                  <Input
+                    id="city"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    placeholder="City"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="state">State/Region *</Label>
+                  <Input
+                    id="state"
+                    value={formData.state}
+                    onChange={(e) => handleInputChange("state", e.target.value)}
+                    placeholder="State/Region"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="pinCode">PIN Code *</Label>
+                <Input
+                  id="pinCode"
+                  value={formData.pinCode}
+                  onChange={(e) => handleInputChange("pinCode", e.target.value)}
+                  placeholder="PIN/Zip Code"
+                  required
+                />
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Tournament Game: Mobile Legends</h4>
+                <p className="text-sm text-muted-foreground">
+                  Open tournament for Mobile Legends: Bang Bang with 5 players per team. Open to all participants.
+                </p>
+              </div>
+
+              {/* Team Members Section */}
+              <div>
+                <Label className="text-base font-semibold mb-4 block">
+                  Team Members (5 Players Required)
+                </Label>
+                <div className="space-y-4">
+                  {getTeamMemberFields().map((member, index) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card">
+                      <div>
+                        <Label htmlFor={`member-${index}-ign`}>Player {index + 1} IGN *</Label>
+                        <Input
+                          id={`member-${index}-ign`}
+                          value={member.ign}
+                          onChange={(e) => handleTeamMemberChange(index, 'ign', e.target.value)}
+                          placeholder="In-game name"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`member-${index}-gameId`}>Game ID *</Label>
+                        <Input
+                          id={`member-${index}-gameId`}
+                          value={member.gameId}
+                          onChange={(e) => handleTeamMemberChange(index, 'gameId', e.target.value)}
+                          placeholder="Game-specific ID"
+                          required
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-base font-semibold mb-4 block">Substitute Player (Optional)</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-border rounded-lg bg-card">
+                  <div>
+                    <Label htmlFor="sub-fullName">Substitute Full Name</Label>
+                    <Input
+                      id="sub-fullName"
+                      value={formData.substitute.fullName}
+                      onChange={(e) => handleSubstituteChange('fullName', e.target.value)}
+                      placeholder="Substitute full name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="sub-ign">Substitute IGN</Label>
+                    <Input
+                      id="sub-ign"
+                      value={formData.substitute.ign}
+                      onChange={(e) => handleSubstituteChange('ign', e.target.value)}
+                      placeholder="Substitute player IGN"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="sub-gameId">Game ID</Label>
+                    <Input
+                      id="sub-gameId"
+                      value={formData.substitute.gameId}
+                      onChange={(e) => handleSubstituteChange('gameId', e.target.value)}
+                      placeholder="Substitute game ID"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* New Mandatory Fields */}
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="studentIdUpload" className="text-base font-semibold">Student/Institution ID Upload *</Label>
+                  <Input
+                    id="studentIdUpload"
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleInputChange("studentIdUpload", e.target.files?.[0] || null)}
+                    className="mt-2"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Upload student ID cards, bonafide certificates, or admission records for all team members
+                  </p>
+                </div>
+
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="institutionDeclaration"
+                    checked={formData.institutionDeclaration}
+                    onChange={(e) => handleInputChange("institutionDeclaration", e.target.checked)}
+                    required
+                    className="w-5 h-5 mt-0.5"
+                  />
+                  <div>
+                    <Label htmlFor="institutionDeclaration" className="text-sm font-medium">
+                      Declaration that all players belong to the same institution *
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      I declare that all registered players belong to the same institution unless otherwise permitted by the organizers
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="livestreamConsent"
+                    checked={formData.livestreamConsent}
+                    onChange={(e) => handleInputChange("livestreamConsent", e.target.checked)}
+                    required
+                    className="w-5 h-5 mt-0.5"
+                  />
+                  <div>
+                    <Label htmlFor="livestreamConsent" className="text-sm font-medium">
+                      Consent for livestream, photography, and recording *
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      I consent to photographs, videos, and livestreaming of tournament participation for promotional purposes
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="coordinatorName">Institutional Coordinator Name (Optional)</Label>
+                    <Input
+                      id="coordinatorName"
+                      value={formData.coordinatorName}
+                      onChange={(e) => handleInputChange("coordinatorName", e.target.value)}
+                      placeholder="Faculty coordinator or institutional representative name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="coordinatorPhone">Institutional Coordinator Phone (Optional)</Label>
+                    <Input
+                      id="coordinatorPhone"
+                      value={formData.coordinatorPhone}
+                      onChange={(e) => handleInputChange("coordinatorPhone", e.target.value)}
+                      placeholder="Coordinator phone number"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <TermsAndConditions 
+                accepted={formData.agreeTerms}
+                onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
+                registrationType="moba-open"
+              />
+
+              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit MOBA Tournament Registration"}
               </Button>
             </form>
           </CardContent>
@@ -613,7 +1115,7 @@ const RegistrationSection = () => {
                   <option value="">Select vendor type</option>
                   <option value="food">Food</option>
                   <option value="beverage">Beverage</option>
-                  <option value="both">Both Food & Beverage</option>
+                  <option value="merchandise">Merchandise (Toys, Clothes, Footwears etc)</option>
                 </select>
               </div>
 
@@ -1133,6 +1635,180 @@ const RegistrationSection = () => {
             </form>
           </CardContent>
         </Card>
+      ),
+
+      'mini-tournament': (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GamingIcon iconId={GamingIcons.GAMEPAD} size={20} color="#ff6b6b" />
+              Mini Tournament Registration
+            </CardTitle>
+            {registrationId && (
+              <p className="text-sm text-muted-foreground">Registration ID: {registrationId}</p>
+            )}
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Game Selection */}
+              <div>
+                <Label htmlFor="miniGame">Select Tournament *</Label>
+                <select
+                  id="miniGame"
+                  value={formData.game || ''}
+                  onChange={(e) => handleInputChange("game", e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                  required
+                >
+                  <option value="">Select a mini tournament</option>
+                  {miniTournaments.map((tournament, index) => (
+                    <option key={index} value={tournament.name}>
+                      {tournament.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="captainName">Full Name *</Label>
+                  <Input
+                    id="captainName"
+                    value={formData.captainName}
+                    onChange={(e) => handleInputChange("captainName", e.target.value)}
+                    placeholder="Your full name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="nickName">Nick Name (for tournament overlay) *</Label>
+                  <Input
+                    id="nickName"
+                    value={formData.nickName}
+                    onChange={(e) => handleInputChange("nickName", e.target.value)}
+                    placeholder="Your gaming nickname"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="captainEmail">Email Address *</Label>
+                <Input
+                  id="captainEmail"
+                  type="email"
+                  value={formData.captainEmail}
+                  onChange={(e) => handleInputChange("captainEmail", e.target.value)}
+                  placeholder="your.email@example.com"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="whatsappPhone">WhatsApp Phone Number *</Label>
+                  <Input
+                    id="whatsappPhone"
+                    value={formData.whatsappPhone}
+                    onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
+                    placeholder="+91 98765 43210"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phoneCallNumber">Phone Call Number *</Label>
+                  <Input
+                    id="phoneCallNumber"
+                    value={formData.phoneCallNumber}
+                    onChange={(e) => handleInputChange("phoneCallNumber", e.target.value)}
+                    placeholder="+91 98765 43210"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="age">Age *</Label>
+                  <Input
+                    id="age"
+                    type="number"
+                    value={formData.age}
+                    onChange={(e) => handleInputChange("age", e.target.value)}
+                    placeholder="Your age"
+                    min="12"
+                    max="60"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="gender">Gender *</Label>
+                  <select
+                    id="gender"
+                    value={formData.gender || ''}
+                    onChange={(e) => handleInputChange("gender", e.target.value)}
+                    className="w-full p-2 border rounded-md"
+                    required
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Passport Photo Upload */}
+              <div>
+                <Label htmlFor="passportPhoto">Passport Photo (White Background Only) *</Label>
+                <div className="flex items-center gap-4">
+                  <Input
+                    id="passportPhoto"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setFormData(prev => ({ ...prev, passportPhoto: file }));
+                      }
+                    }}
+                    className="hidden"
+                  />
+                  <div 
+                    className="w-full max-w-xs h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+                    onClick={() => document.getElementById('passportPhoto')?.click()}
+                  >
+                    {formData.passportPhoto ? (
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        <img 
+                          src={URL.createObjectURL(formData.passportPhoto)} 
+                          alt="Passport photo preview" 
+                          className="max-h-full max-w-full object-contain rounded"
+                        />
+                      </div>
+                    ) : (
+                      <div className="text-center">
+                        <GamingIcon iconId={GamingIcons.CAMERA} size={24} color="#9ca3af" />
+                        <p className="text-sm text-gray-500 mt-2">Click to upload passport photo</p>
+                        <p className="text-xs text-gray-400">White background only</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <TermsAndConditions 
+                accepted={formData.agreeTerms}
+                onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
+                registrationType="mini-tournament"
+              />
+
+              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Register for Mini Tournament"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       )
     };
 
@@ -1231,7 +1907,45 @@ const RegistrationSection = () => {
             className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            onClick={() => setRegistrationType("moba-open")}
+          >
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+              <GamingIcon iconId={GamingIcons.TROPHY} size={24} color="#ff6b6b" />
+            </div>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">MOBA 5v5 Open</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Open tournament for Mobile Legends 5v5 competition
+              </p>
+            </div>
+            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+          </motion.div>
+
+          <motion.div
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
+            onClick={() => setRegistrationType("mini-tournament")}
+          >
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+              <GamingIcon iconId={GamingIcons.GAMEPAD} size={24} color="#ff6b6b" />
+            </div>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Mini Tournaments</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Register for quick action games and instant rewards
+              </p>
+            </div>
+            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+          </motion.div>
+
+          <motion.div
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
             onClick={() => setRegistrationType("cosplayer")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
@@ -1250,7 +1964,7 @@ const RegistrationSection = () => {
             className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.35 }}
             onClick={() => setRegistrationType("vendor")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
@@ -1269,7 +1983,7 @@ const RegistrationSection = () => {
             className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45 }}
+            transition={{ delay: 0.5 }}
             onClick={() => setRegistrationType("exhibitor")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-yellow-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
@@ -1288,7 +2002,7 @@ const RegistrationSection = () => {
             className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.65 }}
             onClick={() => setRegistrationType("media")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
@@ -1308,7 +2022,7 @@ const RegistrationSection = () => {
             data-registration-type="sponsor"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.75 }}
+            transition={{ delay: 0.8 }}
             onClick={() => setRegistrationType("sponsor")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
