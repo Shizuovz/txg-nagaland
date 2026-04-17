@@ -92,7 +92,17 @@ class FirebaseStorageService {
   // Get passport photo URL
   async getPassportPhotoURL(registrationId: string): Promise<string | null> {
     const fileName = `${registrationId}_passport_photo.jpg`;
-    return this.getFileDownloadURL('passport-photos', fileName);
+    const url = await this.getFileDownloadURL('passport-photos', fileName);
+    
+    // Modify URL to force download behavior
+    if (url && url.includes('firebasestorage.googleapis.com')) {
+      // Remove existing download parameter if any
+      const baseUrl = url.split('?')[0];
+      // Add alt=media and download parameters
+      return `${baseUrl}?alt=media&download=1`;
+    }
+    
+    return url;
   }
 
   // Delete passport photo
@@ -101,14 +111,95 @@ class FirebaseStorageService {
     return this.deleteFile('passport-photos', fileName);
   }
 
+  // Upload student ID document for college/MOBA tournament registration
+  async uploadStudentIdDocument(
+    file: File, 
+    registrationId: string
+  ): Promise<StoredFileData> {
+    console.log('Uploading student ID document:', { 
+      fileName: file.name, 
+      fileSize: file.size, 
+      fileType: file.type,
+      registrationId 
+    });
+    
+    // Get file extension
+    const fileExtension = file.name.split('.').pop() || 'pdf';
+    const fileName = `${registrationId}_student_id.${fileExtension}`;
+    return this.uploadFile('student-ids', fileName, file);
+  }
+
+  // Get student ID document URL
+  async getStudentIdDocumentURL(registrationId: string): Promise<string | null> {
+    // Try common file extensions
+    const extensions = ['pdf', 'jpg', 'jpeg', 'png'];
+    
+    for (const ext of extensions) {
+      const fileName = `${registrationId}_student_id.${ext}`;
+      const url = await this.getFileDownloadURL('student-ids', fileName);
+      if (url) {
+        // Modify URL to force download behavior
+        if (url.includes('firebasestorage.googleapis.com')) {
+          // Remove existing download parameter if any
+          const baseUrl = url.split('?')[0];
+          // Add alt=media and download parameters
+          return `${baseUrl}?alt=media&download=1`;
+        }
+        return url;
+      }
+    }
+    
+    return null;
+  }
+
+  // Delete student ID document
+  async deleteStudentIdDocument(registrationId: string): Promise<boolean> {
+    // Try to delete with common file extensions
+    const extensions = ['pdf', 'jpg', 'jpeg', 'png'];
+    
+    for (const ext of extensions) {
+      const fileName = `${registrationId}_student_id.${ext}`;
+      const deleted = await this.deleteFile('student-ids', fileName);
+      if (deleted) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
   // Download file (creates download link)
   downloadFile(url: string, fileName: string): void {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      console.log('Attempting to download file:', { url, fileName });
+      
+      // Simple and reliable approach: Create download link and trigger click
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.target = '_blank';
+      link.style.display = 'none';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      console.log('Download initiated for:', fileName);
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      alert('Download failed. Please try again.');
+    }
+  }
+
+  // Helper method to convert blob to data URL
+  private async blobToDataURL(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 }
 

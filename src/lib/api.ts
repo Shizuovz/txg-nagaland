@@ -1,6 +1,7 @@
 import { FirebaseService } from './firebase';
 import { TeamRegistration, SponsorRegistration, VisitorRegistration, MediaPersonRegistration } from './firebase';
 import { sendAdminNotificationEmail } from '../utils/firebaseEmailService';
+import firebaseStorageService from '../services/firebaseStorageService';
 
 // API service for handling registration operations with Firebase
 export class RegistrationAPI {
@@ -20,21 +21,61 @@ export class RegistrationAPI {
     city?: string;
     state?: string;
     pinCode?: string;
-    teamMembers: { ign: string; gameId: string }[];
-    substitute?: { ign: string; gameId: string };
+    teamMembers: { ign: string; gameId: string; fullName: string }[];
+    substitute?: { ign: string; gameId: string; fullName: string };
     additionalMessage?: string;
     termsAccepted: boolean;
+    studentIdUpload?: File | null;
+    institutionDeclaration?: boolean;
+    livestreamConsent?: boolean;
+    coordinatorName?: string;
+    coordinatorPhone?: string;
   }): Promise<{ success: boolean; data?: TeamRegistration; message?: string; error?: string }> {
     try {
-      // Clean the data to remove undefined fields and add required fields
+      // Handle student ID upload first
+      let studentIdData = null;
+      if (data.studentIdUpload && (data.registrationType === 'college' || data.registrationType === 'open_category')) {
+        try {
+          console.log('Uploading student ID document to Firebase Storage...');
+          studentIdData = await firebaseStorageService.uploadStudentIdDocument(
+            data.studentIdUpload,
+            `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          );
+          console.log('Student ID document uploaded successfully:', studentIdData);
+        } catch (error) {
+          console.error('Error uploading student ID document:', error);
+          console.log('Registration will continue without student ID upload for now.');
+          
+          // For now, store a placeholder to indicate upload was attempted
+          studentIdData = {
+            url: '',
+            fileName: `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_student_id.pdf`,
+            uploadedAt: new Date(),
+            error: 'Upload failed - likely due to Firebase Storage rules'
+          };
+        }
+      }
+
+      // Clean data to remove undefined fields and add required fields
+      const registrationId = `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const cleanData = {
         ...data,
         substitute: data.substitute || null,
         collegeName: data.collegeName || null,
         teamCategory: data.teamCategory || null,
         additionalMessage: data.additionalMessage || null,
-        registrationId: `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        status: 'pending' as const
+        registrationId: registrationId,
+        status: 'pending' as const,
+        institutionDeclaration: data.institutionDeclaration || false,
+        livestreamConsent: data.livestreamConsent || false,
+        coordinatorName: data.coordinatorName || null,
+        coordinatorPhone: data.coordinatorPhone || null,
+        // Store student ID upload info
+        studentIdUpload: studentIdData ? {
+          fileName: studentIdData.fileName,
+          uploadedAt: studentIdData.uploadedAt,
+          error: studentIdData.error || null
+        } : null
       };
       
       const result = await this.firebaseService.createTeamRegistration(cleanData);
@@ -45,7 +86,7 @@ export class RegistrationAPI {
         console.log('Admin notification sent for team registration');
       } catch (emailError) {
         console.error('Failed to send admin notification for team registration:', emailError);
-        // Don't fail the registration if email fails
+        // Don't fail registration if email fails
       }
       
       return {

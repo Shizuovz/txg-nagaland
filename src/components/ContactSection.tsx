@@ -112,7 +112,7 @@ const ContactSection = () => {
               
               <div className="space-y-6">
                 {[
-                  { icon: GamingIcons.MAIL, label: "Email", val: "nagalandesportsociety@gmail.com", sub: "nagalandesportsociety@gmail.com" },
+                  { icon: GamingIcons.MAIL, label: "Email", val: "info@txg-nagaland.com", sub: "support@txg-nagaland.com" },
                   // { icon: GamingIcons.PHONE, label: "Phone", val: "+91 12345 67890", sub: "Mon-Sat: 9AM - 6PM IST" },
                   { icon: GamingIcons.LOCATION, label: "Venue", val: "NBCC Convention Hall", sub: "Kohima, Nagaland" },
                   { icon: GamingIcons.CALENDAR, label: "Event Dates", val: "June 26-27 2026", sub: "Two-day flagship event" }

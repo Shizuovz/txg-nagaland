@@ -4,7 +4,7 @@ import GamingIcon, { GamingIcons } from "./GamingIcons";
 const tournaments = [
   {
     title: "Inter-College Championship",
-    subtitle: "Prize Pool: INR 60,000",
+    subtitle: "Prize Pool: INR 1,00,000",
     desc: "Colleges across Nagaland compete for the ultimate bragging rights and championship title. Represent your college and claim victory!",
     color: "from-[#50D075]/20 to-[#FFFF00]/20",
     border: "hover:border-[#50D075]/50 border-white/10",
@@ -13,7 +13,7 @@ const tournaments = [
   },
   {
     title: "Open MOBA 5v5 Tournament",
-    subtitle: "Prize Pool: INR 120,000",
+    subtitle: "Prize Pool: INR 1,00,000",
     desc: "Join the ultimate 5v5 MOBA showdown! Build the perfect team, choose your heroes, and fight against real players for massive prizes.",
     color: "from-[#FF00FF]/20 to-[#50D075]/20",
     border: "hover:border-[#FF00FF]/50 border-white/10",
@@ -246,6 +246,7 @@ const GamesSection = () => {
             <h3 className="font-['Neiko'] text-2xl md:text-3xl font-bold text-white mb-2">
               Mini <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFFF00] to-[#FF00FF]">Tournaments</span>
             </h3>
+            <p className="text-[#FFFF00] font-medium mb-2 font-['Nonito']">Prize Pool: INR 1,00,000</p>
             <p className="text-[#d0d0d0] font-['Nonito']">Quick action games with instant rewards</p>
           </div>
           

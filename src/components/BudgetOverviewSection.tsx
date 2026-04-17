@@ -6,7 +6,7 @@ const budgetBreakdown = [
     iconId: GamingIcons.TROPHY,
     title: "Tournament Prize Pools",
     description: "Prize money for college and open category tournaments",
-    amount: "₹4,00,000",
+    amount: "₹3,00,000",
     percentage: "24%",
   },
   {

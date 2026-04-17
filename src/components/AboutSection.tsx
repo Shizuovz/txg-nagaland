@@ -12,7 +12,7 @@ const features = [
   },
   { 
     iconId: GamingIcons.TROPHY, 
-    title: "₹2,00,000 Prize Pool", 
+    title: "₹3,00,000 Prize Pool", 
     desc: "Compete for the biggest esports prize pool in Nagaland", 
     gradient: "from-[#34A853]/10 to-[#FFD700]/5", 
     glow: "#34A853" 

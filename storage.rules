@@ -1,0 +1,19 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow read access to all files (for viewing in admin dashboard)
+    match /{allPaths=**} {
+      allow read: if true;
+    }
+    
+    // Allow write access to passport photos (more permissive for development)
+    match /passport-photos/{fileName} {
+      allow write: if true;
+    }
+    
+    // Allow write access to student ID documents (more permissive for development)
+    match /student-ids/{fileName} {
+      allow write: if true;
+    }
+  }
+}

@@ -432,7 +432,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
               <section>
                 <h4 className="font-semibold mb-2">19. Prize Pool, Trophy, Certificates, and Withholding</h4>
                 <p>
-                  Any prize pool, trophy, certificates, or related awards shall be governed by the Organiser's official prize announcement and verification process. TXG materials currently describe a winner-takes-all prize pool of INR 1,00,000, a trophy, and certificates, subject to Tournament confirmation and administration.
+                  Any prize pool, trophy, certificates, or related awards shall be governed by the Organiser's official prize announcement and verification process. TXG materials currently describe individual tournament prize pools of INR 1,00,000 each for Inter-College Championship, Open MOBA 5v5 Tournament, and Mini Tournaments, along with trophies and certificates, subject to Tournament confirmation and administration.
                 </p>
                 <p className="mt-2">
                   The Organiser may withhold, reduce, defer, revoke, or refuse any prize, certificate, or trophy if:
@@ -607,9 +607,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                     <p>
                       For Tech X Gaming Expo / TXG Nagaland
                     </p>
-                    <p>
-                      Effective Date: [Insert Date]
-                    </p>
+
                     <p className="mt-2">
                       These Terms and Conditions ("Terms") govern registration for and participation in the Mini Tournaments conducted in connection with Tech X Gaming Expo / TXG Nagaland (the "Event"), organised by Nagaland Esports Society (NES) ("NES", "Organiser", "we", "us", or "our").
                     </p>
@@ -1246,9 +1244,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                     <p>
                       For Tech X Gaming Expo / TXG Nagaland
                     </p>
-                    <p>
-                      Effective Date: [Insert Date]
-                    </p>
+
                     <p className="mt-2">
                       These Terms and Conditions ("Terms") govern registration for and participation in the Cosplay Competition (the "Competition") organised by Nagaland Esports Society (NES) ("NES", "Organiser", "we", "us", or "our") in connection with Tech X Gaming Expo / TXG Nagaland (the "Event").
                     </p>
@@ -1769,9 +1765,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                     <p>
                       For Tech X Gaming Expo / TXG Nagaland
                     </p>
-                    <p>
-                      Effective Date: [Insert Date]
-                    </p>
+
                     <p className="mt-2">
                       Website legal terms for vendors covering food, beverages, toys, collectibles, clothing, footwear, accessories, and similar approved retail categories.
                     </p>
@@ -2431,9 +2425,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                     <p>
                       For Tech X Gaming Expo / TXG Nagaland
                     </p>
-                    <p>
-                      Effective Date: [Insert Date]
-                    </p>
+
                     <p className="mt-2">
                       These Terms and Conditions ("Terms") govern all exhibitor registrations, booth bookings, indie booth participation, showcase space allocations, activation spaces, display permissions, and related on-ground participation by exhibitors, brands, startups, developers, sellers, institutions, creators, communities, agencies, and commercial or non-commercial participants (collectively, "Exhibitor", "you", or "your") in connection with Tech X Gaming Expo / TXG Nagaland (the "Event"), organised by Nagaland Esports Society (NES) ("NES", "Organiser", "we", "us", or "our").
                     </p>
@@ -3001,9 +2993,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                     <p>
                       For Tech X Gaming Expo / TXG Nagaland
                     </p>
-                    <p>
-                      Effective Date: [Insert Date]
-                    </p>
+
                     <p className="mt-2">
                       These Terms and Conditions ("Terms") govern accreditation, registration, attendance, recording, reporting, photography, filming, interviewing, and all other media-related participation by media houses, press organisations, digital publishers, journalists, reporters, editors, photographers, videographers, camera crews, production teams, content platforms, and other media representatives (collectively, "Media Applicant", "Media House", "you", or "your") in connection with Tech X Gaming Expo / TXG Nagaland (the "Event"), organised by Nagaland Esports Society (NES) ("NES", "Organiser", "we", "us", or "our").
                     </p>
@@ -3475,9 +3465,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                     <p>
                       Organised by Nagaland Esports Society (NES)
                     </p>
-                    <p>
-                      Effective Date: [Insert Date]
-                    </p>
+
                     <p>
                       Website: txg-nagaland.com
                     </p>

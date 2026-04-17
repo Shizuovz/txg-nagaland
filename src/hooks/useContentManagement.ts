@@ -85,7 +85,7 @@ const useContentManagement = () => {
       }
     ],
     stats: [
-      { id: '1', value: 200000, prefix: '₹', suffix: '', label: 'Prize Pool', iconId: 'trophy', isActive: true },
+      { id: '1', value: 300000, prefix: '₹', suffix: '', label: 'Prize Pool', iconId: 'trophy', isActive: true },
       { id: '2', value: 20000, prefix: '', suffix: '-30,000', label: 'Expected Attendees', iconId: 'users', isActive: true },
       { id: '3', value: 200000, prefix: '', suffix: '+', label: 'Digital Reach', iconId: 'trending-up', isActive: true },
       { id: '4', value: 2, prefix: '', suffix: '', label: 'Day Event', iconId: 'gamepad', isActive: true }

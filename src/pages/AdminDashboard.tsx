@@ -1260,11 +1260,68 @@ const AdminDashboard = () => {
                           </div>
                         )}
 
+                        {/* Student ID Document Section - Only for college and MOBA registrations */}
+                        {(team.registrationType === 'college' || team.registrationType === 'open_category') && (
+                          <div className="mt-4 space-y-3">
+                            <h4 className="font-semibold text-gray-800 border-b pb-2">Student/Institution ID Document</h4>
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-600">Student ID Document:</span>
+                              <div className="text-sm font-medium">
+                                {(() => {
+                                  return (
+                                    <div className="space-y-2">
+                                      <span className="text-blue-600">Available for Review</span>
+                                      <div className="flex gap-2">
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={async () => {
+                                            const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
+                                            if (docURL) {
+                                              window.open(docURL, '_blank');
+                                            } else {
+                                              alert('Student ID document not found');
+                                            }
+                                          }}
+                                        >
+                                          <Eye className="w-4 h-4 mr-1" />
+                                          View
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={async () => {
+                                            const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
+                                            if (docURL) {
+                                              firebaseStorageService.downloadFile(docURL, `${team.registrationId}_student_id_document`);
+                                            } else {
+                                              alert('Student ID document not found');
+                                            }
+                                          }}
+                                        >
+                                          <Download className="w-4 h-4 mr-1" />
+                                          Download
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Registration Info */}
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex justify-between text-xs text-gray-500">
                             <span>Registered: {formatDate(team.createdAt)}</span>
                             <span>Terms Accepted: {team.termsAccepted ? '✅ Yes' : '❌ No'}</span>
+                            {(team.registrationType === 'college' || team.registrationType === 'open_category') && (
+                              <span>Institution Declaration: {team.institutionDeclaration ? '✅ Yes' : '❌ No'}</span>
+                            )}
+                            {(team.registrationType === 'college' || team.registrationType === 'open_category') && (
+                              <span>Livestream Consent: {team.livestreamConsent ? '✅ Yes' : '❌ No'}</span>
+                            )}
                           </div>
                         </div>
 
@@ -1416,6 +1473,58 @@ const AdminDashboard = () => {
                                 +{team.teamMembers.length - 4} more
                               </div>
                             )}
+                          </div>
+                        </div>
+
+                        {/* Student ID Document Section - Only for MOBA Open registrations */}
+                        <div className="mt-4 space-y-3">
+                          <h4 className="font-semibold text-gray-800 border-b pb-2">Student/Institution ID Document</h4>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">Student ID Document:</span>
+                            <div className="text-sm font-medium">
+                              {(() => {
+                                return (
+                                  <div className="space-y-2">
+                                    <span className="text-blue-600">Available for Review</span>
+                                    <div className="flex gap-2">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={async () => {
+                                          const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
+                                          if (docURL) {
+                                            window.open(docURL, '_blank');
+                                          } else {
+                                            alert('Student ID document not found');
+                                          }
+                                        }}
+                                      >
+                                        <Eye className="w-4 h-4 mr-1" />
+                                        View
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={async () => {
+                                          console.log('Student ID download button clicked for:', team.registrationId);
+                                          const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
+                                          console.log('Student ID URL retrieved:', docURL);
+                                          if (docURL) {
+                                            console.log('Calling downloadFile with URL:', docURL);
+                                            firebaseStorageService.downloadFile(docURL, `${team.registrationId}_student_id_document`);
+                                          } else {
+                                            alert('Student ID document not found');
+                                          }
+                                        }}
+                                      >
+                                        <Download className="w-4 h-4 mr-1" />
+                                        Download
+                                      </Button>
+                                    </div>
+                                  </div>
+                                );
+                              })()}
+                            </div>
                           </div>
                         </div>
 
@@ -2487,8 +2596,11 @@ const AdminDashboard = () => {
                                         size="sm"
                                         variant="outline"
                                         onClick={async () => {
+                                          console.log('Download button clicked for:', registration.registrationId);
                                           const photoURL = await firebaseStorageService.getPassportPhotoURL(registration.registrationId);
+                                          console.log('Photo URL retrieved:', photoURL);
                                           if (photoURL) {
+                                            console.log('Calling downloadFile with URL:', photoURL);
                                             firebaseStorageService.downloadFile(photoURL, `${registration.registrationId}_passport_photo.jpg`);
                                           } else {
                                             alert('Passport photo not found');

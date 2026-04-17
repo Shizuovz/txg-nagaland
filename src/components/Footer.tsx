@@ -99,14 +99,32 @@ const Footer = () => {
 
           {/* Contact Column */}
           <div>
-            <h4 className="font-['Neiko'] text-lg font-bold mb-6 text-white tracking-wider">Contact NES</h4>
+            <h4 className="font-['Neiko'] text-lg font-bold mb-6 text-white tracking-wider">NES Office</h4>
             <div className="space-y-5 text-sm text-[#808080]">
-              <a href="mailto:nagalandesportsociety@gmail.com" className="flex items-center gap-4 font-['Nonito'] group hover:text-gray-300 transition-colors">
+              {/* <a href="mailto:nagalandesportsociety@gmail.com" className="flex items-center gap-4 font-['Nonito'] group hover:text-gray-300 transition-colors">
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 opacity-80 group-hover:opacity-100 group-hover:border-[#34A853]/30 group-hover:bg-[#34A853]/10 transition-all duration-300">
                   <GamingIcon iconId={GamingIcons.MAIL} size={20} color="#34A853" />
                 </div>
                 <span className="pt-3">nagalandesportsociety@gmail.com</span>
-              </a>
+              </a> */}
+              
+              {/* Map Embed */}
+              <div className="mt-6">
+                <h5 className="font-semibold text-white mb-3 font-['Nonito']">Find Us</h5>
+                <div className="rounded-lg overflow-hidden border border-white/10">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25.6708!2d94.1066!3d15.2994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0x0!2s25.6708%2C94.1066!5e0!3m2!1sen!2sin!4v1733385270874!5m2!1sen!2sin"
+                    width="100%"
+                    height="200"
+                    style={{ border: 0 }}
+                    allowFullScreen={true}
+                    loading="lazy"
+                    className="w-full"
+                    title="NES Office Location"
+                  />
+                </div>
+              </div>
+              
               {/* <a href="tel:+919876543210" className="flex items-center gap-4 font-['Nonito'] group hover:text-gray-300 transition-colors">
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 opacity-80 group-hover:opacity-100 group-hover:border-[#34A853]/30 group-hover:bg-[#34A853]/10 transition-all duration-300">
                   <GamingIcon iconId={GamingIcons.PHONE} size={20} color="#34A853" />
