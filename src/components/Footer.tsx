@@ -75,7 +75,7 @@ const Footer = () => {
               <img 
                 src="/Mascot.png" 
                 alt="Mascot" 
-                className="w-8 h-8 md:w-[60px] md:h-[60px] object-contain brightness-90 hover:brightness-110 transition-all duration-300"
+                className="w-8 h-8 md:w-[80px] md:h-[80px] object-contain brightness-90 hover:brightness-110 transition-all duration-300"
               />
             </div>
             <p className="text-[#808080] text-sm leading-relaxed font-['Nonito'] max-w-sm">

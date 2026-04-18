@@ -126,7 +126,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isOpen, onClose }) => {
               <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                 <p className="font-semibold text-white mb-2">Contact for privacy matters:</p>
                 <p>Nagaland Esports Society (NES)</p>
-                <p>Email: info@txg-nagaland.com</p>
+                <p>Email: nes@txg-nagaland.com</p>
                 <p>Address: 3rd mile Dimapur Nagaland 797115 Temoa building landmark ARTC, Plot 421</p>
                 <p>Website: www.txg-nagaland.com</p>
               </div>
@@ -698,7 +698,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ isOpen, onClose }) => {
               </p>
               <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                 <p>Nagaland Esports Society (NES)</p>
-                <p>Email: info@txg-nagaland.com</p>
+                <p>Email: nes@txg-nagaland.com</p>
                 <p>Address: 3rd mile Dimapur Nagaland 797115 Temoa building landmark ARTC, Plot 421</p>
               </div>
             </section>

@@ -675,7 +675,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ isOpen, onClose }) => {
               </p>
               <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                 <p>Nagaland Esports Society (NES)</p>
-                <p>Email: info@txg-nagaland.com</p>
+                <p>Email: nes@txg-nagaland.com</p>
                 <p>Address: 3rd mile Dimapur Nagaland 797115 Temoa building landmark ARTC, Plot 421</p>
                 <p>Website: txg-nagaland.com</p>
               </div>

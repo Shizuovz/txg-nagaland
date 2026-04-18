@@ -89,12 +89,12 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
             <div className="space-y-4 text-sm">
               {(registrationType === 'college' || registrationType === 'moba-open') ? (
                 <>
-                  <h3 className="font-semibold text-base">TXG-Nagaland - Inter-College MOBA 5V5 Tournament Terms and Conditions</h3>
+                  <h3 className="font-semibold text-base">TXG-Nagaland - MOBA 5V5 Open Tournament Terms and Conditions</h3>
                   
                   <section>
                     <h4 className="font-semibold mb-2">Introduction</h4>
                     <p>
-                      These Terms and Conditions ("Terms") govern participation in the Inter-College MOBA 5V5 Tournament (the "Tournament") organised by Nagaland Esports Society (NES) ("NES", "Organiser", "we", "us", or "our").
+                      These Terms and Conditions ("Terms") govern participation in the MOBA 5V5 Open Tournament (the "Tournament") organised by Nagaland Esports Society (NES) ("NES", "Organiser", "we", "us", or "our").
                     </p>
                     <p className="mt-2">
                       By registering, submitting team details, checking the acceptance box on the website, participating in qualifiers, attending offline stages, or otherwise taking part in the Tournament, each player, captain, manager, coach, substitute, and participating institution agrees to be legally bound by these Terms.
