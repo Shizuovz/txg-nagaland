@@ -89,7 +89,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
             <div className="space-y-4 text-sm">
               {(registrationType === 'college' || registrationType === 'moba-open') ? (
                 <>
-                  <h3 className="font-semibold text-base">Nagaland Esports Society (NES) - Inter-College MOBA 5V5 Tournament Terms and Conditions</h3>
+                  <h3 className="font-semibold text-base">TXG-Nagaland - Inter-College MOBA 5V5 Tournament Terms and Conditions</h3>
                   
                   <section>
                     <h4 className="font-semibold mb-2">Introduction</h4>
@@ -591,8 +591,8 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
               </section>
 
               <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
-                <p>Nagaland Esports Society (NES) - Inter-College MOBA 5V5 Tournament Terms and Conditions</p>
-                <p> 2026 Nagaland Esports Society (NES). All rights reserved.</p>
+                <p>TXG-Nagaland - Inter-College MOBA 5V5 Tournament Terms and Conditions</p>
+                <p>© 2026 TXG-Nagaland. All rights reserved.</p>
               </div>
                 </>
               ) : registrationType === 'mini-tournament' ? (
@@ -1229,7 +1229,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>TXG Nagaland - Mini Tournaments Terms and Conditions</p>
-                    <p> 2026 Nagaland Esports Society (NES). All rights reserved.</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>
               ) : registrationType === 'cosplayer' ? (
@@ -1750,7 +1750,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>Nagaland Esports Society (NES) - Cosplay Competition Terms and Conditions</p>
-                    <p> 2026 Nagaland Esports Society (NES). All rights reserved.</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>
               ) : registrationType === 'vendor' ? (
@@ -2410,7 +2410,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>Nagaland Esports Society (NES) - Vendor Terms and Conditions</p>
-                    <p> 2026 Nagaland Esports Society (NES). All rights reserved.</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>
               ) : registrationType === 'exhibitor' ? (
@@ -2978,7 +2978,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>Nagaland Esports Society (NES) - Exhibitor Terms and Conditions</p>
-                    <p> 2026 Nagaland Esports Society (NES). All rights reserved.</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>
               ) : registrationType === 'media' ? (
@@ -3450,7 +3450,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>Nagaland Esports Society (NES) - Media House / Press Registration Terms and Conditions</p>
-                    <p> 2026 Nagaland Esports Society (NES). All rights reserved.</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>
               ) : registrationType === 'sponsor' ? (
@@ -3875,7 +3875,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>Nagaland Esports Society (NES) - Sponsor Terms and Conditions</p>
-                    <p> 2026 Nagaland Esports Society (NES). All rights reserved.</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>
               ) : (
@@ -3886,7 +3886,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                   </p>
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>Nagaland Esports Society (NES) - General Terms and Conditions</p>
-                    <p> 2026 Nagaland Esports Society (NES). All rights reserved.</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>
               )}

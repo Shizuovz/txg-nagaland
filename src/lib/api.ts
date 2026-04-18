@@ -26,15 +26,16 @@ export class RegistrationAPI {
     additionalMessage?: string;
     termsAccepted: boolean;
     studentIdUpload?: File | null;
+    aadhaarUpload?: File | null;
     institutionDeclaration?: boolean;
     livestreamConsent?: boolean;
     coordinatorName?: string;
     coordinatorPhone?: string;
   }): Promise<{ success: boolean; data?: TeamRegistration; message?: string; error?: string }> {
     try {
-      // Handle student ID upload first
+      // Handle student ID upload for college registrations
       let studentIdData = null;
-      if (data.studentIdUpload && (data.registrationType === 'college' || data.registrationType === 'open_category')) {
+      if (data.studentIdUpload && data.registrationType === 'college') {
         try {
           console.log('Uploading student ID document to Firebase Storage...');
           studentIdData = await firebaseStorageService.uploadStudentIdDocument(
@@ -50,6 +51,30 @@ export class RegistrationAPI {
           studentIdData = {
             url: '',
             fileName: `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_student_id.pdf`,
+            uploadedAt: new Date(),
+            error: 'Upload failed - likely due to Firebase Storage rules'
+          };
+        }
+      }
+
+      // Handle Aadhaar upload for MOBA open registrations
+      let aadhaarData = null;
+      if (data.aadhaarUpload && data.registrationType === 'open_category') {
+        try {
+          console.log('Uploading Aadhaar document to Firebase Storage...');
+          aadhaarData = await firebaseStorageService.uploadStudentIdDocument(
+            data.aadhaarUpload,
+            `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          );
+          console.log('Aadhaar document uploaded successfully:', aadhaarData);
+        } catch (error) {
+          console.error('Error uploading Aadhaar document:', error);
+          console.log('Registration will continue without Aadhaar upload for now.');
+          
+          // For now, store a placeholder to indicate upload was attempted
+          aadhaarData = {
+            url: '',
+            fileName: `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_aadhaar.pdf`,
             uploadedAt: new Date(),
             error: 'Upload failed - likely due to Firebase Storage rules'
           };
@@ -75,6 +100,12 @@ export class RegistrationAPI {
           fileName: studentIdData.fileName,
           uploadedAt: studentIdData.uploadedAt,
           error: studentIdData.error || null
+        } : null,
+        // Store Aadhaar upload info
+        aadhaarUpload: aadhaarData ? {
+          fileName: aadhaarData.fileName,
+          uploadedAt: aadhaarData.uploadedAt,
+          error: aadhaarData.error || null
         } : null
       };
       

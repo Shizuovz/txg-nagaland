@@ -66,11 +66,16 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-12">
           {/* Brand Column */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3">
               <img 
                 src="/txg-nes.png" 
                 alt="TXG Logo" 
-                className="w-20 h-20 md:w-24 md:h-24 object-contain brightness-90 hover:brightness-110 transition-all duration-300"
+                className="mb-6 mt-[-24px] w-20 h-20 md:w-28 md:h-28 object-contain brightness-90 hover:brightness-110 transition-all duration-300"
+              />
+              <img 
+                src="/Mascot.png" 
+                alt="Mascot" 
+                className="w-8 h-8 md:w-[60px] md:h-[60px] object-contain brightness-90 hover:brightness-110 transition-all duration-300"
               />
             </div>
             <p className="text-[#808080] text-sm leading-relaxed font-['Nonito'] max-w-sm">

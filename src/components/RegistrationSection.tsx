@@ -117,6 +117,7 @@ const RegistrationSection = () => {
     passportPhoto: null as File | null,
     // New mandatory fields for inter-college and MOBA tournaments
     studentIdUpload: null as File | null,
+    aadhaarUpload: null as File | null,
     institutionDeclaration: false,
     livestreamConsent: false,
     coordinatorName: "",
@@ -198,17 +199,25 @@ const RegistrationSection = () => {
         }
       }
 
-      // Check mandatory fields
-      if (!formData.studentIdUpload) {
-        alert('Please upload student/institution ID documents');
-        setIsSubmitting(false);
-        return;
-      }
+      // Check mandatory fields - different for college vs MOBA
+      if (registrationType === 'college') {
+        if (!formData.studentIdUpload) {
+          alert('Please upload student/institution ID documents');
+          setIsSubmitting(false);
+          return;
+        }
 
-      if (!formData.institutionDeclaration) {
-        alert('Please confirm the institution declaration');
-        setIsSubmitting(false);
-        return;
+        if (!formData.institutionDeclaration) {
+          alert('Please confirm the institution declaration');
+          setIsSubmitting(false);
+          return;
+        }
+      } else if (registrationType === 'moba-open') {
+        if (!formData.aadhaarUpload) {
+          alert('Please upload Aadhaar documents');
+          setIsSubmitting(false);
+          return;
+        }
       }
 
       if (!formData.livestreamConsent) {
@@ -259,11 +268,8 @@ const RegistrationSection = () => {
           teamMembers: formData.teamMembers,
           substitute: formData.substitute,
           termsAccepted: formData.agreeTerms,
-          studentIdUpload: formData.studentIdUpload,
-          institutionDeclaration: formData.institutionDeclaration,
-          livestreamConsent: formData.livestreamConsent,
-          coordinatorName: formData.coordinatorName,
-          coordinatorPhone: formData.coordinatorPhone
+          aadhaarUpload: formData.aadhaarUpload,
+          livestreamConsent: formData.livestreamConsent
         });
       } else if (registrationType === 'cosplayer') {
         // Use visitor registration for cosplayers with custom success message
@@ -863,39 +869,21 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              {/* New Mandatory Fields */}
+              {/* Mandatory Fields for MOBA Open */}
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="studentIdUpload" className="text-base font-semibold">Student/Institution ID Upload *</Label>
+                  <Label htmlFor="aadhaarUpload" className="text-base font-semibold">Aadhaar Upload *</Label>
                   <Input
-                    id="studentIdUpload"
+                    id="aadhaarUpload"
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => handleInputChange("studentIdUpload", e.target.files?.[0] || null)}
+                    onChange={(e) => handleInputChange("aadhaarUpload", e.target.files?.[0] || null)}
                     className="mt-2"
                     required
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Upload student ID cards, bonafide certificates, or admission records for all team members
+                    Upload Aadhaar cards for all team members
                   </p>
-                </div>
-
-                <div className="flex items-start space-x-2">
-                  <Checkbox
-                    id="institutionDeclaration"
-                    checked={formData.institutionDeclaration}
-                    onChange={(e) => handleInputChange("institutionDeclaration", e.target.checked)}
-                    required
-                    className="w-5 h-5 mt-0.5"
-                  />
-                  <div>
-                    <Label htmlFor="institutionDeclaration" className="text-sm font-medium">
-                      Declaration that all players belong to the same institution *
-                    </Label>
-                    <p className="text-xs text-muted-foreground">
-                      I declare that all registered players belong to the same institution unless otherwise permitted by the organizers
-                    </p>
-                  </div>
                 </div>
 
                 <div className="flex items-start space-x-2">
@@ -913,27 +901,6 @@ const RegistrationSection = () => {
                     <p className="text-xs text-muted-foreground">
                       I consent to photographs, videos, and livestreaming of tournament participation for promotional purposes
                     </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="coordinatorName">Institutional Coordinator Name (Optional)</Label>
-                    <Input
-                      id="coordinatorName"
-                      value={formData.coordinatorName}
-                      onChange={(e) => handleInputChange("coordinatorName", e.target.value)}
-                      placeholder="Faculty coordinator or institutional representative name"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="coordinatorPhone">Institutional Coordinator Phone (Optional)</Label>
-                    <Input
-                      id="coordinatorPhone"
-                      value={formData.coordinatorPhone}
-                      onChange={(e) => handleInputChange("coordinatorPhone", e.target.value)}
-                      placeholder="Coordinator phone number"
-                    />
                   </div>
                 </div>
               </div>

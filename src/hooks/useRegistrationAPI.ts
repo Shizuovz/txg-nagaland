@@ -28,6 +28,7 @@ export interface TeamRegistrationData {
   additionalMessage?: string;
   termsAccepted: boolean;
   studentIdUpload?: File | null;
+  aadhaarUpload?: File | null;
   institutionDeclaration?: boolean;
   livestreamConsent?: boolean;
   coordinatorName?: string;
