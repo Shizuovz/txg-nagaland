@@ -28,6 +28,78 @@ const miniTournaments = [
 import { useState, useEffect } from "react";
 import TermsAndConditions from "./TermsAndConditions";
 import firebaseStorageService from "@/services/firebaseStorageService";
+import { AlertCircle, Users } from "lucide-react";
+
+// Component to display registration limit status
+interface RegistrationLimitDisplayProps {
+  limit: { current: number; limit: number; isFull: boolean } | null;
+  isLoading: boolean;
+  type: 'college' | 'moba-open' | 'mini-tournament';
+}
+
+const RegistrationLimitDisplay = ({ limit, isLoading, type }: RegistrationLimitDisplayProps) => {
+  if (isLoading) {
+    return (
+      <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+        <div className="flex items-center gap-2 text-blue-400 text-sm">
+          <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+          Checking registration availability...
+        </div>
+      </div>
+    );
+  }
+
+  if (!limit) return null;
+
+  const percentage = (limit.current / limit.limit) * 100;
+  const isNearFull = percentage >= 75 && !limit.isFull;
+
+  if (limit.isFull) {
+    return (
+      <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
+          <div>
+            <p className="font-semibold text-red-400">
+              Registration Closed
+            </p>
+            <p className="text-sm text-red-300/80 mt-1">
+              We have reached the maximum capacity of {limit.limit} {type === 'mini-tournament' ? 'participants' : 'teams'} for this tournament.
+              Registration is now closed.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`mb-4 p-3 rounded-lg border ${isNearFull ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-green-500/10 border-green-500/30'}`}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Users className={`w-4 h-4 ${isNearFull ? 'text-yellow-400' : 'text-green-400'}`} />
+          <span className={`text-sm font-medium ${isNearFull ? 'text-yellow-400' : 'text-green-400'}`}>
+            {isNearFull ? 'Limited Spots Available!' : 'Registration Open'}
+          </span>
+        </div>
+        <span className={`text-sm ${isNearFull ? 'text-yellow-400' : 'text-green-400'}`}>
+          {limit.current} / {limit.limit} {type === 'mini-tournament' ? 'players' : 'teams'}
+        </span>
+      </div>
+      {isNearFull && (
+        <p className="text-xs text-yellow-400/80 mt-2">
+          Hurry! Only {limit.limit - limit.current} spots remaining.
+        </p>
+      )}
+      <div className="mt-2 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${isNearFull ? 'bg-yellow-500' : 'bg-green-500'}`}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+    </div>
+  );
+};
 
 const RegistrationSection = () => {
   const [registrationType, setRegistrationType] = useState<"college" | "moba-open" | "cosplayer" | "vendor" | "exhibitor" | "media" | "sponsor" | "mini-tournament" | null>(null);
@@ -44,7 +116,9 @@ const RegistrationSection = () => {
     submitMediaRegistration,
     getGames,
     getColleges,
-    getSponsorshipTiers 
+    getSponsorshipTiers,
+    checkTeamRegistrationLimit,
+    checkMiniTournamentLimit
   } = useRegistrationAPI();
   
   // Reference data
@@ -52,8 +126,13 @@ const RegistrationSection = () => {
   const [colleges, setColleges] = useState<College[]>([]);
   const [sponsorshipTiers, setSponsorshipTiers] = useState<SponsorshipTier[]>([]);
 
-  // Load reference data on component mount
+  // Registration limits state
+  const [registrationLimit, setRegistrationLimit] = useState<{ current: number; limit: number; isFull: boolean } | null>(null);
+  const [isCheckingLimit, setIsCheckingLimit] = useState(false);
+
+  // Load reference data on component mount (only once)
   useEffect(() => {
+    let isMounted = true;
     const loadReferenceData = async () => {
       const [gamesData, collegesData, tiersData] = await Promise.all([
         getGames(),
@@ -61,14 +140,64 @@ const RegistrationSection = () => {
         getSponsorshipTiers(),
       ]);
       
-      if (gamesData) setGames(gamesData);
-      if (collegesData) setColleges(collegesData);
-      if (tiersData) setSponsorshipTiers(tiersData);
+      if (isMounted) {
+        if (gamesData) setGames(gamesData);
+        if (collegesData) setColleges(collegesData);
+        if (tiersData) setSponsorshipTiers(tiersData);
+      }
     };
     
     loadReferenceData();
-  }, [getGames, getColleges, getSponsorshipTiers]);
-  
+    return () => { isMounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Check registration limits when registration type changes
+  useEffect(() => {
+    let isMounted = true;
+    const checkLimit = async () => {
+      if (!registrationType) {
+        if (isMounted) setRegistrationLimit(null);
+        return;
+      }
+
+      if (isMounted) setIsCheckingLimit(true);
+
+      try {
+        if (registrationType === 'college') {
+          const result = await checkTeamRegistrationLimit('college');
+          if (isMounted) {
+            setRegistrationLimit({
+              current: result.current,
+              limit: result.limit,
+              isFull: !result.allowed
+            });
+          }
+        } else if (registrationType === 'moba-open') {
+          const result = await checkTeamRegistrationLimit('open_category');
+          if (isMounted) {
+            setRegistrationLimit({
+              current: result.current,
+              limit: result.limit,
+              isFull: !result.allowed
+            });
+          }
+        } else if (registrationType === 'mini-tournament') {
+          // Don't show limit until a game is selected
+          if (isMounted) setRegistrationLimit(null);
+        }
+      } catch (err) {
+        console.error('Error checking registration limit:', err);
+      } finally {
+        if (isMounted) setIsCheckingLimit(false);
+      }
+    };
+
+    checkLimit();
+    return () => { isMounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registrationType]);
+
   // Helper function to map sponsor type string to tier ID
   const getSponsorshipTierId = (sponsorType: string, tiers: any[]) => {
     const directMapping: { [key: string]: number } = {
@@ -161,6 +290,34 @@ const RegistrationSection = () => {
     updatedMembers[index] = { ...updatedMembers[index], [field]: value };
     setFormData(prev => ({ ...prev, teamMembers: updatedMembers }));
   };
+
+  // Check mini-tournament limit when game is selected
+  useEffect(() => {
+    let isMounted = true;
+    const checkMiniLimit = async () => {
+      if (registrationType === 'mini-tournament' && formData.game) {
+        if (isMounted) setIsCheckingLimit(true);
+        try {
+          const result = await checkMiniTournamentLimit(formData.game);
+          if (isMounted) {
+            setRegistrationLimit({
+              current: result.current,
+              limit: result.limit,
+              isFull: !result.allowed
+            });
+          }
+        } catch (err) {
+          console.error('Error checking mini tournament limit:', err);
+        } finally {
+          if (isMounted) setIsCheckingLimit(false);
+        }
+      }
+    };
+
+    checkMiniLimit();
+    return () => { isMounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.game, registrationType]);
 
   const handleSubstituteChange = (field: 'ign' | 'gameId' | 'fullName', value: string) => {
     setFormData(prev => ({
@@ -365,7 +522,7 @@ const RegistrationSection = () => {
           }
         }
 
-        // Submit visitor registration
+        // Submit visitor registration with all mini-tournament details
         await submitVisitorRegistration({
           fullName: formData.captainName,
           email: formData.captainEmail,
@@ -374,7 +531,10 @@ const RegistrationSection = () => {
           city: formData.city,
           state: formData.state,
           pinCode: formData.pinCode,
-          registrationId: registrationId
+          registrationId: registrationId,
+          // Store nickname in collegeName field so dashboard can display it
+          collegeName: formData.nickName || 'N/A',
+          message: `Game: ${formData.game}\nPhone Call: ${formData.phoneCallNumber || 'N/A'}\nAge: ${formData.age || 'N/A'}\nGender: ${formData.gender || 'N/A'}\n${passportPhotoData ? `Passport Photo: ${passportPhotoData.url || 'Failed to upload'}` : ''}`
         }, 'Mini tournament registration submitted successfully!');
 
         console.log('Mini tournament registration completed');
@@ -395,13 +555,18 @@ const RegistrationSection = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GamingIcon iconId={GamingIcons.USERS} size={20} color="#00ff88" />
-              Inter-College Tournament Registration
+              Inter-College Nagaland Tournament Registration
             </CardTitle>
             {registrationId && (
-              <p className="text-sm text-muted-foreground">Registration ID: {registrationId}</p>
+              <p className="hidden text-sm text-muted-foreground">Registration ID: {registrationId}</p>
             )}
           </CardHeader>
           <CardContent>
+            <RegistrationLimitDisplay
+              limit={registrationLimit}
+              isLoading={isCheckingLimit}
+              type="college"
+            />
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -672,8 +837,8 @@ const RegistrationSection = () => {
                 registrationType="college"
               />
 
-              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit College Registration"}
+              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? 'Submitting...' : 'Submit College Registration'}
               </Button>
             </form>
           </CardContent>
@@ -692,6 +857,11 @@ const RegistrationSection = () => {
             )}
           </CardHeader>
           <CardContent>
+            <RegistrationLimitDisplay
+              limit={registrationLimit}
+              isLoading={isCheckingLimit}
+              type="moba-open"
+            />
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -911,8 +1081,8 @@ const RegistrationSection = () => {
                 registrationType="moba-open"
               />
 
-              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit MOBA Tournament Registration"}
+              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? 'Submitting...' : 'Submit MOBA Tournament Registration'}
               </Button>
             </form>
           </CardContent>
@@ -1616,6 +1786,11 @@ const RegistrationSection = () => {
             )}
           </CardHeader>
           <CardContent>
+            <RegistrationLimitDisplay
+              limit={registrationLimit}
+              isLoading={isCheckingLimit}
+              type="mini-tournament"
+            />
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Game Selection */}
               <div>
@@ -1770,8 +1945,8 @@ const RegistrationSection = () => {
                 registrationType="mini-tournament"
               />
 
-              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Register for Mini Tournament"}
+              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? 'Submitting...' : 'Register for Mini Tournament'}
               </Button>
             </form>
           </CardContent>

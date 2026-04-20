@@ -7,6 +7,35 @@ import firebaseStorageService from '../services/firebaseStorageService';
 export class RegistrationAPI {
   private firebaseService = new FirebaseService();
 
+  // Registration Limits
+  private readonly MOBA_TEAM_LIMIT = 32;
+  private readonly MINI_TOURNAMENT_LIMIT = 16;
+
+  // Check team registration limit
+  async checkTeamRegistrationLimit(registrationType: 'college' | 'open_category'): Promise<{ allowed: boolean; current: number; limit: number }> {
+    const current = await this.firebaseService.getTeamRegistrationCountByType(registrationType);
+    return {
+      allowed: current < this.MOBA_TEAM_LIMIT,
+      current,
+      limit: this.MOBA_TEAM_LIMIT
+    };
+  }
+
+  // Check mini tournament registration limit
+  async checkMiniTournamentLimit(gameName: string): Promise<{ allowed: boolean; current: number; limit: number }> {
+    const current = await this.firebaseService.getMiniTournamentRegistrationCountByGame(gameName);
+    return {
+      allowed: current < this.MINI_TOURNAMENT_LIMIT,
+      current,
+      limit: this.MINI_TOURNAMENT_LIMIT
+    };
+  }
+
+  // Get all mini tournament registration counts
+  async getAllMiniTournamentCounts(): Promise<{ [gameName: string]: number }> {
+    return this.firebaseService.getAllMiniTournamentCounts();
+  }
+
   // Team Registration API
   async submitTeamRegistration(data: {
     teamName: string;
@@ -33,6 +62,15 @@ export class RegistrationAPI {
     coordinatorPhone?: string;
   }): Promise<{ success: boolean; data?: TeamRegistration; message?: string; error?: string }> {
     try {
+      // Check registration limit before submitting
+      const limitCheck = await this.checkTeamRegistrationLimit(data.registrationType);
+      if (!limitCheck.allowed) {
+        return {
+          success: false,
+          message: `Registration is full. We have reached the maximum limit of ${limitCheck.limit} teams for this tournament.`,
+          error: 'REGISTRATION_LIMIT_REACHED'
+        };
+      }
       // Handle student ID upload for college registrations
       let studentIdData = null;
       if (data.studentIdUpload && data.registrationType === 'college') {
@@ -194,6 +232,8 @@ export class RegistrationAPI {
     state?: string;
     pinCode?: string;
     registrationId?: string;
+    collegeName?: string;
+    message?: string;
   }): Promise<{ success: boolean; data?: VisitorRegistration; message?: string; error?: string }> {
     try {
       // Add required fields
@@ -223,6 +263,86 @@ export class RegistrationAPI {
       return {
         success: false,
         message: 'Failed to submit visitor registration. Please try again.',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  }
+
+  // Mini Tournament Registration API
+  async submitMiniTournamentRegistration(data: {
+    fullName: string;
+    email: string;
+    phone: string;
+    gameName: string;
+    passportPhoto?: File | null;
+    inGameName?: string;
+    gameId?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    pinCode?: string;
+    registrationId?: string;
+  }): Promise<{ success: boolean; data?: VisitorRegistration; message?: string; error?: string }> {
+    try {
+      // Check registration limit before submitting
+      const limitCheck = await this.checkMiniTournamentLimit(data.gameName);
+      if (!limitCheck.allowed) {
+        return {
+          success: false,
+          message: `Registration is full for ${data.gameName}. We have reached the maximum limit of ${limitCheck.limit} participants for this tournament.`,
+          error: 'REGISTRATION_LIMIT_REACHED'
+        };
+      }
+
+      // Handle passport photo upload
+      let passportPhotoData = null;
+      if (data.passportPhoto) {
+        try {
+          console.log('Uploading passport photo to Firebase Storage...');
+          passportPhotoData = await firebaseStorageService.uploadPassportPhoto(
+            data.passportPhoto,
+            data.registrationId || `MIN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          );
+          console.log('Passport photo uploaded successfully:', passportPhotoData);
+        } catch (error) {
+          console.error('Error uploading passport photo:', error);
+          // Store placeholder to indicate upload was attempted
+          passportPhotoData = {
+            url: '',
+            fileName: `${data.registrationId || 'MIN'}_passport.jpg`,
+            uploadedAt: new Date(),
+            error: 'Upload failed - likely due to Firebase Storage rules'
+          };
+        }
+      }
+
+      // Add required fields
+      const cleanData = {
+        ...data,
+        message: `Game: ${data.gameName}${data.inGameName ? `\nIGN: ${data.inGameName}` : ''}${data.gameId ? `\nGame ID: ${data.gameId}` : ''}`,
+        registrationId: data.registrationId || `MIN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        status: 'pending' as const
+      };
+      const result = await this.firebaseService.createVisitorRegistration(cleanData);
+
+      // Send admin notification email
+      try {
+        await sendAdminNotificationEmail(cleanData, 'mini-tournament');
+        console.log('Admin notification sent for mini-tournament registration');
+      } catch (emailError) {
+        console.error('Failed to send admin notification for mini-tournament registration:', emailError);
+      }
+
+      return {
+        success: true,
+        data: result,
+        message: 'Mini-tournament registration submitted successfully!',
+      };
+    } catch (error) {
+      console.error('Mini-tournament registration error:', error);
+      return {
+        success: false,
+        message: 'Failed to submit mini-tournament registration. Please try again.',
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }

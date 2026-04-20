@@ -58,6 +58,8 @@ export interface VisitorRegistrationData {
   state?: string;
   pinCode?: string;
   registrationId?: string;
+  collegeName?: string;
+  message?: string;
 }
 
 export interface MediaPersonRegistrationData {
@@ -462,7 +464,57 @@ export const useRegistrationAPI = () => {
       setLoading(false);
     }
   };
-    return {
+
+  // Registration Limit Checks
+  const checkTeamRegistrationLimit = async (registrationType: 'college' | 'open_category') => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await registrationAPI.checkTeamRegistrationLimit(registrationType);
+      setLoading(false);
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to check team registration limit';
+      setError(errorMessage);
+      setLoading(false);
+      return { allowed: false, current: 0, limit: 32 };
+    }
+  };
+
+  const checkMiniTournamentLimit = async (gameName: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await registrationAPI.checkMiniTournamentLimit(gameName);
+      setLoading(false);
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to check mini tournament limit';
+      setError(errorMessage);
+      setLoading(false);
+      return { allowed: false, current: 0, limit: 16 };
+    }
+  };
+
+  const getAllMiniTournamentCounts = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await registrationAPI.getAllMiniTournamentCounts();
+      setLoading(false);
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch mini tournament counts';
+      setError(errorMessage);
+      setLoading(false);
+      return {};
+    }
+  };
+
+  return {
     loading,
     error,
     submitTeamRegistration,
@@ -484,6 +536,9 @@ export const useRegistrationAPI = () => {
     deleteTeamRegistration,
     deleteSponsorRegistration,
     deleteVisitorRegistration,
-    deleteMediaRegistration
+    deleteMediaRegistration,
+    checkTeamRegistrationLimit,
+    checkMiniTournamentLimit,
+    getAllMiniTournamentCounts
   };
 };

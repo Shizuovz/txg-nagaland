@@ -466,6 +466,46 @@ export class FirebaseService {
     });
   }
 
+  // Registration Count Methods for Entry Limits
+  async getTeamRegistrationCountByType(registrationType: 'college' | 'open_category'): Promise<number> {
+    const q = query(
+      this.teamRegistrationsCollection,
+      where('registrationType', '==', registrationType)
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.length;
+  }
+
+  async getMiniTournamentRegistrationCountByGame(gameName: string): Promise<number> {
+    // Mini tournament registrations are stored in visitor registrations with game info in the message
+    const q = query(
+      this.visitorRegistrationsCollection,
+      where('message', '>=', `Game: ${gameName}`),
+      where('message', '<', `Game: ${gameName}\uf8ff`)
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.filter(doc => {
+      const message = doc.data().message || '';
+      return message.includes(`Game: ${gameName}`);
+    }).length;
+  }
+
+  async getAllMiniTournamentCounts(): Promise<{ [gameName: string]: number }> {
+    const miniTournamentGames = [
+      'Clash Royale', 'Street Fighter 6', 'Dragon Ball Fighter Z', 'FC 26',
+      'Guilty Gear Strive', 'King Of Fighters XV', 'Mortal Kombat 1',
+      'Ludo', 'NBA 2K26', 'Dirt Rally 2.0', 'Tekken 8', 'Tetris'
+    ];
+
+    const counts: { [gameName: string]: number } = {};
+    
+    for (const game of miniTournamentGames) {
+      counts[game] = await this.getMiniTournamentRegistrationCountByGame(game);
+    }
+    
+    return counts;
+  }
+
   // Dashboard Stats
   async getDashboardStats() {
     const [teams, sponsors, visitors] = await Promise.all([

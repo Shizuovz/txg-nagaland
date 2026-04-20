@@ -27,6 +27,13 @@ const formatDate = (dateInput: string | Date) => {
   });
 };
 
+// Helper function to get mini tournament game name from registration message
+const getMiniTournamentGame = (registration: any): string => {
+  if (!registration.message) return 'Unknown';
+  const gameMatch = registration.message.match(/Game:\s*([^\n]+)/);
+  return gameMatch ? gameMatch[1].trim() : 'Unknown';
+};
+
 const AdminDashboard = () => {
   const { adminUser, logout } = useAdminAuth();
   const { 
@@ -85,6 +92,25 @@ const AdminDashboard = () => {
   const [visitorRegistrations, setVisitorRegistrations] = useState<any[]>([]);
   const [miniTournamentRegistrations, setMiniTournamentRegistrations] = useState<any[]>([]);
   const [mobaOpenRegistrations, setMobaOpenRegistrations] = useState<TeamRegistration[]>([]);
+
+  // Mini Tournament Games List
+  const miniTournamentGames = [
+    'Clash Royale',
+    'Street Fighter 6',
+    'Dragon Ball Fighter Z',
+    'FC 26',
+    'Guilty Gear Strive',
+    'King Of Fighters XV',
+    'Mortal Kombat 1',
+    'Ludo',
+    'NBA 2K26',
+    'Dirt Rally 2.0',
+    'Tekken 8',
+    'Tetris'
+  ];
+
+  // State for selected mini game tab
+  const [selectedMiniGame, setSelectedMiniGame] = useState<string>('all');
 
   useEffect(() => {
     loadDashboardData();
@@ -2493,9 +2519,53 @@ const AdminDashboard = () => {
                     </Badge>
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {miniTournamentRegistrations.map((registration, index) => (
+
+                {/* Mini Games Tabs */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium text-gray-600 mb-3">Filter by Game:</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant={selectedMiniGame === 'all' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setSelectedMiniGame('all')}
+                      className={selectedMiniGame === 'all' ? 'bg-blue-600 hover:bg-blue-700' : ''}
+                    >
+                      All Games ({miniTournamentRegistrations.length})
+                    </Button>
+                    {miniTournamentGames.map(game => {
+                      const count = miniTournamentRegistrations.filter(r => getMiniTournamentGame(r) === game).length;
+                      return (
+                        <Button
+                          key={game}
+                          variant={selectedMiniGame === game ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setSelectedMiniGame(game)}
+                          className={selectedMiniGame === game ? 'bg-blue-600 hover:bg-blue-700' : ''}
+                        >
+                          {game} ({count})
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Filtered Registrations */}
+                {(() => {
+                  const filteredRegistrations = selectedMiniGame === 'all'
+                    ? miniTournamentRegistrations
+                    : miniTournamentRegistrations.filter(r => getMiniTournamentGame(r) === selectedMiniGame);
+
+                  if (filteredRegistrations.length === 0) {
+                    return (
+                      <div className="text-center py-8 text-gray-500">
+                        <p>No registrations found for {selectedMiniGame === 'all' ? 'any game' : selectedMiniGame}.</p>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredRegistrations.map((registration, index) => (
                     <Card key={index} className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <CardTitle className="flex items-center justify-between">
@@ -2658,7 +2728,9 @@ const AdminDashboard = () => {
                       </CardContent>
                     </Card>
                   ))}
-                </div>
+                    </div>
+                  );
+                })()}
               </div>
             </TabsContent>
 
