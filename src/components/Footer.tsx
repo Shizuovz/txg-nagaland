@@ -68,7 +68,7 @@ const Footer = () => {
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <img 
-                src="/txg-nes.png" 
+                src="/txg-nes-color.png" 
                 alt="TXG Logo" 
                 className="mb-6 mt-[-18px] w-20 h-20 md:w-28 md:h-28 object-contain brightness-90 hover:brightness-110 transition-all duration-300"
               />

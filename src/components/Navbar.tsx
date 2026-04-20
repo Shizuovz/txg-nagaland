@@ -74,9 +74,9 @@ const Navbar = () => {
             animate={{ opacity: 1, x: 0 }}
           >
             <img 
-              src="/txg-nes.png" 
+              src="/txg-nes-color.png" 
               alt="TXG Logo" 
-              className="w-24 h-24 md:w-36 md:h-36 object-contain"
+              className="w-24 h-24 md:w-40 md:h-40 object-contain"
               style={{ filter: 'none', opacity: 1 }}
             />
           </motion.a>
