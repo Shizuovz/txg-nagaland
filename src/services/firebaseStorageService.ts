@@ -168,24 +168,35 @@ class FirebaseStorageService {
     return false;
   }
 
-  // Download file (creates download link)
-  downloadFile(url: string, fileName: string): void {
+  // Download file (fetches blob and creates download link)
+  async downloadFile(url: string, fileName: string): Promise<void> {
     try {
       console.log('Attempting to download file:', { url, fileName });
-      
-      // Simple and reliable approach: Create download link and trigger click
+
+      // Fetch the file as a blob to handle cross-origin downloads
+      const response = await fetch(url, { mode: 'cors' });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Create download link using blob URL (same-origin, so download attribute works)
       const link = document.createElement('a');
-      link.href = url;
+      link.href = blobUrl;
       link.download = fileName;
-      link.target = '_blank';
       link.style.display = 'none';
-      
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(blobUrl);
+
       console.log('Download initiated for:', fileName);
-      
+
     } catch (error) {
       console.error('Download error:', error);
       alert('Download failed. Please try again.');

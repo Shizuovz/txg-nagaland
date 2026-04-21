@@ -291,7 +291,7 @@ const AdminDashboard = () => {
   };
 
   // Status Management Functions
-  const handleStatusUpdate = async (id: string, type: 'team' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
+  const handleStatusUpdate = async (id: string, type: 'team' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     let success = false;
     let registrationData: any = null;
     
@@ -645,8 +645,8 @@ const AdminDashboard = () => {
     const csvData = cosplayerRegistrations.map((cosplayer) => ({
       registrationId: cosplayer.registrationId || '',
       fullName: cosplayer.fullName || '',
-      email: cosplayer.email || cosplayer.captainEmail,
-      phone: cosplayer.phone || cosplayer.captainPhone,
+      email: cosplayer.email || '',
+      phone: cosplayer.phone || '',
       address: cosplayer.address || '',
       city: cosplayer.city || '',
       state: cosplayer.state || '',
@@ -1319,7 +1319,7 @@ const AdminDashboard = () => {
                                           onClick={async () => {
                                             const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
                                             if (docURL) {
-                                              firebaseStorageService.downloadFile(docURL, `${team.registrationId}_student_id_document`);
+                                              await firebaseStorageService.downloadFile(docURL, `${team.registrationId}_student_id_document`);
                                             } else {
                                               alert('Student ID document not found');
                                             }
@@ -1537,7 +1537,7 @@ const AdminDashboard = () => {
                                           console.log('Student ID URL retrieved:', docURL);
                                           if (docURL) {
                                             console.log('Calling downloadFile with URL:', docURL);
-                                            firebaseStorageService.downloadFile(docURL, `${team.registrationId}_student_id_document`);
+                                            await firebaseStorageService.downloadFile(docURL, `${team.registrationId}_student_id_document`);
                                           } else {
                                             alert('Student ID document not found');
                                           }
@@ -2060,11 +2060,11 @@ const AdminDashboard = () => {
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span className="text-gray-600">Email:</span>
-                            <span className="font-medium">{cosplayer.email || cosplayer.captainEmail}</span>
+                            <span className="font-medium">{cosplayer.email}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-600">Phone:</span>
-                            <span className="font-medium">{cosplayer.phone || cosplayer.captainPhone}</span>
+                            <span className="font-medium">{cosplayer.phone}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-600">Address:</span>
@@ -2671,7 +2671,7 @@ const AdminDashboard = () => {
                                           console.log('Photo URL retrieved:', photoURL);
                                           if (photoURL) {
                                             console.log('Calling downloadFile with URL:', photoURL);
-                                            firebaseStorageService.downloadFile(photoURL, `${registration.registrationId}_passport_photo.jpg`);
+                                            await firebaseStorageService.downloadFile(photoURL, `${registration.registrationId}_passport_photo.jpg`);
                                           } else {
                                             alert('Passport photo not found');
                                           }

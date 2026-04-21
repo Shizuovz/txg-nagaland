@@ -117,6 +117,8 @@ export interface TeamRegistration {
   substitute?: { ign: string; gameId: string };
   additionalMessage?: string;
   termsAccepted: boolean;
+  institutionDeclaration?: boolean;
+  livestreamConsent?: boolean;
   status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
   createdAt: Date;
   updatedAt: Date;
