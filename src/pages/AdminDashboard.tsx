@@ -34,6 +34,63 @@ const getMiniTournamentGame = (registration: any): string => {
   return gameMatch ? gameMatch[1].trim() : 'Unknown';
 };
 
+// Separate component for passport photo to properly use hooks
+const PassportPhotoDisplay = ({ registrationId }: { registrationId: string }) => {
+  const [photoURL, setPhotoURL] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      try {
+        const url = await firebaseStorageService.getPassportPhotoURL(registrationId);
+        setPhotoURL(url);
+      } catch (error) {
+        console.error('Error fetching passport photo:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPhoto();
+  }, [registrationId]);
+  
+  if (loading) {
+    return <span className="text-gray-500 text-sm">Loading...</span>;
+  }
+  
+  if (!photoURL) {
+    return <span className="text-gray-500 text-sm">No photo available</span>;
+  }
+  
+  return (
+    <div className="space-y-2">
+      <img 
+        src={photoURL} 
+        alt="Passport Photo"
+        className="w-24 h-24 object-cover rounded border cursor-pointer hover:opacity-80 transition-opacity"
+        onClick={() => window.open(photoURL, '_blank')}
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = 'none';
+        }}
+      />
+      <Button
+        size="sm"
+        variant="outline"
+        className="text-xs h-7 px-2 w-full"
+        onClick={async () => {
+          if (photoURL) {
+            await firebaseStorageService.downloadFile(photoURL, `${registrationId}_passport_photo.jpg`);
+          } else {
+            alert('Passport photo not found');
+          }
+        }}
+      >
+        <Download className="w-3 h-3 mr-1" />
+        Download
+      </Button>
+    </div>
+  );
+};
+
 const AdminDashboard = () => {
   const { adminUser, logout } = useAdminAuth();
   const { 
@@ -291,15 +348,19 @@ const AdminDashboard = () => {
   };
 
   // Status Management Functions
-  const handleStatusUpdate = async (id: string, type: 'team' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
+  const handleStatusUpdate = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     let success = false;
     let registrationData: any = null;
     
     try {
       // Get registration data before updating for email
       switch (type) {
-        case 'team':
+        case 'inter-college':
           registrationData = teamRegistrations.find(t => t.id === id);
+          success = await updateTeamStatus(id, status);
+          break;
+        case 'moba-open':
+          registrationData = mobaOpenRegistrations.find(t => t.id === id);
           success = await updateTeamStatus(id, status);
           break;
         case 'sponsor':
@@ -336,8 +397,11 @@ const AdminDashboard = () => {
           
           // Map admin dashboard types to email service types
           switch (type) {
-            case 'team':
+            case 'inter-college':
               finalRegistrationType = registrationData.registrationType || 'college'; // 'college' or 'open_category'
+              break;
+            case 'moba-open':
+              finalRegistrationType = registrationData.registrationType || 'open_category';
               break;
             case 'sponsor':
               finalRegistrationType = 'sponsor';
@@ -767,6 +831,20 @@ const AdminDashboard = () => {
     });
   };
 
+  // Filter for cosplayer registrations
+  const filterCosplayerRegistrations = (registrations: any[]) => {
+    return registrations.filter(reg => {
+      const matchesSearch = searchTerm === '' || 
+        reg.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.registrationId?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = statusFilter === 'all' || reg.status === statusFilter;
+      
+      return matchesSearch && matchesStatus;
+    });
+  };
+
   // Filter for pure sponsor registrations (exclude vendors and exhibitors)
   const getPureSponsorRegistrations = () => {
     return sponsorRegistrations.filter(reg => {
@@ -898,8 +976,10 @@ const AdminDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Teams</p>
-                  <p className="text-3xl font-bold text-purple-600">{stats?.totalTeams || 0}</p>
+                  <p className="text-sm text-gray-600 mb-1">Inter-college</p>
+                  <p className="text-3xl font-bold text-purple-600">
+                    {teamRegistrations.filter(t => t.registrationType === 'college').length || 0}
+                  </p>
                 </div>
                 <GamingIcon iconId={GamingIcons.USERS} size={32} color="#9333ea" />
               </div>
@@ -910,8 +990,8 @@ const AdminDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Sponsors</p>
-                  <p className="text-3xl font-bold text-green-600">{getPureSponsorRegistrations().length}</p>
+                  <p className="text-sm text-gray-600 mb-1">MOBA Open</p>
+                  <p className="text-3xl font-bold text-green-600">{mobaOpenRegistrations.length || 0}</p>
                 </div>
                 <GamingIcon iconId={GamingIcons.PARTNERSHIP} size={32} color="#07f85f" />
               </div>
@@ -922,8 +1002,8 @@ const AdminDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Media</p>
-                  <p className="text-3xl font-bold text-pink-600">{mediaRegistrations.length || 0}</p>
+                  <p className="text-sm text-gray-600 mb-1">Mini Games</p>
+                  <p className="text-3xl font-bold text-pink-600">{miniTournamentRegistrations.length || 0}</p>
                 </div>
                 <GamingIcon iconId={GamingIcons.EYE} size={32} color="#ec4899" />
               </div>
@@ -936,7 +1016,10 @@ const AdminDashboard = () => {
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Pending</p>
                   <p className="text-3xl font-bold text-orange-600">
-                    {(stats?.pendingTeams || 0) + (stats?.pendingSponsors || 0) + mediaRegistrations.filter(m => m.status === 'pending').length}
+                    {teamRegistrations.filter(t => t.status === 'pending').length +
+                     sponsorRegistrations.filter(s => s.status === 'pending').length +
+                     mediaRegistrations.filter(m => m.status === 'pending').length +
+                     miniTournamentRegistrations.filter(m => m.status === 'pending').length}
                   </p>
                 </div>
                 <GamingIcon iconId={GamingIcons.CLOCK_ICON} size={32} color="#ea580c" />
@@ -954,7 +1037,7 @@ const AdminDashboard = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-white/80 backdrop-blur-sm rounded-lg p-6">
             <TabsList className="flex flex-wrap w-full mb-6 gap-1">
               <TabsTrigger value="overview" className="flex-1 min-w-fit">Overview</TabsTrigger>
-              <TabsTrigger value="teams" className="flex-1 min-w-fit">Teams</TabsTrigger>
+              <TabsTrigger value="inter-college" className="flex-1 min-w-fit">Inter College</TabsTrigger>
               <TabsTrigger value="moba-open" className="flex-1 min-w-fit">MOBA 5v5</TabsTrigger>
               <TabsTrigger value="sponsors" className="flex-1 min-w-fit">Sponsors</TabsTrigger>
               <TabsTrigger value="cosplayers" className="flex-1 min-w-fit">Cosplayers</TabsTrigger>
@@ -1068,8 +1151,8 @@ const AdminDashboard = () => {
               </div>
             </TabsContent>
 
-            {/* Teams Tab */}
-            <TabsContent value="teams">
+            {/* Inter College Tab */}
+            <TabsContent value="inter-college">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2 flex-wrap">
@@ -1260,8 +1343,41 @@ const AdminDashboard = () => {
                                 <div key={index} className="bg-gray-50 p-3 rounded-lg">
                                   <div className="text-sm">
                                     <div className="font-medium text-gray-800">Player {index + 1}</div>
+                                    <div className="text-gray-600">Name: {member.fullName || 'N/A'}</div>
                                     <div className="text-gray-600">IGN: {member.ign || 'N/A'}</div>
                                     <div className="text-gray-600">Game ID: {member.gameId || 'N/A'}</div>
+                                    {/* Student ID for each player */}
+                                    {member.studentIdData && (
+                                      <div className="mt-2 pt-2 border-t">
+                                        <div className="text-xs text-blue-600 mb-1">Student ID</div>
+                                        {member.studentIdData?.url && (
+                                          <img 
+                                            src={member.studentIdData.url} 
+                                            alt={`Player ${index + 1} Student ID`}
+                                            className="w-24 h-24 object-cover rounded border mb-2 cursor-pointer hover:opacity-80 transition-opacity"
+                                            onClick={() => window.open(member.studentIdData.url, '_blank')}
+                                            onError={(e) => {
+                                              (e.target as HTMLImageElement).style.display = 'none';
+                                            }}
+                                          />
+                                        )}
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          className="text-xs h-7 px-2 w-full"
+                                          onClick={async () => {
+                                            if (member.studentIdData?.url) {
+                                              await firebaseStorageService.downloadFile(member.studentIdData.url, `${team.registrationId}_player${index + 1}_student_id`);
+                                            } else {
+                                              alert('Student ID URL not available');
+                                            }
+                                          }}
+                                        >
+                                          <Download className="w-3 h-3 mr-1" />
+                                          Download
+                                        </Button>
+                                      </div>
+                                    )}
                                   </div>
                                 </div>
                               ))}
@@ -1278,60 +1394,43 @@ const AdminDashboard = () => {
                             <div className="bg-blue-50 p-3 rounded-lg">
                               <div className="text-sm">
                                 <div className="font-medium text-gray-800">Substitute</div>
+                                <div className="text-gray-600">Name: {(team.substitute as any)?.fullName || 'N/A'}</div>
                                 <div className="text-gray-600">IGN: {team.substitute?.ign || 'N/A'}</div>
                                 <div className="text-gray-600">Game ID: {team.substitute?.gameId || 'N/A'}</div>
                                 <div className="text-gray-600">Game: {team.substitute?.gameId ? getGameName(team.substitute.gameId) : 'Game Not Selected'}</div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Student ID Document Section - Only for college and MOBA registrations */}
-                        {(team.registrationType === 'college' || team.registrationType === 'open_category') && (
-                          <div className="mt-4 space-y-3">
-                            <h4 className="font-semibold text-gray-800 border-b pb-2">Student/Institution ID Document</h4>
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm font-medium text-gray-600">Student ID Document:</span>
-                              <div className="text-sm font-medium">
-                                {(() => {
-                                  return (
-                                    <div className="space-y-2">
-                                      <span className="text-blue-600">Available for Review</span>
-                                      <div className="flex gap-2">
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={async () => {
-                                            const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
-                                            if (docURL) {
-                                              window.open(docURL, '_blank');
-                                            } else {
-                                              alert('Student ID document not found');
-                                            }
-                                          }}
-                                        >
-                                          <Eye className="w-4 h-4 mr-1" />
-                                          View
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={async () => {
-                                            const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
-                                            if (docURL) {
-                                              await firebaseStorageService.downloadFile(docURL, `${team.registrationId}_student_id_document`);
-                                            } else {
-                                              alert('Student ID document not found');
-                                            }
-                                          }}
-                                        >
-                                          <Download className="w-4 h-4 mr-1" />
-                                          Download
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  );
-                                })()}
+                                {/* Student ID for substitute */}
+                                {(team.substitute as any)?.studentIdData && (
+                                  <div className="mt-2 pt-2 border-t border-blue-200">
+                                    <div className="text-xs text-blue-600 mb-1">Student ID</div>
+                                    {(team.substitute as any)?.studentIdData?.url && (
+                                      <img 
+                                        src={(team.substitute as any).studentIdData.url} 
+                                        alt="Substitute Student ID"
+                                        className="w-24 h-24 object-cover rounded border mb-2 cursor-pointer hover:opacity-80 transition-opacity"
+                                        onClick={() => window.open((team.substitute as any).studentIdData.url, '_blank')}
+                                        onError={(e) => {
+                                          (e.target as HTMLImageElement).style.display = 'none';
+                                        }}
+                                      />
+                                    )}
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="text-xs h-7 px-2 w-full"
+                                      onClick={async () => {
+                                        const url = (team.substitute as any)?.studentIdData?.url;
+                                        if (url) {
+                                          await firebaseStorageService.downloadFile(url, `${team.registrationId}_substitute_student_id`);
+                                        } else {
+                                          alert('Student ID URL not available');
+                                        }
+                                      }}
+                                    >
+                                      <Download className="w-3 h-3 mr-1" />
+                                      Download
+                                    </Button>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -1362,7 +1461,7 @@ const AdminDashboard = () => {
                                   console.log('Team ID being used:', team.id);
                                   console.log('Team Registration ID:', team.registrationId);
                                   console.log('All team properties:', Object.keys(team));
-                                  handleStatusUpdate(team.id, 'team', 'approved');
+                                  handleStatusUpdate(team.id, 'inter-college', 'approved');
                                 }}
                                 className="bg-green-600 hover:bg-green-700"
                               >
@@ -1372,7 +1471,7 @@ const AdminDashboard = () => {
                             {team.status !== 'rejected' && team.status !== 'withdrawn' && (
                               <Button
                                 size="sm"
-                                onClick={() => handleStatusUpdate(team.id, 'team', 'rejected')}
+                                onClick={() => handleStatusUpdate(team.id, 'inter-college', 'rejected')}
                                 className="bg-red-600 hover:bg-red-700"
                               >
                                 Reject
@@ -1382,7 +1481,7 @@ const AdminDashboard = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => handleStatusUpdate(team.id, 'team', 'pending')}
+                                onClick={() => handleStatusUpdate(team.id, 'inter-college', 'pending')}
                               >
                                 Reset to Pending
                               </Button>
@@ -1391,7 +1490,7 @@ const AdminDashboard = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => handleStatusUpdate(team.id, 'team', 'withdrawn')}
+                                onClick={() => handleStatusUpdate(team.id, 'inter-college', 'withdrawn')}
                                 className="bg-gray-600 hover:bg-gray-700 text-white"
                               >
                                 Withdraw
@@ -1486,100 +1585,159 @@ const AdminDashboard = () => {
                           </div>
                         </div>
 
-                        <div className="mb-4">
-                          <p className="text-sm font-medium text-gray-600 mb-2">Team Members ({team.teamMembers?.length || 0})</p>
-                          <div className="grid grid-cols-2 gap-2">
-                            {team.teamMembers?.slice(0, 4).map((member, index) => (
-                              <div key={index} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                {member.ign} ({member.gameId})
-                              </div>
-                            ))}
-                            {team.teamMembers?.length > 4 && (
-                              <div className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                +{team.teamMembers.length - 4} more
-                              </div>
-                            )}
-                          </div>
+                        {/* Team Members */}
+                        <div className="space-y-3">
+                          <h4 className="font-semibold text-gray-800 border-b pb-2">Team Members</h4>
+                          {team.teamMembers && team.teamMembers.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                              {team.teamMembers.map((member, index) => (
+                                <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                                  <div className="text-sm">
+                                    <div className="font-medium text-gray-800">Player {index + 1}</div>
+                                    <div className="text-gray-600">Name: {member.fullName || 'N/A'}</div>
+                                    <div className="text-gray-600">IGN: {member.ign || 'N/A'}</div>
+                                    <div className="text-gray-600">Game ID: {member.gameId || 'N/A'}</div>
+                                    {/* Aadhaar for each player */}
+                                    {(member as any).aadhaarData && (
+                                      <div className="mt-2 pt-2 border-t">
+                                        <div className="text-xs text-blue-600 mb-1">Aadhaar</div>
+                                        {(member as any).aadhaarData?.url && (
+                                          <img 
+                                            src={(member as any).aadhaarData.url} 
+                                            alt={`Player ${index + 1} Aadhaar`}
+                                            className="w-24 h-24 object-cover rounded border mb-2 cursor-pointer hover:opacity-80 transition-opacity"
+                                            onClick={() => window.open((member as any).aadhaarData.url, '_blank')}
+                                            onError={(e) => {
+                                              (e.target as HTMLImageElement).style.display = 'none';
+                                            }}
+                                          />
+                                        )}
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          className="text-xs h-7 px-2 w-full"
+                                          onClick={async () => {
+                                            const url = (member as any).aadhaarData?.url;
+                                            if (url) {
+                                              await firebaseStorageService.downloadFile(url, `${team.registrationId}_player${index + 1}_aadhaar`);
+                                            } else {
+                                              alert('Aadhaar URL not available');
+                                            }
+                                          }}
+                                        >
+                                          <Download className="w-3 h-3 mr-1" />
+                                          Download
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-500">No team members registered</p>
+                          )}
                         </div>
 
-                        {/* Student ID Document Section - Only for MOBA Open registrations */}
-                        <div className="mt-4 space-y-3">
-                          <h4 className="font-semibold text-gray-800 border-b pb-2">Student/Institution ID Document</h4>
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-600">Student ID Document:</span>
-                            <div className="text-sm font-medium">
-                              {(() => {
-                                return (
-                                  <div className="space-y-2">
-                                    <span className="text-blue-600">Available for Review</span>
-                                    <div className="flex gap-2">
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={async () => {
-                                          const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
-                                          if (docURL) {
-                                            window.open(docURL, '_blank');
-                                          } else {
-                                            alert('Student ID document not found');
-                                          }
+                        {/* Substitute */}
+                        {team.substitute && (
+                          <div className="mt-4 space-y-3">
+                            <h4 className="font-semibold text-gray-800 border-b pb-2">Substitute Player</h4>
+                            <div className="bg-blue-50 p-3 rounded-lg">
+                              <div className="text-sm">
+                                <div className="font-medium text-gray-800">Substitute</div>
+                                <div className="text-gray-600">Name: {(team.substitute as any)?.fullName || 'N/A'}</div>
+                                <div className="text-gray-600">IGN: {team.substitute?.ign || 'N/A'}</div>
+                                <div className="text-gray-600">Game ID: {team.substitute?.gameId || 'N/A'}</div>
+                                <div className="text-gray-600">Game: {team.substitute?.gameId ? getGameName(team.substitute.gameId) : 'Game Not Selected'}</div>
+                                {/* Aadhaar for substitute */}
+                                {(team.substitute as any)?.aadhaarData && (
+                                  <div className="mt-2 pt-2 border-t border-blue-200">
+                                    <div className="text-xs text-blue-600 mb-1">Aadhaar</div>
+                                    {(team.substitute as any)?.aadhaarData?.url && (
+                                      <img 
+                                        src={(team.substitute as any).aadhaarData.url} 
+                                        alt="Substitute Aadhaar"
+                                        className="w-24 h-24 object-cover rounded border mb-2 cursor-pointer hover:opacity-80 transition-opacity"
+                                        onClick={() => window.open((team.substitute as any).aadhaarData.url, '_blank')}
+                                        onError={(e) => {
+                                          (e.target as HTMLImageElement).style.display = 'none';
                                         }}
-                                      >
-                                        <Eye className="w-4 h-4 mr-1" />
-                                        View
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={async () => {
-                                          console.log('Student ID download button clicked for:', team.registrationId);
-                                          const docURL = await firebaseStorageService.getStudentIdDocumentURL(team.registrationId);
-                                          console.log('Student ID URL retrieved:', docURL);
-                                          if (docURL) {
-                                            console.log('Calling downloadFile with URL:', docURL);
-                                            await firebaseStorageService.downloadFile(docURL, `${team.registrationId}_student_id_document`);
-                                          } else {
-                                            alert('Student ID document not found');
-                                          }
-                                        }}
-                                      >
-                                        <Download className="w-4 h-4 mr-1" />
-                                        Download
-                                      </Button>
-                                    </div>
+                                      />
+                                    )}
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="text-xs h-7 px-2 w-full"
+                                      onClick={async () => {
+                                        const url = (team.substitute as any)?.aadhaarData?.url;
+                                        if (url) {
+                                          await firebaseStorageService.downloadFile(url, `${team.registrationId}_substitute_aadhaar`);
+                                        } else {
+                                          alert('Aadhaar URL not available');
+                                        }
+                                      }}
+                                    >
+                                      <Download className="w-3 h-3 mr-1" />
+                                      Download
+                                    </Button>
                                   </div>
-                                );
-                              })()}
+                                )}
+                              </div>
                             </div>
                           </div>
+                        )}
+
+                        {/* Registration Info */}
+                        <div className="mt-4 pt-4 border-t">
+                          <div className="flex justify-between text-xs text-gray-500">
+                            <span>Registered: {formatDate(team.createdAt)}</span>
+                            <span>Terms Accepted: {team.termsAccepted ? '✅ Yes' : '❌ No'}</span>
+                            <span>Institution Declaration: {team.institutionDeclaration ? '✅ Yes' : '❌ No'}</span>
+                            <span>Livestream Consent: {team.livestreamConsent ? '✅ Yes' : '❌ No'}</span>
+                          </div>
                         </div>
 
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => handleStatusUpdate(team.id, 'team', 'approved')}
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                            disabled={team.status === 'approved'}
-                          >
-                            Approve
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={() => handleStatusUpdate(team.id, 'team', 'rejected')}
-                            className="bg-red-600 hover:bg-red-700 text-white"
-                            disabled={team.status === 'rejected'}
-                          >
-                            Reject
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleStatusUpdate(team.id, 'team', 'withdrawn')}
-                            className="bg-gray-600 hover:bg-gray-700 text-white"
-                            disabled={team.status === 'withdrawn'}
-                          >
-                            Withdraw
-                          </Button>
+                        {/* Status Management */}
+                        <div className="mt-4 pt-4 border-t">
+                          <div className="flex gap-2 flex-wrap">
+                            <Button
+                              size="sm"
+                              onClick={() => handleStatusUpdate(team.id, 'moba-open', 'approved')}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                              disabled={team.status === 'approved'}
+                            >
+                              Approve
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={() => handleStatusUpdate(team.id, 'moba-open', 'rejected')}
+                              className="bg-red-600 hover:bg-red-700 text-white"
+                              disabled={team.status === 'rejected'}
+                            >
+                              Reject
+                            </Button>
+                            {team.status !== 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(team.id, 'moba-open', 'pending')}
+                              >
+                                Reset to Pending
+                              </Button>
+                            )}
+                            {team.status !== 'withdrawn' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStatusUpdate(team.id, 'moba-open', 'withdrawn')}
+                                className="bg-gray-600 hover:bg-gray-700 text-white"
+                                disabled={team.status === 'withdrawn'}
+                              >
+                                Withdraw
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -2044,7 +2202,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="grid gap-4">
-                  {filterSponsorRegistrations(cosplayerRegistrations).map((cosplayer) => (
+                  {filterCosplayerRegistrations(cosplayerRegistrations).map((cosplayer) => (
                     <Card key={cosplayer.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -2087,7 +2245,7 @@ const AdminDashboard = () => {
                               <span className="font-medium text-xs max-w-xs truncate" title={cosplayer.message}>
                                 {cosplayer.message}
                               </span>
-                            </div>
+                            </div> 
                           )}
                           {!cosplayer.collegeName && !cosplayer.message && (
                             <div className="text-xs text-orange-600 italic">
@@ -2631,59 +2789,10 @@ const AdminDashboard = () => {
                               : 'N/A'}</span>
                           </div>
                           
-                          <div className="flex justify-between items-start">
+                          <div className="flex flex-col gap-2">
                             <span className="text-sm font-medium text-gray-600">Passport Photo:</span>
                             <div className="text-sm font-medium">
-                              {(() => {
-                                // Check if passport photo exists in Firebase Storage
-                                const checkPassportPhoto = async () => {
-                                  const photoURL = await firebaseStorageService.getPassportPhotoURL(registration.registrationId);
-                                  return photoURL;
-                                };
-                                
-                                // For now, we'll use a simpler approach - assume uploaded if registration exists
-                                // In a real implementation, you'd want to cache this or handle async properly
-                                return (
-                                  <div className="space-y-2">
-                                    <span className="text-green-600">Uploaded</span>
-                                    <div className="flex gap-2">
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={async () => {
-                                          const photoURL = await firebaseStorageService.getPassportPhotoURL(registration.registrationId);
-                                          if (photoURL) {
-                                            window.open(photoURL, '_blank');
-                                          } else {
-                                            alert('Passport photo not found');
-                                          }
-                                        }}
-                                      >
-                                        <Eye className="w-4 h-4 mr-1" />
-                                        View
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={async () => {
-                                          console.log('Download button clicked for:', registration.registrationId);
-                                          const photoURL = await firebaseStorageService.getPassportPhotoURL(registration.registrationId);
-                                          console.log('Photo URL retrieved:', photoURL);
-                                          if (photoURL) {
-                                            console.log('Calling downloadFile with URL:', photoURL);
-                                            await firebaseStorageService.downloadFile(photoURL, `${registration.registrationId}_passport_photo.jpg`);
-                                          } else {
-                                            alert('Passport photo not found');
-                                          }
-                                        }}
-                                      >
-                                        <Download className="w-4 h-4 mr-1" />
-                                        Download
-                                      </Button>
-                                    </div>
-                                  </div>
-                                );
-                              })()}
+                              <PassportPhotoDisplay registrationId={registration.registrationId} />
                             </div>
                           </div>
                           

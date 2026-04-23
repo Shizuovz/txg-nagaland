@@ -230,13 +230,13 @@ const RegistrationSection = () => {
     state: "",
     pinCode: "",
     teamMembers: [
-      { ign: "", gameId: "", fullName: "" },
-      { ign: "", gameId: "", fullName: "" },
-      { ign: "", gameId: "", fullName: "" },
-      { ign: "", gameId: "", fullName: "" },
-      { ign: "", gameId: "", fullName: "" }
+      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null }
     ],
-    substitute: { ign: "", gameId: "", fullName: "" },
+    substitute: { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
     // Mini tournament specific fields
     nickName: "",
     whatsappPhone: "",
@@ -244,7 +244,7 @@ const RegistrationSection = () => {
     age: "",
     gender: "",
     passportPhoto: null as File | null,
-    // New mandatory fields for inter-college and MOBA tournaments
+    // Legacy fields (kept for backward compatibility)
     studentIdUpload: null as File | null,
     aadhaarUpload: null as File | null,
     institutionDeclaration: false,
@@ -285,7 +285,7 @@ const RegistrationSection = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleTeamMemberChange = (index: number, field: 'ign' | 'gameId' | 'fullName', value: string) => {
+  const handleTeamMemberChange = (index: number, field: 'ign' | 'gameId' | 'fullName' | 'studentIdUpload' | 'aadhaarUpload', value: string | File | null) => {
     const updatedMembers = [...formData.teamMembers];
     updatedMembers[index] = { ...updatedMembers[index], [field]: value };
     setFormData(prev => ({ ...prev, teamMembers: updatedMembers }));
@@ -319,7 +319,7 @@ const RegistrationSection = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.game, registrationType]);
 
-  const handleSubstituteChange = (field: 'ign' | 'gameId' | 'fullName', value: string) => {
+  const handleSubstituteChange = (field: 'ign' | 'gameId' | 'fullName' | 'studentIdUpload' | 'aadhaarUpload', value: string | File | null) => {
     setFormData(prev => ({
       ...prev,
       substitute: { ...prev.substitute, [field]: value }
@@ -357,11 +357,24 @@ const RegistrationSection = () => {
       }
 
       // Check mandatory fields - different for college vs MOBA
+      const teamMembersWithDocs = getTeamMemberFields();
+      
       if (registrationType === 'college') {
-        if (!formData.studentIdUpload) {
-          alert('Please upload student/institution ID documents');
-          setIsSubmitting(false);
-          return;
+        // Check all team members have student ID
+        for (let i = 0; i < teamMembersWithDocs.length; i++) {
+          if (!teamMembersWithDocs[i].studentIdUpload) {
+            alert(`Please upload Student ID for Player ${i + 1}`);
+            setIsSubmitting(false);
+            return;
+          }
+        }
+        // Check substitute has student ID if any substitute details are filled
+        if (formData.substitute.fullName || formData.substitute.ign) {
+          if (!formData.substitute.studentIdUpload) {
+            alert('Please upload Student ID for Substitute Player');
+            setIsSubmitting(false);
+            return;
+          }
         }
 
         if (!formData.institutionDeclaration) {
@@ -370,10 +383,21 @@ const RegistrationSection = () => {
           return;
         }
       } else if (registrationType === 'moba-open') {
-        if (!formData.aadhaarUpload) {
-          alert('Please upload Aadhaar documents');
-          setIsSubmitting(false);
-          return;
+        // Check all team members have Aadhaar
+        for (let i = 0; i < teamMembersWithDocs.length; i++) {
+          if (!teamMembersWithDocs[i].aadhaarUpload) {
+            alert(`Please upload Aadhaar for Player ${i + 1}`);
+            setIsSubmitting(false);
+            return;
+          }
+        }
+        // Check substitute has Aadhaar if any substitute details are filled
+        if (formData.substitute.fullName || formData.substitute.ign) {
+          if (!formData.substitute.aadhaarUpload) {
+            alert('Please upload Aadhaar for Substitute Player');
+            setIsSubmitting(false);
+            return;
+          }
         }
       }
 
@@ -686,7 +710,7 @@ const RegistrationSection = () => {
                   </Label>
                   <div className="space-y-4">
                     {getTeamMemberFields().map((member, index) => (
-                      <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-border rounded-lg bg-card">
+                      <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card">
                         <div>
                           <Label htmlFor={`member-${index}-fullName`}>Player {index + 1} Full Name *</Label>
                           <Input
@@ -717,6 +741,20 @@ const RegistrationSection = () => {
                             required
                           />
                         </div>
+                        <div>
+                          <Label htmlFor={`member-${index}-studentId`}>Player {index + 1} Student ID *</Label>
+                          <Input
+                            id={`member-${index}-studentId`}
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={(e) => handleTeamMemberChange(index, 'studentIdUpload', e.target.files?.[0] || null)}
+                            className="mt-1"
+                            required
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Upload student ID card or bonafide certificate
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -725,7 +763,7 @@ const RegistrationSection = () => {
 
               <div>
                 <Label className="text-base font-semibold mb-4 block">Substitute Player (Optional)</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-border rounded-lg bg-card">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card">
                   <div>
                     <Label htmlFor="sub-fullName">Substitute Full Name</Label>
                     <Input
@@ -753,26 +791,26 @@ const RegistrationSection = () => {
                       placeholder="Substitute game ID"
                     />
                   </div>
+                  {registrationType === 'college' && (
+                    <div>
+                      <Label htmlFor="sub-studentId">Substitute Student ID</Label>
+                      <Input
+                        id="sub-studentId"
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onChange={(e) => handleSubstituteChange('studentIdUpload', e.target.files?.[0] || null)}
+                        className="mt-1"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Required if substitute details are provided
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* New Mandatory Fields */}
+              {/* Declarations and Consent */}
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="studentIdUpload" className="text-base font-semibold">Student/Institution ID Upload *</Label>
-                  <Input
-                    id="studentIdUpload"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => handleInputChange("studentIdUpload", e.target.files?.[0] || null)}
-                    className="mt-2"
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Upload student ID cards, bonafide certificates, or admission records for all team members
-                  </p>
-                </div>
-
                 <div className="flex items-start space-x-2">
                   <Checkbox
                     id="institutionDeclaration"
@@ -982,6 +1020,16 @@ const RegistrationSection = () => {
                   {getTeamMemberFields().map((member, index) => (
                     <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card">
                       <div>
+                        <Label htmlFor={`member-${index}-fullName`}>Player {index + 1} Full Name *</Label>
+                        <Input
+                          id={`member-${index}-fullName`}
+                          value={member.fullName}
+                          onChange={(e) => handleTeamMemberChange(index, 'fullName', e.target.value)}
+                          placeholder="Full name"
+                          required
+                        />
+                      </div>
+                      <div>
                         <Label htmlFor={`member-${index}-ign`}>Player {index + 1} IGN *</Label>
                         <Input
                           id={`member-${index}-ign`}
@@ -1001,6 +1049,20 @@ const RegistrationSection = () => {
                           required
                         />
                       </div>
+                      <div>
+                        <Label htmlFor={`member-${index}-aadhaar`}>Player {index + 1} Aadhaar *</Label>
+                        <Input
+                          id={`member-${index}-aadhaar`}
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) => handleTeamMemberChange(index, 'aadhaarUpload', e.target.files?.[0] || null)}
+                          className="mt-1"
+                          required
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Upload Aadhaar card
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1008,7 +1070,7 @@ const RegistrationSection = () => {
 
               <div>
                 <Label className="text-base font-semibold mb-4 block">Substitute Player (Optional)</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-border rounded-lg bg-card">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card">
                   <div>
                     <Label htmlFor="sub-fullName">Substitute Full Name</Label>
                     <Input
@@ -1036,26 +1098,24 @@ const RegistrationSection = () => {
                       placeholder="Substitute game ID"
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="sub-aadhaar">Substitute Aadhaar</Label>
+                    <Input
+                      id="sub-aadhaar"
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={(e) => handleSubstituteChange('aadhaarUpload', e.target.files?.[0] || null)}
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Required if substitute details are provided
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Mandatory Fields for MOBA Open */}
+              {/* Consent Section */}
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="aadhaarUpload" className="text-base font-semibold">Aadhaar Upload *</Label>
-                  <Input
-                    id="aadhaarUpload"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => handleInputChange("aadhaarUpload", e.target.files?.[0] || null)}
-                    className="mt-2"
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Upload Aadhaar cards for all team members
-                  </p>
-                </div>
-
                 <div className="flex items-start space-x-2">
                   <Checkbox
                     id="livestreamConsent"

@@ -23,8 +23,8 @@ export interface TeamRegistrationData {
   city?: string;
   state?: string;
   pinCode?: string;
-  teamMembers: { ign: string; gameId: string; fullName: string }[];
-  substitute?: { ign: string; gameId: string; fullName: string };
+  teamMembers: { ign: string; gameId: string; fullName: string; studentIdUpload?: File | null; aadhaarUpload?: File | null }[];
+  substitute?: { ign: string; gameId: string; fullName: string; studentIdUpload?: File | null; aadhaarUpload?: File | null };
   additionalMessage?: string;
   termsAccepted: boolean;
   studentIdUpload?: File | null;

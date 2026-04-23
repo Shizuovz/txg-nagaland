@@ -50,8 +50,8 @@ export class RegistrationAPI {
     city?: string;
     state?: string;
     pinCode?: string;
-    teamMembers: { ign: string; gameId: string; fullName: string }[];
-    substitute?: { ign: string; gameId: string; fullName: string };
+    teamMembers: { ign: string; gameId: string; fullName: string; studentIdUpload?: File | null; aadhaarUpload?: File | null }[];
+    substitute?: { ign: string; gameId: string; fullName: string; studentIdUpload?: File | null; aadhaarUpload?: File | null };
     additionalMessage?: string;
     termsAccepted: boolean;
     studentIdUpload?: File | null;
@@ -71,59 +71,131 @@ export class RegistrationAPI {
           error: 'REGISTRATION_LIMIT_REACHED'
         };
       }
-      // Handle student ID upload for college registrations
-      let studentIdData = null;
-      if (data.studentIdUpload && data.registrationType === 'college') {
-        try {
-          console.log('Uploading student ID document to Firebase Storage...');
-          studentIdData = await firebaseStorageService.uploadStudentIdDocument(
-            data.studentIdUpload,
-            `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-          );
-          console.log('Student ID document uploaded successfully:', studentIdData);
-        } catch (error) {
-          console.error('Error uploading student ID document:', error);
-          console.log('Registration will continue without student ID upload for now.');
-          
-          // For now, store a placeholder to indicate upload was attempted
-          studentIdData = {
-            url: '',
-            fileName: `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_student_id.pdf`,
-            uploadedAt: new Date(),
-            error: 'Upload failed - likely due to Firebase Storage rules'
-          };
+      // Handle student ID uploads for each team member (college registrations)
+      const teamMembersWithDocs = await Promise.all(
+        data.teamMembers.map(async (member, index) => {
+          if (data.registrationType === 'college' && member.studentIdUpload) {
+            try {
+              console.log(`Uploading Student ID for Player ${index + 1}...`);
+              const studentIdData = await firebaseStorageService.uploadStudentIdDocument(
+                member.studentIdUpload,
+                `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_player${index + 1}`
+              );
+              console.log(`Student ID uploaded successfully for Player ${index + 1}:`, studentIdData);
+              return { ...member, studentIdData } as any;
+            } catch (error) {
+              console.error(`Error uploading Student ID for Player ${index + 1}:`, error);
+              return { 
+                ...member, 
+                studentIdData: {
+                  url: '',
+                  fileName: `REG_${Date.now()}_player${index + 1}_student_id.pdf`,
+                  uploadedAt: new Date(),
+                  error: 'Upload failed'
+                }
+              } as any;
+            }
+          }
+          return member;
+        })
+      );
+
+      // Handle Aadhaar uploads for each team member (MOBA open registrations)
+      const teamMembersWithAadhaar = await Promise.all(
+        teamMembersWithDocs.map(async (member, index) => {
+          if (data.registrationType === 'open_category' && member.aadhaarUpload) {
+            try {
+              console.log(`Uploading Aadhaar for Player ${index + 1}...`);
+              const aadhaarData = await firebaseStorageService.uploadStudentIdDocument(
+                member.aadhaarUpload,
+                `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_player${index + 1}`
+              );
+              console.log(`Aadhaar uploaded successfully for Player ${index + 1}:`, aadhaarData);
+              return { ...member, aadhaarData } as any;
+            } catch (error) {
+              console.error(`Error uploading Aadhaar for Player ${index + 1}:`, error);
+              return { 
+                ...member, 
+                aadhaarData: {
+                  url: '',
+                  fileName: `REG_${Date.now()}_player${index + 1}_aadhaar.pdf`,
+                  uploadedAt: new Date(),
+                  error: 'Upload failed'
+                }
+              } as any;
+            }
+          }
+          return member;
+        })
+      );
+
+      // Handle substitute document upload
+      let substituteWithDoc = data.substitute;
+      if (data.substitute) {
+        if (data.registrationType === 'college' && data.substitute.studentIdUpload) {
+          try {
+            console.log('Uploading Student ID for Substitute...');
+            const substituteStudentIdData = await firebaseStorageService.uploadStudentIdDocument(
+              data.substitute.studentIdUpload,
+              `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_substitute`
+            );
+            console.log('Substitute Student ID uploaded successfully:', substituteStudentIdData);
+            substituteWithDoc = { ...data.substitute, studentIdData: substituteStudentIdData } as any;
+          } catch (error) {
+            console.error('Error uploading Substitute Student ID:', error);
+            substituteWithDoc = { 
+              ...data.substitute, 
+              studentIdData: {
+                url: '',
+                fileName: `REG_${Date.now()}_substitute_student_id.pdf`,
+                uploadedAt: new Date(),
+                error: 'Upload failed'
+              }
+            } as any;
+          }
+        } else if (data.registrationType === 'open_category' && data.substitute.aadhaarUpload) {
+          try {
+            console.log('Uploading Aadhaar for Substitute...');
+            const substituteAadhaarData = await firebaseStorageService.uploadStudentIdDocument(
+              data.substitute.aadhaarUpload,
+              `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_substitute`
+            );
+            console.log('Substitute Aadhaar uploaded successfully:', substituteAadhaarData);
+            substituteWithDoc = { ...data.substitute, aadhaarData: substituteAadhaarData } as any;
+          } catch (error) {
+            console.error('Error uploading Substitute Aadhaar:', error);
+            substituteWithDoc = { 
+              ...data.substitute, 
+              aadhaarData: {
+                url: '',
+                fileName: `REG_${Date.now()}_substitute_aadhaar.pdf`,
+                uploadedAt: new Date(),
+                error: 'Upload failed'
+              }
+            } as any;
+          }
         }
       }
 
-      // Handle Aadhaar upload for MOBA open registrations
-      let aadhaarData = null;
-      if (data.aadhaarUpload && data.registrationType === 'open_category') {
-        try {
-          console.log('Uploading Aadhaar document to Firebase Storage...');
-          aadhaarData = await firebaseStorageService.uploadStudentIdDocument(
-            data.aadhaarUpload,
-            `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-          );
-          console.log('Aadhaar document uploaded successfully:', aadhaarData);
-        } catch (error) {
-          console.error('Error uploading Aadhaar document:', error);
-          console.log('Registration will continue without Aadhaar upload for now.');
-          
-          // For now, store a placeholder to indicate upload was attempted
-          aadhaarData = {
-            url: '',
-            fileName: `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_aadhaar.pdf`,
-            uploadedAt: new Date(),
-            error: 'Upload failed - likely due to Firebase Storage rules'
-          };
-        }
-      }
-
-      // Clean data to remove undefined fields and add required fields
+      // Clean data to remove undefined fields and File objects (Firebase can't store Files)
       const registrationId = `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Strip File objects from team members (keep only the upload metadata)
+      const cleanTeamMembers = teamMembersWithAadhaar.map((member: any) => {
+        const { studentIdUpload, aadhaarUpload, ...cleanMember } = member;
+        return cleanMember;
+      });
+      
+      // Strip File objects from substitute
+      const cleanSubstitute = substituteWithDoc ? (() => {
+        const { studentIdUpload, aadhaarUpload, ...cleanSub } = substituteWithDoc as any;
+        return cleanSub;
+      })() : null;
+      
       const cleanData = {
         ...data,
-        substitute: data.substitute || null,
+        teamMembers: cleanTeamMembers,
+        substitute: cleanSubstitute,
         collegeName: data.collegeName || null,
         teamCategory: data.teamCategory || null,
         additionalMessage: data.additionalMessage || null,
@@ -133,18 +205,9 @@ export class RegistrationAPI {
         livestreamConsent: data.livestreamConsent || false,
         coordinatorName: data.coordinatorName || null,
         coordinatorPhone: data.coordinatorPhone || null,
-        // Store student ID upload info
-        studentIdUpload: studentIdData ? {
-          fileName: studentIdData.fileName,
-          uploadedAt: studentIdData.uploadedAt,
-          error: studentIdData.error || null
-        } : null,
-        // Store Aadhaar upload info
-        aadhaarUpload: aadhaarData ? {
-          fileName: aadhaarData.fileName,
-          uploadedAt: aadhaarData.uploadedAt,
-          error: aadhaarData.error || null
-        } : null
+        // Strip root-level File objects
+        studentIdUpload: null,
+        aadhaarUpload: null
       };
       
       const result = await this.firebaseService.createTeamRegistration(cleanData);
