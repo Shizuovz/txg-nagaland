@@ -483,7 +483,7 @@ const AdminDashboard = () => {
       
       // If result is truthy, it means success (handleAPIResponse returns data on success, null on failure)
       if (result) {
-        window.location.reload();
+        loadDashboardData();
       }
     } catch (error) {
       console.error('Error deleting registration:', error);
@@ -1278,6 +1278,10 @@ const AdminDashboard = () => {
                       <FileText className="w-4 h-4 mr-2" />
                       Download CSV
                     </Button>
+                    <Button onClick={() => window.print()} variant="outline" className="print:hidden">
+                      <Download className="w-4 h-4 mr-2" />
+                      Export PDF
+                    </Button>
                     <Button 
                       onClick={() => handleBulkDelete('teams')} 
                       variant="destructive"
@@ -1609,6 +1613,10 @@ const AdminDashboard = () => {
                       <FileText className="w-4 h-4 mr-2" />
                       Download CSV
                     </Button>
+                    <Button onClick={() => window.print()} variant="outline" className="print:hidden">
+                      <Download className="w-4 h-4 mr-2" />
+                      Export PDF
+                    </Button>
                   </div>
                 </div>
 
@@ -1879,6 +1887,10 @@ const AdminDashboard = () => {
                       <FileText className="w-4 h-4 mr-2" />
                       Download CSV
                     </Button>
+                    <Button onClick={() => window.print()} variant="outline" className="print:hidden">
+                      <Download className="w-4 h-4 mr-2" />
+                      Export PDF
+                    </Button>
                     <Button 
                       onClick={() => handleBulkDelete('sponsors')} 
                       variant="destructive"
@@ -2063,6 +2075,10 @@ const AdminDashboard = () => {
                     <Button onClick={downloadMediaRegistrationsCSV} variant="outline">
                       <FileText className="w-4 h-4 mr-2" />
                       Download CSV
+                    </Button>
+                    <Button onClick={() => window.print()} variant="outline" className="print:hidden">
+                      <Download className="w-4 h-4 mr-2" />
+                      Export PDF
                     </Button>
                     <Button 
                       onClick={() => handleBulkDelete('media')} 
@@ -2908,6 +2924,14 @@ const AdminDashboard = () => {
                             disabled={registration.status === 'withdrawn'}
                           >
                             Withdraw
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteRegistration(registration.id, 'mini-tournament')}
+                            className="bg-red-800 hover:bg-red-900 text-white ml-auto"
+                          >
+                            Delete
                           </Button>
                         </div>
                       </CardContent>

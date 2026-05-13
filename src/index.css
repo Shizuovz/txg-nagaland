@@ -574,3 +574,55 @@ img[src*="txg"] {
 html {
   scroll-behavior: smooth;
 }
+
+/* Print Styles for PDF Export */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: white !important;
+    color: black !important;
+  }
+  
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  /* Reset overflow to allow all content to be printed */
+  .overflow-hidden, 
+  .overflow-y-auto, 
+  .overflow-y-scroll,
+  .max-h-screen,
+  .h-screen {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    position: static !important;
+  }
+  
+  /* Hide typical layout wrappers */
+  aside, nav, header {
+    display: none !important;
+  }
+  
+  /* Expand cards to take full width and avoid breaking inside */
+  .card, .rounded-lg, .border {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    margin-bottom: 20px !important;
+    background: white !important;
+  }
+
+  * {
+    color: black !important;
+    text-shadow: none !important;
+  }
+
+  /* Make sure images are visible */
+  img {
+    max-width: 100% !important;
+    display: block !important;
+  }
+}

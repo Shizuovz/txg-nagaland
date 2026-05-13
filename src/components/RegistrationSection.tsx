@@ -105,13 +105,13 @@ const RegistrationSection = () => {
   const [registrationType, setRegistrationType] = useState<"college" | "moba-open" | "cosplayer" | "vendor" | "exhibitor" | "media" | "sponsor" | "mini-tournament" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationId, setRegistrationId] = useState("");
-  
+
   // API hook
-  const { 
-    loading, 
-    error, 
-    submitTeamRegistration, 
-    submitSponsorRegistration, 
+  const {
+    loading,
+    error,
+    submitTeamRegistration,
+    submitSponsorRegistration,
     submitVisitorRegistration,
     submitMediaRegistration,
     getGames,
@@ -120,7 +120,7 @@ const RegistrationSection = () => {
     checkTeamRegistrationLimit,
     checkMiniTournamentLimit
   } = useRegistrationAPI();
-  
+
   // Reference data
   const [games, setGames] = useState<Game[]>([]);
   const [colleges, setColleges] = useState<College[]>([]);
@@ -139,14 +139,14 @@ const RegistrationSection = () => {
         getColleges(),
         getSponsorshipTiers(),
       ]);
-      
+
       if (isMounted) {
         if (gamesData) setGames(gamesData);
         if (collegesData) setColleges(collegesData);
         if (tiersData) setSponsorshipTiers(tiersData);
       }
     };
-    
+
     loadReferenceData();
     return () => { isMounted = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -206,10 +206,10 @@ const RegistrationSection = () => {
       'Associate Sponsor': 3,
       'Category Partner': 4
     };
-    
+
     return directMapping[sponsorType] || null;
   };
-  
+
   const [formData, setFormData] = useState({
     teamName: "",
     collegeName: "",
@@ -257,14 +257,14 @@ const RegistrationSection = () => {
   useEffect(() => {
     if (registrationType && !registrationId) {
       const generateId = () => {
-        const prefix = registrationType === 'college' ? 'CLG' : 
-                       registrationType === 'moba-open' ? 'MOB' :
-                       registrationType === 'cosplayer' ? 'COS' :
-                       registrationType === 'vendor' ? 'VEN' :
-                       registrationType === 'exhibitor' ? 'EXH' :
-                       registrationType === 'sponsor' ? 'SPN' : 
-                       registrationType === 'media' ? 'MDA' : 
-                       registrationType === 'mini-tournament' ? 'MIN' : 'VST';
+        const prefix = registrationType === 'college' ? 'CLG' :
+          registrationType === 'moba-open' ? 'MOB' :
+            registrationType === 'cosplayer' ? 'COS' :
+              registrationType === 'vendor' ? 'VEN' :
+                registrationType === 'exhibitor' ? 'EXH' :
+                  registrationType === 'sponsor' ? 'SPN' :
+                    registrationType === 'media' ? 'MDA' :
+                      registrationType === 'mini-tournament' ? 'MIN' : 'VST';
         const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
         const id = `${prefix}${randomNum}`;
         setRegistrationId(id);
@@ -358,7 +358,7 @@ const RegistrationSection = () => {
 
       // Check mandatory fields - different for college vs MOBA
       const teamMembersWithDocs = getTeamMemberFields();
-      
+
       if (registrationType === 'college') {
         // Check all team members have student ID
         for (let i = 0; i < teamMembersWithDocs.length; i++) {
@@ -534,7 +534,7 @@ const RegistrationSection = () => {
             console.error('Error uploading passport photo to Firebase Storage:', error);
             console.log('This might be due to Firebase Storage security rules or CORS issues.');
             console.log('Registration will continue without photo upload for now.');
-            
+
             // For now, store a placeholder to indicate photo was attempted
             // In production, you'd want to handle this more gracefully
             passportPhotoData = {
@@ -565,7 +565,7 @@ const RegistrationSection = () => {
       }
     } catch (err) {
       console.error('Registration error:', err);
-    } finally { 
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -869,7 +869,7 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              <TermsAndConditions 
+              <TermsAndConditions
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
                 registrationType="college"
@@ -1135,7 +1135,7 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              <TermsAndConditions 
+              <TermsAndConditions
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
                 registrationType="moba-open"
@@ -1172,7 +1172,7 @@ const RegistrationSection = () => {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="captainEmail">Email *</Label>
@@ -1228,7 +1228,7 @@ const RegistrationSection = () => {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="city">City *</Label>
@@ -1262,7 +1262,7 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              <TermsAndConditions 
+              <TermsAndConditions
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
                 registrationType="cosplayer"
@@ -1350,7 +1350,7 @@ const RegistrationSection = () => {
                   />
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="captainPhone">Phone *</Label>
                 <Input
@@ -1373,7 +1373,7 @@ const RegistrationSection = () => {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="city">City *</Label>
@@ -1407,7 +1407,7 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              <TermsAndConditions 
+              <TermsAndConditions
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
                 registrationType="vendor"
@@ -1489,7 +1489,7 @@ const RegistrationSection = () => {
                   />
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="captainPhone">Phone *</Label>
                 <Input
@@ -1512,7 +1512,7 @@ const RegistrationSection = () => {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="city">City *</Label>
@@ -1546,7 +1546,7 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              <TermsAndConditions 
+              <TermsAndConditions
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
                 registrationType="exhibitor"
@@ -1583,7 +1583,7 @@ const RegistrationSection = () => {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="captainEmail">Email *</Label>
@@ -1641,7 +1641,7 @@ const RegistrationSection = () => {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="city">City *</Label>
@@ -1675,7 +1675,7 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              <TermsAndConditions 
+              <TermsAndConditions
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
                 registrationType="media"
@@ -1753,7 +1753,7 @@ const RegistrationSection = () => {
                   />
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="captainPhone">Phone *</Label>
                 <Input
@@ -1786,7 +1786,7 @@ const RegistrationSection = () => {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="city">City *</Label>
@@ -1820,7 +1820,7 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              <TermsAndConditions 
+              <TermsAndConditions
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
                 registrationType="sponsor"
@@ -1976,15 +1976,15 @@ const RegistrationSection = () => {
                     }}
                     className="hidden"
                   />
-                  <div 
+                  <div
                     className="w-full max-w-xs h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
                     onClick={() => document.getElementById('passportPhoto')?.click()}
                   >
                     {formData.passportPhoto ? (
                       <div className="relative w-full h-full flex items-center justify-center">
-                        <img 
-                          src={URL.createObjectURL(formData.passportPhoto)} 
-                          alt="Passport photo preview" 
+                        <img
+                          src={URL.createObjectURL(formData.passportPhoto)}
+                          alt="Passport photo preview"
                           className="max-h-full max-w-full object-contain rounded"
                         />
                       </div>
@@ -1999,7 +1999,7 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
-              <TermsAndConditions 
+              <TermsAndConditions
                 accepted={formData.agreeTerms}
                 onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
                 registrationType="mini-tournament"
@@ -2061,8 +2061,8 @@ const RegistrationSection = () => {
           </h2> */}
           <h2 className="font-['Neiko'] text-4xl md:text-6xl font-bold text-white mb-6">
             Register for{" "}
-            <span 
-              className="font-['Neo_Triad'] inline-flex tracking-normal" 
+            <span
+              className="font-['Neo_Triad'] inline-flex tracking-normal"
               style={{ fontFamily: "'Neo_Triad', sans-serif" }}
             >
               {/* Red 'T' with minimal vertical gradient */}
@@ -2091,7 +2091,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0 * 0.15 }}
-            // onClick={() => setRegistrationType("college")}
+          // onClick={() => setRegistrationType("college")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.USERS} size={24} color="#00ff88" />
@@ -2129,7 +2129,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            // onClick={() => setRegistrationType("mini-tournament")}
+          // onClick={() => setRegistrationType("mini-tournament")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.GAMEPAD} size={24} color="#ff6b6b" />
@@ -2148,7 +2148,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            // onClick={() => setRegistrationType("cosplayer")}
+          // onClick={() => setRegistrationType("cosplayer")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#ec4899" />
@@ -2167,7 +2167,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            // onClick={() => setRegistrationType("vendor")}
+          // onClick={() => setRegistrationType("vendor")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.TARGET} size={24} color="#3b82f6" />
@@ -2186,7 +2186,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            // onClick={() => setRegistrationType("exhibitor")}
+          // onClick={() => setRegistrationType("exhibitor")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-yellow-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.MONITOR} size={24} color="#eab308" />
@@ -2205,7 +2205,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.65 }}
-            // onClick={() => setRegistrationType("media")}
+          // onClick={() => setRegistrationType("media")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.VIDEO} size={24} color="#a855f7" />
@@ -2219,13 +2219,13 @@ const RegistrationSection = () => {
             <Button disabled className="w-full text-sm sm:text-base" variant="outline">Register as Media</Button>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
             data-registration-type="sponsor"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            // onClick={() => setRegistrationType("sponsor")}
+          // onClick={() => setRegistrationType("sponsor")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.PARTNERSHIP} size={24} color="#50D075" />
@@ -2248,23 +2248,23 @@ const RegistrationSection = () => {
           className="text-center mt-12"
         >
           <div className="inline-flex items-center gap-2 text-[#d0d0d0] hover:text-white transition-colors cursor-pointer group"
-               onClick={() => {
-                 setRegistrationType("sponsor");
-                 // Scroll to sponsor card after it renders
-                 setTimeout(() => {
-                   // Try multiple selectors to find the sponsor card
-                   let element = document.querySelector('[data-registration-type="sponsor"]');
-                   if (!element) {
-                     // Fallback: look for any card with sponsor text
-                     element = Array.from(document.querySelectorAll('.motion-div')).find(el => 
-                       el.textContent?.includes('Sponsor') || el.textContent?.includes('Partner')
-                     );
-                   }
-                   if (element) {
-                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                   }
-                 }, 500);
-               }}>
+            onClick={() => {
+              setRegistrationType("sponsor");
+              // Scroll to sponsor card after it renders
+              setTimeout(() => {
+                // Try multiple selectors to find the sponsor card
+                let element = document.querySelector('[data-registration-type="sponsor"]');
+                if (!element) {
+                  // Fallback: look for any card with sponsor text
+                  element = Array.from(document.querySelectorAll('.motion-div')).find(el =>
+                    el.textContent?.includes('Sponsor') || el.textContent?.includes('Partner')
+                  );
+                }
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              }, 500);
+            }}>
             <span className="text-lg font-['Nonito']">Interested in partnership opportunities?</span>
             <span className="text-[#50D075] group-hover:text-[#00ff88] font-semibold transition-colors">
               Become a Partner →
