@@ -188,7 +188,23 @@ const AdminDashboard = () => {
       ]);
 
       setStats(statsData);
-      setTeamRegistrations(teams || []);
+      const allTeams = teams || [];
+      
+      // MOBA 5v5 Open Tournament: Team registrations with MOB prefix in registrationId or teamCategory 'open'
+      const mobaOpen = allTeams.filter(t => 
+        (t.registrationId && t.registrationId.startsWith('MOB')) || 
+        (t.teamCategory === 'open')
+      );
+      
+      // Inter-College: Teams that are NOT in the MOBA Open category
+      const interCollege = allTeams.filter(t => 
+        !(t.registrationId && t.registrationId.startsWith('MOB')) && 
+        (t.teamCategory !== 'open')
+      );
+
+      setTeamRegistrations(interCollege);
+      setMobaOpenRegistrations(mobaOpen);
+      
       setSponsorRegistrations(sponsors || []);
       setVisitorRegistrations(visitors || []);
       setMediaRegistrations(media || []);
@@ -217,13 +233,6 @@ const AdminDashboard = () => {
         (v.message && v.message.includes('Game:'))
       );
       setMiniTournamentRegistrations(miniTournaments);
-
-      // MOBA 5v5 Open Tournament: Team registrations with MOB prefix in registrationId or teamCategory 'open'
-      const mobaOpen = (teams || []).filter(t => 
-        (t.registrationId && t.registrationId.startsWith('MOB')) || 
-        (t.teamCategory === 'open')
-      );
-      setMobaOpenRegistrations(mobaOpen);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     } finally {
