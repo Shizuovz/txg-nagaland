@@ -109,7 +109,8 @@ const AdminDashboard = () => {
     updateMediaStatus,
     deleteTeamRegistration,
     deleteSponsorRegistration,
-    deleteMediaRegistration
+    deleteMediaRegistration,
+    deleteVisitorRegistration
   } = useRegistrationAPI();
 
   const [stats, setStats] = useState<any>(null);
@@ -444,6 +445,42 @@ const AdminDashboard = () => {
     }
   };
 
+  // Delete Registration Function
+  const handleDeleteRegistration = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament') => {
+    if (!window.confirm('Are you sure you want to permanently delete this registration? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      let result = null;
+      switch (type) {
+        case 'inter-college':
+        case 'moba-open':
+          result = await deleteTeamRegistration(id);
+          break;
+        case 'sponsor':
+        case 'vendor':
+        case 'exhibitor':
+          result = await deleteSponsorRegistration(id);
+          break;
+        case 'cosplayer':
+        case 'mini-tournament':
+          result = await deleteVisitorRegistration(id);
+          break;
+        case 'media':
+          result = await deleteMediaRegistration(id);
+          break;
+      }
+      
+      // If result is truthy, it means success (handleAPIResponse returns data on success, null on failure)
+      if (result) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error deleting registration:', error);
+    }
+  };
+
   // Bulk Delete Functions
   const handleBulkDelete = async (type: 'all' | 'teams' | 'sponsors' | 'cosplayers' | 'vendors' | 'exhibitors' | 'media') => {
     const confirmMessage = {
@@ -514,8 +551,8 @@ const AdminDashboard = () => {
       )
     ].join('\n');
 
-    // Create blob and download
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // Create blob with UTF-8 BOM so Excel opens it correctly
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
@@ -1510,6 +1547,14 @@ const AdminDashboard = () => {
                                 Withdraw
                               </Button>
                             )}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteRegistration(team.id, 'inter-college')}
+                              className="bg-red-800 hover:bg-red-900 text-white ml-auto"
+                            >
+                              Delete
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
@@ -1751,6 +1796,14 @@ const AdminDashboard = () => {
                                 Withdraw
                               </Button>
                             )}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteRegistration(team.id, 'moba-open')}
+                              className="bg-red-800 hover:bg-red-900 text-white ml-auto"
+                            >
+                              Delete
+                            </Button>
                           </div>
                         </div>
                       </CardContent>

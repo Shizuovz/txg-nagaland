@@ -82,11 +82,11 @@ export const useRegistrationAPI = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleAPIResponse = <T>(response: APIResponse<T>, successMessage?: string): T | null => {
-    if (response.success && response.data) {
+    if (response.success) {
       if (successMessage) {
         toast.success(successMessage);
       }
-      return response.data;
+      return (response.data !== undefined ? response.data : true) as unknown as T;
     } else {
       const errorMessage = response.error || response.message || 'An error occurred';
       setError(errorMessage);

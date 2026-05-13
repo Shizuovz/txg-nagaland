@@ -62,6 +62,16 @@ export class RegistrationAPI {
     coordinatorPhone?: string;
   }): Promise<{ success: boolean; data?: TeamRegistration; message?: string; error?: string }> {
     try {
+      // Check if team name already exists
+      const teamExists = await this.firebaseService.checkTeamNameExists(data.teamName, data.gameId);
+      if (teamExists) {
+        return {
+          success: false,
+          message: `A team with the name "${data.teamName}" is already registered for this game. Please choose a different team name.`,
+          error: 'TEAM_NAME_ALREADY_EXISTS'
+        };
+      }
+
       // Check registration limit before submitting
       const limitCheck = await this.checkTeamRegistrationLimit(data.registrationType);
       if (!limitCheck.allowed) {

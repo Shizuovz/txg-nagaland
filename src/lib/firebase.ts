@@ -468,6 +468,27 @@ export class FirebaseService {
     });
   }
 
+  // Check if team name already exists
+  async checkTeamNameExists(teamName: string, gameId: string): Promise<boolean> {
+    const q = query(
+      this.teamRegistrationsCollection,
+      where('gameId', '==', gameId)
+    );
+    const snapshot = await getDocs(q);
+    const lowerTeamName = teamName.toLowerCase().trim();
+    
+    return snapshot.docs.some(doc => {
+      const data = doc.data();
+      // Also ignore withdrawn or rejected teams when checking for duplicates?
+      // For now, let's just check if it exists at all (unless they were rejected/withdrawn, then maybe allow?)
+      // We will only block if status is pending or approved
+      if (data.status === 'rejected' || data.status === 'withdrawn') {
+        return false;
+      }
+      return data.teamName && data.teamName.toLowerCase().trim() === lowerTeamName;
+    });
+  }
+
   // Registration Count Methods for Entry Limits
   async getTeamRegistrationCountByType(registrationType: 'college' | 'open_category'): Promise<number> {
     const q = query(

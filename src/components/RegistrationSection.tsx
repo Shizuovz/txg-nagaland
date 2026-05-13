@@ -271,8 +271,8 @@ const RegistrationSection = () => {
       };
       generateId();
 
-      // Auto-set Mobile Legends for college registration
-      if (registrationType === 'college') {
+      // Auto-set Mobile Legends for college and moba-open registrations
+      if (registrationType === 'college' || registrationType === 'moba-open') {
         const mobileLegendsGame = games.find(g => g.name === 'Mobile Legends');
         if (mobileLegendsGame) {
           setFormData(prev => ({ ...prev, game: mobileLegendsGame.id.toString() }));
