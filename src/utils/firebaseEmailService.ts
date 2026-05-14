@@ -67,7 +67,7 @@ export const sendApprovalEmail = async (data: EmailData): Promise<boolean> => {
 export const getRegistrationTypeLabel = (type: string): string => {
   const typeLabels: { [key: string]: string } = {
     'college': 'Inter-College Tournament',
-    'open_category': 'Open Category Tournament',
+    'open_category': 'MOBA 5v5! Open Tournament',
     'cosplayer': 'Cosplayer',
     'vendor': 'Vendor',
     'exhibitor': 'Exhibitor',
@@ -94,8 +94,8 @@ export const sendAdminNotificationEmail = async (registration: any, registration
       registrationType: getRegistrationTypeLabel(registrationType),
       registrationId: registration.registrationId || '',
       teamName: registration.teamName || '',
-      companyName: registration.companyName || '',
-      collegeName: registration.collegeName || ''
+      companyName: registrationType === 'open_category' ? (registration.collegeName || registration.companyName || '') : (registration.companyName || ''),
+      collegeName: registrationType === 'college' ? (registration.collegeName || '') : ''
     };
     
     console.log('Admin notification data:', adminNotificationData);
@@ -200,7 +200,7 @@ export const getApprovalEmailContent = (registration: any, status: 'approved' | 
     status: status,
     teamName: registration.teamName || '',
     companyName: registration.companyName || teamOrCompanyName,
-    collegeName: registration.collegeName || ''
+    collegeName: registrationType === 'college' ? (registration.collegeName || '') : ''
   };
   
   return emailData;

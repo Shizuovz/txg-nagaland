@@ -239,7 +239,7 @@ function generateEmailTemplate(data: {
 }
 
 function generateTeamEmailTemplate(data: any, isApproved: boolean, statusColor: string, statusIcon: string) {
-  const tournamentType = data.registrationType === 'college' ? 'Inter-College' : 'Open Category';
+  const tournamentType = data.registrationType === 'college' ? 'Inter-College' : 'MOBA 5v5! Open';
   
   return `
     <html>
@@ -278,7 +278,7 @@ function generateTeamEmailTemplate(data: any, isApproved: boolean, statusColor: 
                     <p><strong>Registration Type:</strong> ${data.registrationType}</p>
                     <p><strong>Registration ID:</strong> ${data.registrationId}</p>
                     <p><strong>Team Name:</strong> ${data.teamName}</p>
-                    ${data.collegeName ? `<p><strong>College Name:</strong> ${data.collegeName}</p>` : ''}
+                    ${data.collegeName && data.registrationType === 'college' ? `<p><strong>College Name:</strong> ${data.collegeName}</p>` : ''}
                 </div>
                 
                 ${isApproved ? `

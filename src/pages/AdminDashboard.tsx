@@ -408,10 +408,10 @@ const AdminDashboard = () => {
           // Map admin dashboard types to email service types
           switch (type) {
             case 'inter-college':
-              finalRegistrationType = registrationData.registrationType || 'college'; // 'college' or 'open_category'
+              finalRegistrationType = 'college'; 
               break;
             case 'moba-open':
-              finalRegistrationType = registrationData.registrationType || 'open_category';
+              finalRegistrationType = 'open_category';
               break;
             case 'sponsor':
               finalRegistrationType = 'sponsor';
