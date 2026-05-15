@@ -595,6 +595,8 @@ const AdminDashboard = () => {
       'substitute_ID',
       'hasSubstitute',
       'termsAccepted',
+      'institutionDeclaration',
+      'livestreamConsent',
       'createdAt',
       'updatedAt'
     ];
@@ -630,6 +632,8 @@ const AdminDashboard = () => {
         substitute_ID: substituteID,
         hasSubstitute: team.substitute ? 'Yes' : 'No',
         termsAccepted: team.termsAccepted ? 'Yes' : 'No',
+        institutionDeclaration: team.institutionDeclaration ? 'Yes' : 'No',
+        livestreamConsent: team.livestreamConsent ? 'Yes' : 'No',
         createdAt: formatDate(team.createdAt),
         updatedAt: formatDate(team.updatedAt)
       };
@@ -842,6 +846,8 @@ const AdminDashboard = () => {
       'substitute_ID',
       'hasSubstitute',
       'termsAccepted',
+      'institutionDeclaration',
+      'livestreamConsent',
       'createdAt',
       'updatedAt'
     ];
@@ -869,6 +875,8 @@ const AdminDashboard = () => {
         substitute_ID: substituteID,
         hasSubstitute: team.substitute ? 'Yes' : 'No',
         termsAccepted: team.termsAccepted ? 'Yes' : 'No',
+        institutionDeclaration: team.institutionDeclaration ? 'Yes' : 'No',
+        livestreamConsent: team.livestreamConsent ? 'Yes' : 'No',
         createdAt: formatDate(team.createdAt),
         updatedAt: formatDate(team.updatedAt)
       };
@@ -926,6 +934,51 @@ const AdminDashboard = () => {
     });
 
     downloadCSV(csvData, 'mini_tournament_registrations', headers);
+  };
+
+  const downloadExhibitorRegistrationsCSV = () => {
+    const headers = [
+      'registrationId',
+      'companyName',
+      'contactPerson',
+      'contactEmail',
+      'contactPhone',
+      'address',
+      'city',
+      'state',
+      'pinCode',
+      'exhibitionDescription',
+      'boothSpaceRequirements',
+      'status',
+      'createdAt'
+    ];
+
+    const csvData = exhibitorRegistrations.map((exhibitor) => {
+      const exhibitionDescription = exhibitor.message?.includes('Exhibition Description:') 
+        ? exhibitor.message.split('Exhibition Description:')[1]?.split('\n\n')[0]?.trim() 
+        : 'Not specified';
+      const boothRequirements = exhibitor.message?.includes('Booth/Space Requirements:') 
+        ? exhibitor.message.split('Booth/Space Requirements:')[1]?.trim() 
+        : 'Not specified';
+
+      return {
+        registrationId: exhibitor.registrationId || '',
+        companyName: exhibitor.companyName || '',
+        contactPerson: exhibitor.contactPerson || '',
+        contactEmail: exhibitor.contactEmail || '',
+        contactPhone: exhibitor.contactPhone || '',
+        address: exhibitor.address || '',
+        city: exhibitor.city || '',
+        state: exhibitor.state || '',
+        pinCode: exhibitor.pinCode || '',
+        exhibitionDescription: exhibitionDescription,
+        boothSpaceRequirements: boothRequirements,
+        status: exhibitor.status || '',
+        createdAt: formatDate(exhibitor.createdAt)
+      };
+    });
+
+    downloadCSV(csvData, 'exhibitor_registrations', headers);
   };
 
   const getStatusColor = (status: string) => {
@@ -2693,9 +2746,14 @@ const AdminDashboard = () => {
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Refresh
                     </Button>
+                    <Button onClick={downloadExhibitorRegistrationsCSV} variant="outline" size="sm">
+                      <FileText className="w-4 h-4 mr-2" />
+                      Download CSV
+                    </Button>
                     <Button 
                       onClick={() => handleBulkDelete('exhibitors')} 
                       variant="destructive"
+                      size="sm"
                       className="bg-red-600 hover:bg-red-700 text-white"
                     >
                       🗑️ Permanently Delete All Exhibitors
