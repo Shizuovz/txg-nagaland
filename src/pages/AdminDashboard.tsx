@@ -824,6 +824,110 @@ const AdminDashboard = () => {
     downloadCSV(csvData, 'vendor_registrations', headers);
   };
 
+  const downloadMobaOpenRegistrationsCSV = () => {
+    const headers = [
+      'registrationId',
+      'teamName', 
+      'registrationType',
+      'collegeName',
+      'captainName',
+      'captainEmail', 
+      'captainPhone',
+      'gameId',
+      'status',
+      'teamMembersCount',
+      'teamMembers_IGNs',
+      'teamMembers_IDs',
+      'substitute_IGN',
+      'substitute_ID',
+      'hasSubstitute',
+      'termsAccepted',
+      'createdAt',
+      'updatedAt'
+    ];
+
+    const csvData = filterMobaOpenRegistrations(mobaOpenRegistrations).map(team => {
+      const teamMemberIGNs = team.teamMembers?.map(member => member.ign || '').join('; ') || '';
+      const teamMemberIDs = team.teamMembers?.map(member => member.gameId || '').join('; ') || '';
+      const substituteIGN = team.substitute?.ign || '';
+      const substituteID = team.substitute?.gameId || '';
+
+      return {
+        registrationId: team.registrationId || '',
+        teamName: team.teamName || '',
+        registrationType: team.registrationType || '',
+        collegeName: team.collegeName || '',
+        captainName: team.captainName || '',
+        captainEmail: team.captainEmail || '',
+        captainPhone: team.captainPhone || '',
+        gameId: getGameName(team.gameId || ''),
+        status: team.status || '',
+        teamMembersCount: team.teamMembers?.length || 0,
+        teamMembers_IGNs: teamMemberIGNs,
+        teamMembers_IDs: teamMemberIDs,
+        substitute_IGN: substituteIGN,
+        substitute_ID: substituteID,
+        hasSubstitute: team.substitute ? 'Yes' : 'No',
+        termsAccepted: team.termsAccepted ? 'Yes' : 'No',
+        createdAt: formatDate(team.createdAt),
+        updatedAt: formatDate(team.updatedAt)
+      };
+    });
+
+    downloadCSV(csvData, 'moba_open_registrations', headers);
+  };
+
+  const downloadMiniTournamentRegistrationsCSV = () => {
+    const headers = [
+      'registrationId',
+      'fullName',
+      'nickname',
+      'email',
+      'whatsapp',
+      'phoneCall',
+      'age',
+      'gender',
+      'game',
+      'status',
+      'createdAt'
+    ];
+
+    const filteredRegistrations = selectedMiniGame === 'all'
+      ? miniTournamentRegistrations
+      : miniTournamentRegistrations.filter(r => getMiniTournamentGame(r) === selectedMiniGame);
+
+    const csvData = filteredRegistrations.map((registration) => {
+      const game = registration.message && registration.message.includes('Game:') 
+        ? registration.message.split('Game:')[1]?.split('\n')[0]?.trim() 
+        : 'Unknown';
+      const phoneCall = registration.message && registration.message.includes('Phone Call:') 
+        ? registration.message.split('Phone Call:')[1]?.split('\n')[0]?.trim() 
+        : 'N/A';
+      const age = registration.message && registration.message.includes('Age:') 
+        ? registration.message.split('Age:')[1]?.split('\n')[0]?.trim() 
+        : 'N/A';
+      const gender = registration.message && registration.message.includes('Gender:') 
+        ? registration.message.split('Gender:')[1]?.split('\n')[0]?.trim() 
+        : 'N/A';
+
+      return {
+        registrationId: registration.registrationId || '',
+        fullName: registration.fullName || '',
+        nickname: registration.collegeName || 'N/A',
+        email: registration.email || '',
+        whatsapp: registration.phone || '',
+        phoneCall: phoneCall,
+        age: age,
+        gender: gender,
+        game: game,
+        status: registration.status || '',
+        createdAt: formatDate(registration.createdAt)
+      };
+    });
+
+    downloadCSV(csvData, 'mini_tournament_registrations', headers);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved': return 'bg-green-100 text-green-800';
@@ -1609,7 +1713,7 @@ const AdminDashboard = () => {
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Refresh
                     </Button>
-                    <Button onClick={downloadTeamRegistrationsCSV} variant="outline">
+                    <Button onClick={downloadMobaOpenRegistrationsCSV} variant="outline">
                       <FileText className="w-4 h-4 mr-2" />
                       Download CSV
                     </Button>
@@ -2757,16 +2861,24 @@ const AdminDashboard = () => {
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-2xl font-bold text-gray-800">Mini Tournament Registrations</h2>
-                  <div className="flex gap-4">
-                    <Badge className="bg-blue-100 text-blue-800">
+                  <div className="flex gap-4 items-center">
+                    <Badge className="bg-blue-100 text-blue-800 h-6">
                       Total: {miniTournamentRegistrations.length}
                     </Badge>
-                    <Badge className="bg-yellow-100 text-yellow-800">
+                    <Badge className="bg-yellow-100 text-yellow-800 h-6">
                       Pending: {miniTournamentRegistrations.filter(r => r.status === 'pending').length}
                     </Badge>
-                    <Badge className="bg-green-100 text-green-800">
+                    <Badge className="bg-green-100 text-green-800 h-6">
                       Approved: {miniTournamentRegistrations.filter(r => r.status === 'approved').length}
                     </Badge>
+                    <Button onClick={downloadMiniTournamentRegistrationsCSV} variant="outline" size="sm">
+                      <FileText className="w-4 h-4 mr-2" />
+                      Download CSV
+                    </Button>
+                    <Button onClick={() => window.print()} variant="outline" size="sm" className="print:hidden">
+                      <Download className="w-4 h-4 mr-2" />
+                      Export PDF
+                    </Button>
                   </div>
                 </div>
 
