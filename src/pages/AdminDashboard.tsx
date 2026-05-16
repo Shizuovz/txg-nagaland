@@ -2512,15 +2512,30 @@ const AdminDashboard = () => {
                             <span className="text-gray-600">Phone:</span>
                             <span className="font-medium">{cosplayer.phone}</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Address:</span>
-                            <span className="font-medium text-xs max-w-xs truncate">
-                              {cosplayer.address && cosplayer.city && cosplayer.state 
-                                ? `${cosplayer.address}, ${cosplayer.city}, ${cosplayer.state}`
-                                : cosplayer.address || 'N/A'
-                              }
-                            </span>
+                        </div>
+
+                        {/* Address Details */}
+                        <div className="mt-4 space-y-3">
+                          <h4 className="font-semibold text-gray-800 border-b pb-2">Address</h4>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Address:</span>
+                              <span className="font-medium">{cosplayer.address || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">City:</span>
+                              <span className="font-medium">{cosplayer.city || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">State:</span>
+                              <span className="font-medium">{cosplayer.state || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">PIN Code:</span>
+                              <span className="font-medium">{cosplayer.pinCode || 'N/A'}</span>
+                            </div>
                           </div>
+                        </div>
                           {cosplayer.collegeName && (
                             <div className="flex justify-between">
                               <span className="text-gray-600">Cosplay Group/Team:</span>
@@ -2710,15 +2725,30 @@ const AdminDashboard = () => {
                               </span>
                             </div>
                           )}
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Business Address:</span>
-                            <span className="font-medium text-xs max-w-xs truncate">
-                              {vendor.address && vendor.city && vendor.state 
-                                ? `${vendor.address}, ${vendor.city}, ${vendor.state} - ${vendor.pinCode || 'N/A'}`
-                                : vendor.address || 'Not specified'
-                              }
-                            </span>
+                        </div>
+
+                        {/* Address Details */}
+                        <div className="mt-4 space-y-3">
+                          <h4 className="font-semibold text-gray-800 border-b pb-2">Business Address</h4>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Address:</span>
+                              <span className="font-medium">{vendor.address || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">City:</span>
+                              <span className="font-medium">{vendor.city || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">State:</span>
+                              <span className="font-medium">{vendor.state || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">PIN Code:</span>
+                              <span className="font-medium">{vendor.pinCode || 'N/A'}</span>
+                            </div>
                           </div>
+                        </div>
                         </div>
 
                         <div className="mt-4 pt-4 border-t">
@@ -2888,15 +2918,30 @@ const AdminDashboard = () => {
                               {exhibitor.message?.includes('Booth/Space Requirements:') ? exhibitor.message.split('Booth/Space Requirements:')[1]?.trim() : 'Not specified'}
                             </span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Organization Address:</span>
-                            <span className="font-medium text-xs max-w-xs truncate">
-                              {exhibitor.address && exhibitor.city && exhibitor.state 
-                                ? `${exhibitor.address}, ${exhibitor.city}, ${exhibitor.state} - ${exhibitor.pinCode || 'N/A'}`
-                                : exhibitor.address || 'Not specified'
-                              }
-                            </span>
+                        </div>
+
+                        {/* Address Details */}
+                        <div className="mt-4 space-y-3">
+                          <h4 className="font-semibold text-gray-800 border-b pb-2">Organization Address</h4>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Address:</span>
+                              <span className="font-medium">{exhibitor.address || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">City:</span>
+                              <span className="font-medium">{exhibitor.city || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">State:</span>
+                              <span className="font-medium">{exhibitor.state || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">PIN Code:</span>
+                              <span className="font-medium">{exhibitor.pinCode || 'N/A'}</span>
+                            </div>
                           </div>
+                        </div>
                         </div>
 
                         <div className="mt-4 pt-4 border-t">
@@ -3102,11 +3147,22 @@ const AdminDashboard = () => {
                             <span className="text-sm">{registration.email}</span>
                           </div>
 
-                          <div className="space-y-2 pt-2 border-t mt-2">
-                            <span className="text-sm font-medium text-gray-600">Address:</span>
-                            <div className="text-sm bg-gray-50 p-2 rounded">
-                              <p>{registration.address || 'N/A'}</p>
-                              <p>{registration.city}, {registration.state} - {registration.pinCode}</p>
+                          {/* Address Details */}
+                          <div className="mt-4 space-y-2 pt-2 border-t">
+                            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Address</h4>
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600 text-xs">Address:</span>
+                                <span className="font-medium text-right ml-4">{registration.address || 'N/A'}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600 text-xs">City/State:</span>
+                                <span className="font-medium text-right">{registration.city}, {registration.state}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600 text-xs">PIN:</span>
+                                <span className="font-medium text-right">{registration.pinCode || 'N/A'}</span>
+                              </div>
                             </div>
                           </div>
                           
