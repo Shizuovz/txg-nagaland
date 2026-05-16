@@ -2555,7 +2555,6 @@ const AdminDashboard = () => {
                               Cosplay-specific details not available (may be from older registration)
                             </div>
                           )}
-                        </div>
 
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex justify-between text-xs text-gray-500">
@@ -2749,7 +2748,6 @@ const AdminDashboard = () => {
                             </div>
                           </div>
                         </div>
-                        </div>
 
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex justify-between text-xs text-gray-500">
@@ -2941,7 +2939,6 @@ const AdminDashboard = () => {
                               <span className="font-medium">{exhibitor.pinCode || 'N/A'}</span>
                             </div>
                           </div>
-                        </div>
                         </div>
 
                         <div className="mt-4 pt-4 border-t">
