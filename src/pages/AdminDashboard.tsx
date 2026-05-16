@@ -837,6 +837,10 @@ const AdminDashboard = () => {
       'captainName',
       'captainEmail', 
       'captainPhone',
+      'address',
+      'city',
+      'state',
+      'pinCode',
       'gameId',
       'status',
       'teamMembersCount',
@@ -866,6 +870,10 @@ const AdminDashboard = () => {
         captainName: team.captainName || '',
         captainEmail: team.captainEmail || '',
         captainPhone: team.captainPhone || '',
+        address: team.address || '',
+        city: team.city || '',
+        state: team.state || '',
+        pinCode: team.pinCode || '',
         gameId: getGameName(team.gameId || ''),
         status: team.status || '',
         teamMembersCount: team.teamMembers?.length || 0,
@@ -893,6 +901,10 @@ const AdminDashboard = () => {
       'email',
       'whatsapp',
       'phoneCall',
+      'address',
+      'city',
+      'state',
+      'pinCode',
       'age',
       'gender',
       'game',
@@ -925,6 +937,10 @@ const AdminDashboard = () => {
         email: registration.email || '',
         whatsapp: registration.phone || '',
         phoneCall: phoneCall,
+        address: registration.address || '',
+        city: registration.city || '',
+        state: registration.state || '',
+        pinCode: registration.pinCode || '',
         age: age,
         gender: gender,
         game: game,
@@ -1815,6 +1831,29 @@ const AdminDashboard = () => {
                           <div>
                             <p className="text-sm font-medium text-gray-600">Registered</p>
                             <p className="text-sm">{formatDate(team.createdAt)}</p>
+                          </div>
+                        </div>
+
+                        {/* Address Details */}
+                        <div className="mt-4 mb-6 space-y-3">
+                          <h4 className="font-semibold text-gray-800 border-b pb-2">Address</h4>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Address:</span>
+                              <span className="font-medium">{team.address || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">City:</span>
+                              <span className="font-medium">{team.city || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">State:</span>
+                              <span className="font-medium">{team.state || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">PIN Code:</span>
+                              <span className="font-medium">{team.pinCode || 'N/A'}</span>
+                            </div>
                           </div>
                         </div>
 
@@ -3061,6 +3100,14 @@ const AdminDashboard = () => {
                           <div className="flex justify-between items-center">
                             <span className="text-sm font-medium text-gray-600">Email:</span>
                             <span className="text-sm">{registration.email}</span>
+                          </div>
+
+                          <div className="space-y-2 pt-2 border-t mt-2">
+                            <span className="text-sm font-medium text-gray-600">Address:</span>
+                            <div className="text-sm bg-gray-50 p-2 rounded">
+                              <p>{registration.address || 'N/A'}</p>
+                              <p>{registration.city}, {registration.state} - {registration.pinCode}</p>
+                            </div>
                           </div>
                           
                           <div className="flex justify-between items-center">
