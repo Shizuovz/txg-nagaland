@@ -2148,7 +2148,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-          // onClick={() => setRegistrationType("cosplayer")}
+            onClick={() => setRegistrationType("cosplayer")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#ec4899" />
@@ -2159,7 +2159,7 @@ const RegistrationSection = () => {
                 Register as a cosplayer and showcase your talent
               </p>
             </div>
-            <Button disabled className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div
