@@ -307,6 +307,8 @@ export class RegistrationAPI {
     registrationId?: string;
     collegeName?: string;
     message?: string;
+    characterName?: string;
+    gameName?: string;
   }): Promise<{ success: boolean; data?: VisitorRegistration; message?: string; error?: string }> {
     try {
       // Add required fields
@@ -315,6 +317,18 @@ export class RegistrationAPI {
         registrationId: data.registrationId || `VIS_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         status: 'pending' as const
       };
+      // Check if cosplayer already exists by email/phone (if it's a Cosplay registration)
+      if (cleanData.registrationId && cleanData.registrationId.startsWith('COS')) {
+        const cosplayerExists = await this.firebaseService.checkCosplayerExists(data.email, data.phone);
+        if (cosplayerExists) {
+          return {
+            success: false,
+            message: 'A cosplayer with this email or phone number has already registered. Multiple registrations are not allowed.',
+            error: 'COSPLAYER_ALREADY_EXISTS'
+          };
+        }
+      }
+
       const result = await this.firebaseService.createVisitorRegistration(cleanData);
       
       // Send admin notification email

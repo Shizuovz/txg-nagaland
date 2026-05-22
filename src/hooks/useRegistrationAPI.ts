@@ -60,6 +60,8 @@ export interface VisitorRegistrationData {
   registrationId?: string;
   collegeName?: string;
   message?: string;
+  characterName?: string;
+  gameName?: string;
 }
 
 export interface MediaPersonRegistrationData {

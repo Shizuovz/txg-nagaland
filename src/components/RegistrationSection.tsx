@@ -244,6 +244,9 @@ const RegistrationSection = () => {
     age: "",
     gender: "",
     passportPhoto: null as File | null,
+    // Cosplay fields
+    characterName: "",
+    gameName: "",
     // Legacy fields (kept for backward compatibility)
     studentIdUpload: null as File | null,
     aadhaarUpload: null as File | null,
@@ -464,6 +467,8 @@ const RegistrationSection = () => {
           pinCode: formData.pinCode,
           collegeName: formData.collegeName,
           message: formData.message,
+          characterName: formData.characterName,
+          gameName: formData.gameName,
           registrationId: registrationId
         }, 'Cosplayer registration submitted successfully!');
       } else if (registrationType === 'vendor') {
@@ -1164,6 +1169,20 @@ const RegistrationSection = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Cosplay Character Rule Warning */}
+              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-amber-400">
+                      Cosplay Character Restriction
+                    </p>
+                    <p className="text-sm text-amber-300/80 mt-1">
+                      Only game characters are allowed (even if they also appear in anime/other media). Any other characters will be rejected.
+                    </p>
+                  </div>
+                </div>
+              </div>
               <div>
                 <Label htmlFor="captainName">Full Name *</Label>
                 <Input
@@ -1194,6 +1213,29 @@ const RegistrationSection = () => {
                     value={formData.captainPhone}
                     onChange={(e) => handleInputChange("captainPhone", e.target.value)}
                     placeholder="Your phone number"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="characterName">Cosplay Character Name *</Label>
+                  <Input
+                    id="characterName"
+                    value={formData.characterName}
+                    onChange={(e) => handleInputChange("characterName", e.target.value)}
+                    placeholder="e.g. Geralt of Rivia, Jinx, etc."
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="gameName">Game Name *</Label>
+                  <Input
+                    id="gameName"
+                    value={formData.gameName}
+                    onChange={(e) => handleInputChange("gameName", e.target.value)}
+                    placeholder="e.g. The Witcher, League of Legends, etc."
                     required
                   />
                 </div>

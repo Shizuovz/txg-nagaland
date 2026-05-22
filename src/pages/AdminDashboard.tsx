@@ -4,13 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Calendar, Gamepad2, Search, RefreshCw, FileText, Settings, Download, Eye } from 'lucide-react';
+import { TrendingUp, Gamepad2, Search, RefreshCw, FileText, Settings, Download, Eye } from 'lucide-react';
 import GamingIcon, { GamingIcons } from "@/components/GamingIcons";
 import { useRegistrationAPI } from '@/hooks/useRegistrationAPI';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { TeamRegistration, SponsorRegistration, MediaPersonRegistration } from '@/lib/firebase';
 import { sendApprovalEmail, getApprovalEmailContent } from '@/utils/firebaseEmailService';
-import EmailTestComponent from '@/components/EmailTestComponent';
 import ManualDataEntry from '@/components/ManualDataEntry';
 import ContentManagement from '@/components/ContentManagement';
 import firebaseStorageService from '@/services/firebaseStorageService';
@@ -766,6 +765,8 @@ const AdminDashboard = () => {
       'pinCode',
       'cosplayGroupTeamName', // Cosplay Group/Team Name
       'cosplayExperience', // Cosplay Experience
+      'cosplayCharacterName', // Cosplay Character Name
+      'cosplayGameName', // Cosplay Game Name
       'status',
       'createdAt'
     ];
@@ -781,6 +782,8 @@ const AdminDashboard = () => {
       pinCode: cosplayer.pinCode || '',
       cosplayGroupTeamName: cosplayer.collegeName || '', // Cosplay Group/Team Name
       cosplayExperience: cosplayer.message || '', // Cosplay Experience
+      cosplayCharacterName: cosplayer.characterName || '', // Cosplay Character Name
+      cosplayGameName: cosplayer.gameName || '', // Cosplay Game Name
       status: cosplayer.status || '',
       createdAt: formatDate(cosplayer.createdAt)
     }));
@@ -1093,7 +1096,9 @@ const AdminDashboard = () => {
       const matchesSearch = searchTerm === '' || 
         reg.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        reg.registrationId?.toLowerCase().includes(searchTerm.toLowerCase());
+        reg.registrationId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.characterName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.gameName?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesStatus = sponsorFilters.status === 'all' || reg.status === sponsorFilters.status;
       const matchesDateRange = filterByDateRange(reg.createdAt?.toString() || '', sponsorFilters.dateRange);
@@ -1339,100 +1344,178 @@ const AdminDashboard = () => {
 
             {/* Overview Tab */}
             <TabsContent value="overview">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5" />
-                      Registration Trends
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Teams Approved</span>
-                        <Badge className="bg-green-100 text-green-800">
-                          {stats?.approvedTeams || 0}
-                        </Badge>
+              <div className="max-w-5xl mx-auto space-y-6">
+                <Card className="bg-white/95 backdrop-blur-sm border-purple-100 shadow-sm overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-b border-purple-100 pb-5 pt-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                      <div>
+                        <CardTitle className="flex items-center gap-2.5 text-xl font-bold text-gray-900">
+                          <TrendingUp className="w-6 h-6 text-purple-600 animate-pulse" />
+                          Registration Statistics Overview
+                        </CardTitle>
+                        <p className="text-sm text-gray-500 mt-1">
+                          A real-time overview of registration counts across all event categories. Click a row to view details.
+                        </p>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Sponsors Approved</span>
-                        <Badge className="bg-green-100 text-green-800">
-                          {stats?.approvedSponsors || 0}
-                        </Badge>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Media Approved</span>
-                        <Badge className="bg-green-100 text-green-800">
-                          {mediaRegistrations.filter(m => m.status === 'approved').length}
-                        </Badge>
-                      </div>
+                      <Badge className="bg-purple-100 text-purple-800 border-none font-semibold px-3 py-1 text-xs">
+                        Live Stats
+                      </Badge>
                     </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Calendar className="w-5 h-5" />
-                      Recent Activity
-                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {[...teamRegistrations.slice(0, 3), ...getPureSponsorRegistrations().slice(0, 2)].map((reg, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">
-                            {(reg as any).teamName || (reg as any).companyName || (reg as any).fullName}
-                          </span>
-                          <Badge className={getStatusColor((reg as any).status)}>
-                            {(reg as any).status}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-gray-50/75 border-b border-gray-100 text-gray-500 text-xs font-bold uppercase tracking-wider">
+                            <th className="py-4 px-6">Event Category</th>
+                            <th className="py-4 px-4 text-center">Total Registrations</th>
+                            <th className="py-4 px-4 text-center">Approved</th>
+                            <th className="py-4 px-4 text-center">Pending</th>
+                            <th className="py-4 px-4 text-center">Rejected / Other</th>
+                            <th className="py-4 px-6 text-right">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {(() => {
+                            const categoriesStats = [
+                              {
+                                name: 'Inter-College Teams',
+                                tab: 'inter-college',
+                                data: teamRegistrations,
+                                color: 'bg-blue-500',
+                              },
+                              {
+                                name: 'MOBA 5v5 Teams',
+                                tab: 'moba-open',
+                                data: mobaOpenRegistrations,
+                                color: 'bg-indigo-500',
+                              },
+                              {
+                                name: 'Sponsors',
+                                tab: 'sponsors',
+                                data: getPureSponsorRegistrations(),
+                                color: 'bg-amber-500',
+                              },
+                              {
+                                name: 'Cosplayers',
+                                tab: 'cosplayers',
+                                data: cosplayerRegistrations,
+                                color: 'bg-pink-500',
+                              },
+                              {
+                                name: 'Vendors',
+                                tab: 'vendors',
+                                data: vendorRegistrations,
+                                color: 'bg-emerald-500',
+                              },
+                              {
+                                name: 'Exhibitors',
+                                tab: 'exhibitors',
+                                data: exhibitorRegistrations,
+                                color: 'bg-violet-500',
+                              },
+                              {
+                                name: 'Media',
+                                tab: 'media',
+                                data: mediaRegistrations,
+                                color: 'bg-sky-500',
+                              },
+                              {
+                                name: 'Mini Tournaments',
+                                tab: 'mini-tournaments',
+                                data: miniTournamentRegistrations,
+                                color: 'bg-fuchsia-500',
+                              },
+                            ];
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <FileText className="w-5 h-5" />
-                      Email Test
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <EmailTestComponent />
-                  </CardContent>
-                </Card>
-              </div>
+                            const rows = categoriesStats.map(cat => {
+                              const total = cat.data.length;
+                              const approved = cat.data.filter(x => x.status === 'approved').length;
+                              const pending = cat.data.filter(x => x.status === 'pending').length;
+                              const other = total - approved - pending;
+                              return { ...cat, total, approved, pending, other };
+                            });
 
-              {/* Data Management Section */}
-              <div className="mt-8">
-                <Card className="border-red-200 bg-red-50">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-red-800">
-                      <span className="text-xl">⚠️</span>
-                      Data Management
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-red-700">
-                        <strong>Warning:</strong> These actions will permanently mark all test data. This cannot be undone.
-                      </p>
-                      <div className="flex gap-2 flex-wrap">
-                        <Button 
-                          onClick={() => handleBulkDelete('all')} 
-                          variant="destructive"
-                          className="bg-red-600 hover:bg-red-700 text-white"
-                        >
-                          🗑️ Permanently Delete All Test Data
-                        </Button>
-                        <div className="text-sm text-gray-600 flex items-center">
-                          Total: {teamRegistrations.length + getPureSponsorRegistrations().length + cosplayerRegistrations.length + vendorRegistrations.length + exhibitorRegistrations.length + mediaRegistrations.length} registrations
-                        </div>
-                      </div>
+                            const grandTotals = rows.reduce(
+                              (acc, cur) => ({
+                                total: acc.total + cur.total,
+                                approved: acc.approved + cur.approved,
+                                pending: acc.pending + cur.pending,
+                                other: acc.other + cur.other,
+                              }),
+                              { total: 0, approved: 0, pending: 0, other: 0 }
+                            );
+
+                            return (
+                              <>
+                                {rows.map((row) => (
+                                  <tr 
+                                    key={row.tab}
+                                    onClick={() => setActiveTab(row.tab)}
+                                    className="hover:bg-purple-50/40 cursor-pointer transition-colors duration-150 group"
+                                  >
+                                    <td className="py-4 px-6 flex items-center">
+                                      <span className={`h-3 w-3 rounded-full ${row.color} mr-3 block flex-shrink-0`} />
+                                      <span className="font-semibold text-gray-700 group-hover:text-purple-700 transition-colors">
+                                        {row.name}
+                                      </span>
+                                    </td>
+                                    <td className="py-4 px-4 text-center font-bold text-gray-800">
+                                      {row.total}
+                                    </td>
+                                    <td className="py-4 px-4 text-center">
+                                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                                        row.approved > 0 ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-gray-50 text-gray-400'
+                                      }`}>
+                                        {row.approved}
+                                      </span>
+                                    </td>
+                                    <td className="py-4 px-4 text-center">
+                                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                                        row.pending > 0 ? 'bg-yellow-50 text-yellow-700 border border-yellow-100' : 'bg-gray-50 text-gray-400'
+                                      }`}>
+                                        {row.pending}
+                                      </span>
+                                    </td>
+                                    <td className="py-4 px-4 text-center">
+                                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                                        row.other > 0 ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-gray-50 text-gray-400'
+                                      }`}>
+                                        {row.other}
+                                      </span>
+                                    </td>
+                                    <td className="py-4 px-6 text-right text-xs font-semibold text-purple-600 group-hover:text-purple-800 opacity-0 group-hover:opacity-100 transition-all">
+                                      View Details &rarr;
+                                    </td>
+                                  </tr>
+                                ))}
+                                {/* Grand Total Row */}
+                                <tr className="bg-gray-50/50 border-t-2 border-gray-200/80 font-bold text-gray-900">
+                                  <td className="py-4 px-6 flex items-center">
+                                    <span className="h-3 w-3 rounded-full bg-gray-900 mr-3 block flex-shrink-0" />
+                                    <span>Total Participants</span>
+                                  </td>
+                                  <td className="py-4 px-4 text-center text-lg text-purple-700 font-extrabold">
+                                    {grandTotals.total}
+                                  </td>
+                                  <td className="py-4 px-4 text-center text-green-700">
+                                    {grandTotals.approved}
+                                  </td>
+                                  <td className="py-4 px-4 text-center text-yellow-700">
+                                    {grandTotals.pending}
+                                  </td>
+                                  <td className="py-4 px-4 text-center text-red-600">
+                                    {grandTotals.other}
+                                  </td>
+                                  <td className="py-4 px-6 text-right text-xs text-gray-400 font-normal">
+                                    Summary
+                                  </td>
+                                </tr>
+                              </>
+                            );
+                          })()}
+                        </tbody>
+                      </table>
                     </div>
                   </CardContent>
                 </Card>
@@ -2508,13 +2591,6 @@ const AdminDashboard = () => {
                       <FileText className="w-4 h-4 mr-2" />
                       Download CSV
                     </Button>
-                    <Button 
-                      onClick={() => handleBulkDelete('cosplayers')} 
-                      variant="destructive"
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      🗑️ Permanently Delete All Cosplayers
-                    </Button>
                   </div>
                 </div>
 
@@ -2602,25 +2678,46 @@ const AdminDashboard = () => {
                             </div>
                           </div>
                         </div>
-                          {cosplayer.collegeName && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Cosplay Group/Team:</span>
-                              <span className="font-medium">{cosplayer.collegeName}</span>
-                            </div>
-                          )}
-                          {cosplayer.message && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Cosplay Experience:</span>
-                              <span className="font-medium text-xs max-w-xs truncate" title={cosplayer.message}>
-                                {cosplayer.message}
-                              </span>
-                            </div> 
-                          )}
-                          {!cosplayer.collegeName && !cosplayer.message && (
-                            <div className="text-xs text-orange-600 italic">
-                              Cosplay-specific details not available (may be from older registration)
-                            </div>
-                          )}
+
+                        {/* Cosplay Details */}
+                        <div className="mt-4 space-y-3">
+                          <h4 className="font-semibold text-purple-850 border-b pb-2 flex items-center gap-1.5">
+                            <span className="text-base">🎭</span> Cosplay Info
+                          </h4>
+                          <div className="space-y-2 text-sm">
+                            {cosplayer.characterName && (
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Character Name:</span>
+                                <span className="font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">{cosplayer.characterName}</span>
+                              </div>
+                            )}
+                            {cosplayer.gameName && (
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Game Name:</span>
+                                <span className="font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">{cosplayer.gameName}</span>
+                              </div>
+                            )}
+                            {cosplayer.collegeName && (
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Cosplay Group/Team Name:</span>
+                                <span className="font-medium">{cosplayer.collegeName}</span>
+                              </div>
+                            )}
+                            {cosplayer.message && (
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Cosplay Experience:</span>
+                                <span className="font-medium text-xs max-w-xs truncate" title={cosplayer.message}>
+                                  {cosplayer.message}
+                                </span>
+                              </div>
+                            )}
+                            {!cosplayer.characterName && !cosplayer.gameName && !cosplayer.collegeName && !cosplayer.message && (
+                              <div className="text-xs text-orange-600 italic">
+                                Cosplay-specific details not available (may be from older registration)
+                              </div>
+                            )}
+                          </div>
+                        </div>
 
                         <div className="mt-4 pt-4 border-t">
                           <div className="flex justify-between text-xs text-gray-500">

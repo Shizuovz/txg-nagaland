@@ -155,6 +155,8 @@ export interface VisitorRegistration {
   // Cosplayer specific fields
   collegeName?: string; // Used for Cosplay Group/Team Name
   message?: string; // Used for Cosplay Experience
+  characterName?: string; // Cosplay Character Name
+  gameName?: string; // Game Name
   status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
   createdAt: Date;
   updatedAt: Date;
@@ -238,6 +240,8 @@ export class FirebaseService {
   async createTeamRegistration(data: Omit<TeamRegistration, 'id' | 'createdAt' | 'updatedAt'>): Promise<TeamRegistration> {
     const registration: TeamRegistration = {
       ...data,
+      captainEmail: data.captainEmail ? data.captainEmail.trim().toLowerCase() : '',
+      captainPhone: data.captainPhone ? data.captainPhone.trim() : '',
       id: `team_${Date.now()}`,
       registrationId: `CLG${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
       status: 'pending',
@@ -287,6 +291,8 @@ export class FirebaseService {
     
     const registration: SponsorRegistration = {
       ...data,
+      contactEmail: data.contactEmail ? data.contactEmail.trim().toLowerCase() : '',
+      contactPhone: data.contactPhone ? data.contactPhone.trim() : '',
       id: data.registrationId ? `sponsor_${data.registrationId}` : `sponsor_${Date.now()}`,
       registrationId: data.registrationId || `SPN${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
       status: 'pending',
@@ -379,6 +385,8 @@ export class FirebaseService {
   async createVisitorRegistration(data: Omit<VisitorRegistration, 'id' | 'createdAt' | 'updatedAt'>): Promise<VisitorRegistration> {
     const registration: VisitorRegistration = {
       ...data,
+      email: data.email ? data.email.trim().toLowerCase() : '',
+      phone: data.phone ? data.phone.trim() : '',
       id: data.registrationId ? `visitor_${data.registrationId}` : `visitor_${Date.now()}`,
       registrationId: data.registrationId || `VST${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
       status: 'pending',
@@ -418,6 +426,8 @@ export class FirebaseService {
   async createMediaRegistration(data: Omit<MediaPersonRegistration, 'id' | 'createdAt' | 'updatedAt'>): Promise<MediaPersonRegistration> {
     const registration: MediaPersonRegistration = {
       ...data,
+      email: data.email ? data.email.trim().toLowerCase() : '',
+      phone: data.phone ? data.phone.trim() : '',
       id: `media_${Date.now()}`,
       registrationId: `MDA${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
       status: 'pending',
@@ -486,6 +496,42 @@ export class FirebaseService {
         return false;
       }
       return data.teamName && data.teamName.toLowerCase().trim() === lowerTeamName;
+    });
+  }
+
+  // Check if a cosplayer already exists by email or phone (case-insensitive and format-flexible)
+  async checkCosplayerExists(email: string, phone: string): Promise<boolean> {
+    const qCos = query(
+      this.visitorRegistrationsCollection,
+      where('registrationId', '>=', 'COS'),
+      where('registrationId', '<=', 'COS\uf8ff')
+    );
+
+    const snapshot = await getDocs(qCos);
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPhoneDigits = phone.replace(/\D/g, '');
+    const cleanPhoneLast10 = cleanPhoneDigits.length >= 10 ? cleanPhoneDigits.slice(-10) : cleanPhoneDigits;
+
+    return snapshot.docs.some(doc => {
+      const data = doc.data();
+      const isActive = data.status === 'pending' || data.status === 'approved';
+      if (!isActive) return false;
+
+      // Compare email case-insensitively
+      const docEmail = (data.email || '').trim().toLowerCase();
+      if (docEmail === cleanEmail) return true;
+
+      // Compare phone number by last 10 digits
+      const docPhone = (data.phone || '').trim();
+      const docPhoneDigits = docPhone.replace(/\D/g, '');
+      const docPhoneLast10 = docPhoneDigits.length >= 10 ? docPhoneDigits.slice(-10) : docPhoneDigits;
+
+      if (cleanPhoneLast10 && docPhoneLast10 && docPhoneLast10 === cleanPhoneLast10) {
+        return true;
+      }
+
+      return false;
     });
   }
 

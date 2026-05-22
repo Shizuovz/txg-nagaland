@@ -59,6 +59,8 @@ const ManualDataEntry = () => {
     phone: '',
     groupName: '',
     experience: '',
+    characterName: '',
+    gameName: '',
     address: '',
     city: '',
     state: '',
@@ -187,8 +189,8 @@ const ManualDataEntry = () => {
   };
 
   const handleCosplayerSubmit = async () => {
-    if (!cosplayerData.fullName || !cosplayerData.email || !cosplayerData.phone || !cosplayerData.address || !cosplayerData.city || !cosplayerData.state || !cosplayerData.pinCode) {
-      toast.error('Please fill all required cosplayer fields');
+    if (!cosplayerData.fullName || !cosplayerData.email || !cosplayerData.phone || !cosplayerData.characterName || !cosplayerData.gameName || !cosplayerData.address || !cosplayerData.city || !cosplayerData.state || !cosplayerData.pinCode) {
+      toast.error('Please fill all required cosplayer fields (including character and game name)');
       return;
     }
 
@@ -199,6 +201,10 @@ const ManualDataEntry = () => {
       fullName: cosplayerData.fullName,
       email: cosplayerData.email,
       phone: cosplayerData.phone,
+      collegeName: cosplayerData.groupName,
+      message: cosplayerData.experience,
+      characterName: cosplayerData.characterName,
+      gameName: cosplayerData.gameName,
       address: cosplayerData.address,
       city: cosplayerData.city,
       state: cosplayerData.state,
@@ -214,6 +220,8 @@ const ManualDataEntry = () => {
         phone: '',
         groupName: '',
         experience: '',
+        characterName: '',
+        gameName: '',
         address: '',
         city: '',
         state: '',
@@ -683,6 +691,19 @@ const ManualDataEntry = () => {
 
               {/* Cosplayers Registration Form */}
               <TabsContent value="cosplayers" className="space-y-4">
+                {/* Cosplay Character Rule Warning */}
+                <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-start gap-3">
+                  <Star className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-amber-400">
+                      Cosplay Character Restriction
+                    </p>
+                    <p className="text-sm text-amber-300/80 mt-1">
+                      Only game characters are allowed (even if they also appear in anime/other media). Any other characters will be rejected.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="cosplayerFullName">Full Name *</Label>
@@ -719,6 +740,24 @@ const ManualDataEntry = () => {
                       value={cosplayerData.groupName}
                       onChange={(e) => setCosplayerData(prev => ({ ...prev, groupName: e.target.value }))}
                       placeholder="Enter group/team name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="cosplayerCharacterName">Cosplay Character Name *</Label>
+                    <Input
+                      id="cosplayerCharacterName"
+                      value={cosplayerData.characterName}
+                      onChange={(e) => setCosplayerData(prev => ({ ...prev, characterName: e.target.value }))}
+                      placeholder="Enter cosplay character name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="cosplayerGameName">Game Name *</Label>
+                    <Input
+                      id="cosplayerGameName"
+                      value={cosplayerData.gameName}
+                      onChange={(e) => setCosplayerData(prev => ({ ...prev, gameName: e.target.value }))}
+                      placeholder="Enter game name"
                     />
                   </div>
                   <div>

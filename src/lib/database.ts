@@ -68,6 +68,14 @@ export interface VisitorRegistration {
   fullName: string;
   email: string;
   phone: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pinCode?: string;
+  collegeName?: string;
+  message?: string;
+  characterName?: string;
+  gameName?: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: string;
   updatedAt: string;
