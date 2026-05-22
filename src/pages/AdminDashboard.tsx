@@ -589,11 +589,16 @@ const AdminDashboard = () => {
       'gameId',
       'status',
       'teamMembersCount',
+      'teamMembers_FullNames',
       'teamMembers_IGNs',
       'teamMembers_IDs',
+      'substitute_FullName',
       'substitute_IGN',
       'substitute_ID',
       'hasSubstitute',
+      'coordinatorName',
+      'coordinatorPhone',
+      'additionalMessage',
       'termsAccepted',
       'institutionDeclaration',
       'livestreamConsent',
@@ -602,11 +607,13 @@ const AdminDashboard = () => {
     ];
 
     const csvData = filterTeamRegistrations(teamRegistrations).map(team => {
-      // Extract team members IGNs and IDs
+      // Extract team members names, IGNs and IDs
+      const teamMemberFullNames = team.teamMembers?.map(member => member.fullName || '').join('; ') || '';
       const teamMemberIGNs = team.teamMembers?.map(member => member.ign || '').join('; ') || '';
       const teamMemberIDs = team.teamMembers?.map(member => member.gameId || '').join('; ') || '';
       
-      // Extract substitute IGN and ID if available
+      // Extract substitute details if available
+      const substituteFullName = team.substitute?.fullName || '';
       const substituteIGN = team.substitute?.ign || '';
       const substituteID = team.substitute?.gameId || '';
 
@@ -626,11 +633,16 @@ const AdminDashboard = () => {
         gameId: getGameName(team.gameId || ''),
         status: team.status || '',
         teamMembersCount: team.teamMembers?.length || 0,
+        teamMembers_FullNames: teamMemberFullNames,
         teamMembers_IGNs: teamMemberIGNs,
         teamMembers_IDs: teamMemberIDs,
+        substitute_FullName: substituteFullName,
         substitute_IGN: substituteIGN,
         substitute_ID: substituteID,
         hasSubstitute: team.substitute ? 'Yes' : 'No',
+        coordinatorName: team.coordinatorName || '',
+        coordinatorPhone: team.coordinatorPhone || '',
+        additionalMessage: team.additionalMessage || '',
         termsAccepted: team.termsAccepted ? 'Yes' : 'No',
         institutionDeclaration: team.institutionDeclaration ? 'Yes' : 'No',
         livestreamConsent: team.livestreamConsent ? 'Yes' : 'No',
@@ -656,6 +668,7 @@ const AdminDashboard = () => {
       'city',
       'state',
       'pinCode',
+      'message',
       'status',
       'createdAt',
       'updatedAt'
@@ -694,6 +707,7 @@ const AdminDashboard = () => {
         city: sponsor.city || '',
         state: sponsor.state || '',
         pinCode: sponsor.pinCode || '',
+        message: cleanSponsorMessage(sponsor.message || ''),
         status: sponsor.status || '',
         createdAt: formatDate(sponsor.createdAt),
         updatedAt: formatDate(sponsor.updatedAt)
@@ -756,7 +770,7 @@ const AdminDashboard = () => {
       'createdAt'
     ];
 
-    const csvData = cosplayerRegistrations.map((cosplayer) => ({
+    const csvData = filterCosplayerRegistrations(cosplayerRegistrations).map((cosplayer) => ({
       registrationId: cosplayer.registrationId || '',
       fullName: cosplayer.fullName || '',
       email: cosplayer.email || '',
@@ -791,7 +805,7 @@ const AdminDashboard = () => {
       'createdAt'
     ];
 
-    const csvData = vendorRegistrations.map((vendor) => {
+    const csvData = filterVendorRegistrations(vendorRegistrations).map((vendor) => {
       // Extract vendor type and products/services from message
       let vendorType = 'Not specified';
       let productsServices = '';
@@ -799,6 +813,7 @@ const AdminDashboard = () => {
       if (vendor.message?.includes('Vendor Type:')) {
         vendorType = vendor.message.includes('Vendor Type: food') ? 'Food' :
                      vendor.message.includes('Vendor Type: beverage') ? 'Beverage' :
+                     vendor.message.includes('Vendor Type: merchandise') ? 'Merchandise' :
                      vendor.message.includes('Vendor Type: both') ? 'Both Food & Beverage' : 'Not specified';
         
         // Extract products/services after vendor type
@@ -844,11 +859,14 @@ const AdminDashboard = () => {
       'gameId',
       'status',
       'teamMembersCount',
+      'teamMembers_FullNames',
       'teamMembers_IGNs',
       'teamMembers_IDs',
+      'substitute_FullName',
       'substitute_IGN',
       'substitute_ID',
       'hasSubstitute',
+      'additionalMessage',
       'termsAccepted',
       'institutionDeclaration',
       'livestreamConsent',
@@ -857,8 +875,10 @@ const AdminDashboard = () => {
     ];
 
     const csvData = filterMobaOpenRegistrations(mobaOpenRegistrations).map(team => {
+      const teamMemberFullNames = team.teamMembers?.map(member => member.fullName || '').join('; ') || '';
       const teamMemberIGNs = team.teamMembers?.map(member => member.ign || '').join('; ') || '';
       const teamMemberIDs = team.teamMembers?.map(member => member.gameId || '').join('; ') || '';
+      const substituteFullName = team.substitute?.fullName || '';
       const substituteIGN = team.substitute?.ign || '';
       const substituteID = team.substitute?.gameId || '';
 
@@ -877,11 +897,14 @@ const AdminDashboard = () => {
         gameId: getGameName(team.gameId || ''),
         status: team.status || '',
         teamMembersCount: team.teamMembers?.length || 0,
+        teamMembers_FullNames: teamMemberFullNames,
         teamMembers_IGNs: teamMemberIGNs,
         teamMembers_IDs: teamMemberIDs,
+        substitute_FullName: substituteFullName,
         substitute_IGN: substituteIGN,
         substitute_ID: substituteID,
         hasSubstitute: team.substitute ? 'Yes' : 'No',
+        additionalMessage: team.additionalMessage || '',
         termsAccepted: team.termsAccepted ? 'Yes' : 'No',
         institutionDeclaration: team.institutionDeclaration ? 'Yes' : 'No',
         livestreamConsent: team.livestreamConsent ? 'Yes' : 'No',
@@ -1072,9 +1095,41 @@ const AdminDashboard = () => {
         reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         reg.registrationId?.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesStatus = statusFilter === 'all' || reg.status === statusFilter;
+      const matchesStatus = sponsorFilters.status === 'all' || reg.status === sponsorFilters.status;
+      const matchesDateRange = filterByDateRange(reg.createdAt?.toString() || '', sponsorFilters.dateRange);
       
-      return matchesSearch && matchesStatus;
+      return matchesSearch && matchesStatus && matchesDateRange;
+    });
+  };
+
+  // Filter for vendor registrations
+  const filterVendorRegistrations = (registrations: SponsorRegistration[]) => {
+    return registrations.filter(reg => {
+      const matchesSearch = searchTerm === '' || 
+        reg.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.contactPerson?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reg.contactEmail?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      let matchesTier = true;
+      if (sponsorFilters.tier !== '') {
+        const messageText = reg.message || '';
+        if (sponsorFilters.tier === 'food') {
+          matchesTier = messageText.includes('Vendor Type: food');
+        } else if (sponsorFilters.tier === 'beverage') {
+          matchesTier = messageText.includes('Vendor Type: beverage');
+        } else if (sponsorFilters.tier === 'merchandise') {
+          matchesTier = messageText.includes('Vendor Type: merchandise');
+        } else if (sponsorFilters.tier === 'both') {
+          matchesTier = messageText.includes('Vendor Type: both');
+        } else {
+          matchesTier = false;
+        }
+      }
+      
+      const matchesStatus = sponsorFilters.status === 'all' || reg.status === sponsorFilters.status;
+      const matchesDateRange = filterByDateRange(reg.createdAt?.toString() || '', sponsorFilters.dateRange);
+      
+      return matchesSearch && matchesTier && matchesStatus && matchesDateRange;
     });
   };
 
@@ -2253,14 +2308,25 @@ const AdminDashboard = () => {
                     </div>
                     <select
                       className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
+                      value={mediaFilters.status}
+                      onChange={(e) => setMediaFilters(prev => ({ ...prev, status: e.target.value }))}
                     >
                       <option value="all">All Status</option>
                       <option value="pending">Pending</option>
                       <option value="approved">Approved</option>
                       <option value="rejected">Rejected</option>
                       <option value="withdrawn">Withdrawn</option>
+                    </select>
+                    <select
+                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={mediaFilters.dateRange}
+                      onChange={(e) => setMediaFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">Last Week</option>
+                      <option value="month">Last Month</option>
+                      <option value="quarter">Last Quarter</option>
                     </select>
                   </div>
                   <div className="flex gap-2">
@@ -2601,6 +2667,14 @@ const AdminDashboard = () => {
                                 Withdraw
                               </Button>
                             )}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteRegistration(cosplayer.id, 'cosplayer')}
+                              className="bg-red-800 hover:bg-red-900 text-white ml-auto"
+                            >
+                              Delete
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
@@ -2654,6 +2728,7 @@ const AdminDashboard = () => {
                       <option value="">All Types</option>
                       <option value="food">Food Vendor</option>
                       <option value="beverage">Beverage Vendor</option>
+                      <option value="merchandise">Merchandise Vendor</option>
                       <option value="both">Food & Beverage</option>
                     </select>
                     <select
@@ -2682,7 +2757,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="grid gap-4">
-                  {filterSponsorRegistrations(vendorRegistrations).map((vendor) => (
+                  {filterVendorRegistrations(vendorRegistrations).map((vendor) => (
                     <Card key={vendor.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -2713,6 +2788,7 @@ const AdminDashboard = () => {
                             <span className="font-medium">
                               {vendor.message?.includes('Vendor Type: food') ? 'Food' :
                                vendor.message?.includes('Vendor Type: beverage') ? 'Beverage' :
+                               vendor.message?.includes('Vendor Type: merchandise') ? 'Merchandise' :
                                vendor.message?.includes('Vendor Type: both') ? 'Both Food & Beverage' : 'Not specified'}
                             </span>
                           </div>

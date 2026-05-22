@@ -462,6 +462,8 @@ const RegistrationSection = () => {
           city: formData.city,
           state: formData.state,
           pinCode: formData.pinCode,
+          collegeName: formData.collegeName,
+          message: formData.message,
           registrationId: registrationId
         }, 'Cosplayer registration submitted successfully!');
       } else if (registrationType === 'vendor') {
