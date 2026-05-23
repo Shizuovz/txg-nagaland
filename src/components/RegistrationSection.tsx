@@ -1178,7 +1178,8 @@ const RegistrationSection = () => {
                       Cosplay Character Restriction
                     </p>
                     <p className="text-sm text-amber-300/80 mt-1">
-                      Only game characters are allowed (even if they also appear in anime/other media). Any other characters will be rejected.
+                      Cosplay entries must be based on officially recognised video game characters. Characters from anime, films, comics, or other media are allowed only if they have an official video game appearance or belong to a recognised game franchise.
+                      Any other characters will be rejected.
                     </p>
                   </div>
                 </div>
