@@ -15,5 +15,10 @@ service firebase.storage {
     match /student-ids/{fileName} {
       allow write: if true;
     }
+
+    // Allow write access to hero videos
+    match /videos/{fileName} {
+      allow write: if true;
+    }
   }
 }

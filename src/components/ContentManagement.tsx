@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import useContentManagement, { HeroSlide, StatItem } from '@/hooks/useContentManagement';
+import useContentManagement, { StatItem } from '@/hooks/useContentManagement';
+import FirebaseStorageService from '@/services/firebaseStorageService';
 import { 
   Image, 
   Plus, 
@@ -35,26 +36,17 @@ const ContentManagement = () => {
   // Use the content management hook
   const {
     contentData,
-    updateHeroSlides,
+    updateHero,
     updateStats,
     updateEventInfo,
     resetToDefault,
     setLoading: setHookLoading
   } = useContentManagement();
   
-  const { heroSlides, stats, eventInfo } = contentData;
+  const { hero, stats, eventInfo } = contentData;
 
   // Editing states
-  const [editingSlide, setEditingSlide] = useState<string | null>(null);
   const [editingStat, setEditingStat] = useState<string | null>(null);
-
-  const gradientOptions = [
-    'from-yellow-900/80 via-amber-900/80 to-orange-900/80',
-    'from-blue-900/80 via-cyan-900/80 to-indigo-900/80',
-    'from-purple-900/80 via-violet-900/80 to-pink-900/80',
-    'from-green-900/80 via-emerald-900/80 to-teal-900/80',
-    'from-red-900/80 via-rose-900/80 to-pink-900/80'
-  ];
 
   const iconOptions = [
     { value: 'trophy', label: '🏆 Trophy' },
@@ -64,36 +56,6 @@ const ContentManagement = () => {
     { value: 'calendar', label: '📅 Calendar' },
     { value: 'map-pin', label: '📍 Location' }
   ];
-
-  const handleAddSlide = () => {
-    const newSlide: HeroSlide = {
-      id: Date.now().toString(),
-      title: 'New Slide',
-      subtitle: 'Subtitle',
-      description: 'Description',
-      image: '/images/carousel/placeholder.png',
-      gradient: gradientOptions[0],
-      particles: ['#FFD700', '#FFA500'],
-      isActive: true,
-      order: heroSlides.length + 1
-    };
-    updateHeroSlides([...heroSlides, newSlide]);
-    toast.success('New slide added');
-  };
-
-  const handleUpdateSlide = (slideId: string, updates: Partial<HeroSlide>) => {
-    const updatedSlides = heroSlides.map(slide => 
-      slide.id === slideId ? { ...slide, ...updates } : slide
-    );
-    updateHeroSlides(updatedSlides);
-    toast.success('Slide updated');
-  };
-
-  const handleDeleteSlide = (slideId: string) => {
-    const updatedSlides = heroSlides.filter(slide => slide.id !== slideId);
-    updateHeroSlides(updatedSlides);
-    toast.success('Slide deleted');
-  };
 
   const handleAddStat = () => {
     const newStat: StatItem = {
@@ -131,43 +93,12 @@ const ContentManagement = () => {
   };
 
   const handleResetImages = () => {
-    const defaultSlides = [
-      {
-        id: '1',
-        title: 'TECH X Gaming',
-        subtitle: 'Expo Nagaland',
-        description: 'Experience the ultimate gaming festival in Northeast India. Join us for tournaments, showcases, and the future of gaming.',
-        image: '/images/carousel/hero1.png',
-        gradient: 'from-yellow-900/80 via-amber-900/80 to-orange-900/80',
-        particles: ['#FFD700', '#FFA500', '#FFFF00'],
-        isActive: true,
-        order: 1
-      },
-      {
-        id: '2',
-        title: 'Gaming Tournaments',
-        subtitle: 'Compete & Win',
-        description: 'Join intense gaming competitions with massive prize pools and professional esports events.',
-        image: '/images/carousel/hero2.png',
-        gradient: 'from-blue-900/80 via-cyan-900/80 to-indigo-900/80',
-        particles: ['#00FFFF', '#4285F4', '#74A9FF'],
-        isActive: true,
-        order: 2
-      },
-      {
-        id: '3',
-        title: 'Tech Innovation',
-        subtitle: 'Future of Gaming',
-        description: 'Experience cutting-edge gaming technology, VR experiences, and the latest in gaming innovation.',
-        image: '/images/carousel/hero3.png',
-        gradient: 'from-purple-900/80 via-violet-900/80 to-pink-900/80',
-        particles: ['#FF00FF', '#9333EA', '#EC4899'],
-        isActive: true,
-        order: 3
-      }
-    ];
-    updateHeroSlides(defaultSlides);
-    toast.success('Images reset to defaults');
+    updateHero({
+      ...hero,
+      image: '/images/carousel/hero1.png',
+      video: '/videos/gaming-hero.mp4'
+    });
+    toast.success('Hero media reset to defaults');
   };
 
   const handleSaveAllChanges = async () => {
@@ -178,7 +109,7 @@ const ContentManagement = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Content is already being saved automatically through the hook
-      console.log('Content saved:', { heroSlides, stats, eventInfo });
+      console.log('Content saved:', { hero, stats, eventInfo });
       
       toast.success('All changes saved successfully!');
     } catch (error) {
@@ -228,7 +159,7 @@ const ContentManagement = () => {
     });
   };
 
-  const handleImageUpload = async (slideId: string, file: File) => {
+  const handleHeroImageUpload = async (file: File) => {
     try {
       // Check file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
@@ -236,13 +167,42 @@ const ContentManagement = () => {
         return;
       }
       
-      // Compress image to base64
       const compressedImage = await compressImage(file);
-      handleUpdateSlide(slideId, { image: compressedImage });
-      toast.success('Image uploaded and compressed successfully');
+      updateHero({
+        ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+        image: compressedImage
+      });
+      toast.success('Fallback image uploaded and compressed successfully');
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Error uploading hero image:', error);
       toast.error('Failed to upload image');
+    }
+  };
+
+  const handleHeroVideoUpload = async (file: File) => {
+    try {
+      // Check file size (max 50MB)
+      if (file.size > 50 * 1024 * 1024) {
+        toast.error('Video size must be less than 50MB');
+        return;
+      }
+      
+      setLoading(true);
+      toast.info('Uploading hero video to Firebase Storage, please wait...');
+      
+      const fileName = `hero-video-${Date.now()}.mp4`;
+      const uploadedFile = await FirebaseStorageService.uploadFile('videos', fileName, file);
+      
+      updateHero({
+        ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+        video: uploadedFile.url
+      });
+      toast.success('Hero video uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading hero video:', error);
+      toast.error('Failed to upload video to Firebase Storage');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -301,156 +261,120 @@ const ContentManagement = () => {
 
             {/* Hero Carousel Management */}
             <TabsContent value="hero" className="space-y-6">
+
+
               <Card>
                 <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="flex items-center gap-2">
-                      <Image className="w-5 h-5" />
-                      Hero Carousel Slides
-                    </CardTitle>
-                    <Button onClick={handleAddSlide} className="bg-purple-600 hover:bg-purple-700">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Slide
-                    </Button>
-                  </div>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-purple-600" />
+                    Hero Section Settings
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {heroSlides.map((slide, index) => (
-                    <Card key={slide.id} className="border-l-4 border-l-purple-500">
-                      <CardContent className="p-6">
-                        <div className="flex justify-between items-start mb-4">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline">Slide {index + 1}</Badge>
-                            {slide.isActive && <Badge className="bg-green-100 text-green-800">Active</Badge>}
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setEditingSlide(editingSlide === slide.id ? null : slide.id)}
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDeleteSlide(slide.id)}
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-
-                        {editingSlide === slide.id ? (
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <Label htmlFor={`title-${slide.id}`}>Title</Label>
-                                <Input
-                                  id={`title-${slide.id}`}
-                                  value={slide.title}
-                                  onChange={(e) => handleUpdateSlide(slide.id, { title: e.target.value })}
-                                />
-                              </div>
-                              <div>
-                                <Label htmlFor={`subtitle-${slide.id}`}>Subtitle</Label>
-                                <Input
-                                  id={`subtitle-${slide.id}`}
-                                  value={slide.subtitle}
-                                  onChange={(e) => handleUpdateSlide(slide.id, { subtitle: e.target.value })}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <Label htmlFor={`description-${slide.id}`}>Description</Label>
-                              <Textarea
-                                id={`description-${slide.id}`}
-                                value={slide.description}
-                                onChange={(e) => handleUpdateSlide(slide.id, { description: e.target.value })}
-                                rows={3}
-                              />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <Label htmlFor={`gradient-${slide.id}`}>Gradient</Label>
-                                <Select
-                                  value={slide.gradient}
-                                  onValueChange={(value) => handleUpdateSlide(slide.id, { gradient: value })}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {gradientOptions.map((gradient) => (
-                                      <SelectItem key={gradient} value={gradient}>
-                                        <div className={`w-4 h-4 rounded bg-gradient-to-r ${gradient}`} />
-                                        {gradient}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              <div>
-                                <Label htmlFor={`image-${slide.id}`}>Image</Label>
-                                <div className="flex gap-2">
-                                  <Input
-                                    id={`image-${slide.id}`}
-                                    value={slide.image}
-                                    onChange={(e) => handleUpdateSlide(slide.id, { image: e.target.value })}
-                                    placeholder="/images/carousel/hero.png"
-                                  />
-                                  <Button
-                                    variant="outline"
-                                    onClick={() => {
-                                      const input = document.createElement('input');
-                                      input.type = 'file';
-                                      input.accept = 'image/*';
-                                      input.onchange = (e) => {
-                                        const file = (e.target as HTMLInputElement).files?.[0];
-                                        if (file) handleImageUpload(slide.id, file);
-                                      };
-                                      input.click();
-                                    }}
-                                  >
-                                    <Upload className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                id={`active-${slide.id}`}
-                                checked={slide.isActive}
-                                onChange={(e) => handleUpdateSlide(slide.id, { isActive: e.target.checked })}
-                              />
-                              <Label htmlFor={`active-${slide.id}`}>Active</Label>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <h3 className="text-lg font-semibold">{slide.title}</h3>
-                              <span className="text-sm text-gray-500">{slide.subtitle}</span>
-                            </div>
-                            <p className="text-gray-600">{slide.description}</p>
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                              <span className="truncate max-w-xs">
-                                Image: {slide.image.startsWith('data:') ? 'Base64 Image' : slide.image}
-                              </span>
-                              <div className={`w-8 h-8 rounded bg-gradient-to-r ${slide.gradient}`} />
-                              {slide.image.startsWith('data:') && (
-                                <Badge variant="secondary" className="text-xs">
-                                  Uploaded
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="hero-title">Title</Label>
+                      <Input
+                        id="hero-title"
+                        value={hero?.title || ''}
+                        onChange={(e) => updateHero({
+                          ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                          title: e.target.value
+                        })}
+                        placeholder="TECH X Gaming"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="hero-subtitle">Subtitle</Label>
+                      <Input
+                        id="hero-subtitle"
+                        value={hero?.subtitle || ''}
+                        onChange={(e) => updateHero({
+                          ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                          subtitle: e.target.value
+                        })}
+                        placeholder="Expo Nagaland"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="hero-description">Description</Label>
+                    <Textarea
+                      id="hero-description"
+                      value={hero?.description || ''}
+                      onChange={(e) => updateHero({
+                        ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                        description: e.target.value
+                      })}
+                      rows={3}
+                      placeholder="Experience the ultimate gaming festival..."
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="hero-image">Fallback Image (Poster)</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="hero-image"
+                          value={hero?.image || ''}
+                          onChange={(e) => updateHero({
+                            ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                            image: e.target.value
+                          })}
+                          placeholder="/images/carousel/hero1.png"
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            const input = document.createElement('input');
+                            input.type = 'file';
+                            input.accept = 'image/*';
+                            input.onchange = (e) => {
+                              const file = (e.target as HTMLInputElement).files?.[0];
+                              if (file) handleHeroImageUpload(file);
+                            };
+                            input.click();
+                          }}
+                        >
+                          <Upload className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="hero-video">Looping Background Video</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="hero-video"
+                          value={hero?.video || ''}
+                          onChange={(e) => updateHero({
+                            ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                            video: e.target.value
+                          })}
+                          placeholder="/videos/gaming-hero.mp4"
+                          disabled={loading}
+                        />
+                        <Button
+                          variant="outline"
+                          disabled={loading}
+                          onClick={() => {
+                            const input = document.createElement('input');
+                            input.type = 'file';
+                            input.accept = 'video/*';
+                            input.onchange = async (e) => {
+                              const file = (e.target as HTMLInputElement).files?.[0];
+                              if (file) handleHeroVideoUpload(file);
+                            };
+                            input.click();
+                          }}
+                        >
+                          <Upload className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
