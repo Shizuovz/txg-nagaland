@@ -75,7 +75,7 @@ const HeroSection = () => {
             />
           )
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/35 z-0"></div>
+        {/* <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/35 z-0"></div> */}
       </div>
 
       {/* 2. Animated background particles */}
