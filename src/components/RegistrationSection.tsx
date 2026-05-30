@@ -2136,7 +2136,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0 * 0.15 }}
-          // onClick={() => setRegistrationType("college")}
+            onClick={() => setRegistrationType("college")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
               <GamingIcon iconId={GamingIcons.USERS} size={24} color="#00ff88" />
@@ -2147,7 +2147,7 @@ const RegistrationSection = () => {
                 Register your college team for Mobile Legends tournament
               </p>
             </div>
-            <Button disabled className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div
