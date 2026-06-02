@@ -86,7 +86,7 @@ const Footer = () => {
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 opacity-80 group-hover:opacity-100 transition-all duration-300 group-hover:border-[#50D075]/30 group-hover:bg-[#50D075]/10">
                   <GamingIcon iconId={GamingIcons.CALENDAR} size={20} color="#50D075" />
                 </div>
-                <span className="group-hover:text-gray-300 transition-colors pt-3">June 26-27, 2026</span>
+                <span className="group-hover:text-gray-300 transition-colors pt-3">28th and 29th August, 2026</span>
               </div>
               <div className="flex items-start gap-4 font-['Nonito'] group">
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 opacity-80 group-hover:opacity-100 transition-all duration-300 group-hover:border-[#50D075]/30 group-hover:bg-[#50D075]/10">

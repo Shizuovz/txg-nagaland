@@ -115,7 +115,7 @@ const ScheduleSection = () => {
               <div className="flex items-center gap-2 mb-4">
                 <GamingIcon iconId={GamingIcons.CALENDAR} size={20} color="#00ffff" />
                 <h3 className="font-['Neiko'] text-2xl font-bold text-white">Day 1</h3>
-                <span className="text-accent font-semibold font-['Nonito'] ml-2">June 2026</span>
+                <span className="text-accent font-semibold font-['Nonito'] ml-2">August 2026</span>
               </div>
             </div>
 
@@ -164,7 +164,7 @@ const ScheduleSection = () => {
               <div className="flex items-center gap-2 mb-4">
                 <GamingIcon iconId={GamingIcons.CALENDAR} size={20} color="#00ffff" />
                 <h3 className="font-['Neiko'] text-2xl font-bold text-white">Day 2</h3>
-                <span className="text-accent font-semibold font-['Nonito'] ml-2">June 2026</span>
+                <span className="text-accent font-semibold font-['Nonito'] ml-2">August 2026</span>
               </div>
             </div>
 

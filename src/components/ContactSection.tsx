@@ -115,7 +115,7 @@ const ContactSection = () => {
                   { icon: GamingIcons.MAIL, label: "Email", val: "nes@txg-nagaland.com", sub: "support@txg-nagaland.com" },
                   // { icon: GamingIcons.PHONE, label: "Phone", val: "+91 12345 67890", sub: "Mon-Sat: 9AM - 6PM IST" },
                   { icon: GamingIcons.LOCATION, label: "Venue", val: "NBCC Convention Hall", sub: "Kohima, Nagaland" },
-                  { icon: GamingIcons.CALENDAR, label: "Event Dates", val: "June 26-27 2026", sub: "Two-day flagship event" }
+                  { icon: GamingIcons.CALENDAR, label: "Event Dates", val: "28th and 29th August 2026", sub: "Two-day flagship event" }
                 ].map((item, idx) => (
                   <div key={idx} className="flex items-center gap-5">
                     <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">

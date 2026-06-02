@@ -592,16 +592,14 @@ const RegistrationSection = () => {
               <p className="hidden text-sm text-muted-foreground">Registration ID: {registrationId}</p>
             )}
           </CardHeader>
-           <CardContent>
-           {/* NOTE: Registration restriction */}
-           <p className="text-sm text-yellow-500 font-medium mb-2">
-             We will accept registration from only Student Body President. Any other will be rejected.
-           </p>
-             <RegistrationLimitDisplay
-               limit={registrationLimit}
-               isLoading={isCheckingLimit}
-               type="college"
-             />
+          <CardContent>
+            {/* NOTE: Registration restriction */}
+            <p className="text-lg font-semibold bg-amber-500/20 p-2 rounded mb-2">We will accept registration from only Student Body President. Any other will be rejected.</p>
+            <RegistrationLimitDisplay
+              limit={registrationLimit}
+              isLoading={isCheckingLimit}
+              type="college"
+            />
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
