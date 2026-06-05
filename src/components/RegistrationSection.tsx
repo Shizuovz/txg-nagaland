@@ -1503,7 +1503,7 @@ const RegistrationSection = () => {
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <Label htmlFor="teamName">Booth/Space Requirements</Label>
                 <Textarea
                   id="teamName"
@@ -1511,7 +1511,7 @@ const RegistrationSection = () => {
                   onChange={(e) => handleInputChange("teamName", e.target.value)}
                   placeholder="Describe your booth/space requirements (size, equipment, etc.)"
                 />
-              </div>
+              </div> */}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
