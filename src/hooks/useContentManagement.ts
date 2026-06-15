@@ -50,7 +50,7 @@ const defaultContent: ContentData = {
   },
   stats: [
     { id: '1', value: 300000, prefix: '₹', suffix: '', label: 'Prize Pool', iconId: 'trophy', isActive: true },
-    { id: '2', value: 20000, prefix: '', suffix: '-30,000', label: 'Expected Attendees', iconId: 'users', isActive: true },
+    { id: '2', value: 15000, prefix: '', suffix: '-20,000', label: 'Expected Attendees', iconId: 'users', isActive: true },
     { id: '3', value: 200000, prefix: '', suffix: '+', label: 'Digital Reach', iconId: 'trending-up', isActive: true },
     { id: '4', value: 2, prefix: '', suffix: '', label: 'Day Event', iconId: 'gamepad', isActive: true }
   ],
@@ -82,6 +82,26 @@ const useContentManagement = () => {
     if (savedContent) {
       try {
         const parsed = JSON.parse(savedContent);
+
+        // Auto-migrate old expected attendees stat
+        if (parsed.stats) {
+          let migrated = false;
+          parsed.stats = parsed.stats.map((stat: any) => {
+            if (stat.label === 'Expected Attendees' && (stat.value === 6000 || stat.value === 20000)) {
+              migrated = true;
+              return { ...stat, value: 15000, suffix: '-20,000' };
+            }
+            if (stat.label === 'Expected Visitors' && stat.value === 15000) {
+              migrated = true;
+              return { ...stat, label: 'Expected Attendees' };
+            }
+            return stat;
+          });
+          if (migrated) {
+            localStorage.setItem('websiteContent', JSON.stringify(parsed));
+          }
+        }
+
         setContentData({
           ...defaultContent,
           ...parsed,
