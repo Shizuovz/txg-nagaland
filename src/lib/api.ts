@@ -187,6 +187,23 @@ export class RegistrationAPI {
         }
       }
 
+      // Handle college logo upload
+      let collegeLogoUrl = null;
+      if ((data.registrationType === 'college' || data.registrationType === 'open_category') && data.collegeLogoUpload) {
+        try {
+          console.log('Uploading College Logo...');
+          const logoData = await firebaseStorageService.uploadCollegeLogo(
+            data.collegeLogoUpload,
+            `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_logo`
+          );
+          console.log('College Logo uploaded successfully:', logoData);
+          collegeLogoUrl = logoData.url;
+        } catch (error) {
+          console.error('Error uploading College Logo:', error);
+          // Don't fail the registration if logo upload fails, just continue without it
+        }
+      }
+
       // Clean data to remove undefined fields and File objects (Firebase can't store Files)
       const registrationId = `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
@@ -215,9 +232,11 @@ export class RegistrationAPI {
         livestreamConsent: data.livestreamConsent || false,
         coordinatorName: data.coordinatorName || null,
         coordinatorPhone: data.coordinatorPhone || null,
+        collegeLogoUrl: collegeLogoUrl,
         // Strip root-level File objects
         studentIdUpload: null,
-        aadhaarUpload: null
+        aadhaarUpload: null,
+        collegeLogoUpload: null
       };
       
       const result = await this.firebaseService.createTeamRegistration(cleanData);

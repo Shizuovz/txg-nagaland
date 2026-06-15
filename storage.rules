@@ -20,5 +20,10 @@ service firebase.storage {
     match /videos/{fileName} {
       allow write: if true;
     }
+
+    // Allow write access to college logos
+    match /college-logos/{fileName} {
+      allow write: if true;
+    }
   }
 }

@@ -119,6 +119,7 @@ export interface TeamRegistration {
   termsAccepted: boolean;
   institutionDeclaration?: boolean;
   livestreamConsent?: boolean;
+  collegeLogoUrl?: string;
   status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
   createdAt: Date;
   updatedAt: Date;

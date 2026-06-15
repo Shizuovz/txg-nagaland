@@ -168,6 +168,56 @@ class FirebaseStorageService {
     return false;
   }
 
+  // Upload college logo
+  async uploadCollegeLogo(
+    file: File, 
+    registrationId: string
+  ): Promise<StoredFileData> {
+    console.log('Uploading college logo:', { 
+      fileName: file.name, 
+      fileSize: file.size, 
+      fileType: file.type,
+      registrationId 
+    });
+    
+    // Get file extension
+    const fileExtension = file.name.split('.').pop() || 'png';
+    const fileName = `${registrationId}_college_logo.${fileExtension}`;
+    return this.uploadFile('college-logos', fileName, file);
+  }
+
+  // Get college logo URL
+  async getCollegeLogoURL(registrationId: string): Promise<string | null> {
+    const extensions = ['pdf', 'jpg', 'jpeg', 'png', 'svg', 'webp'];
+    
+    for (const ext of extensions) {
+      const fileName = `${registrationId}_college_logo.${ext}`;
+      const url = await this.getFileDownloadURL('college-logos', fileName);
+      if (url) {
+        if (url.includes('firebasestorage.googleapis.com')) {
+          const baseUrl = url.split('?')[0];
+          return `${baseUrl}?alt=media&download=1`;
+        }
+        return url;
+      }
+    }
+    return null;
+  }
+
+  // Delete college logo
+  async deleteCollegeLogo(registrationId: string): Promise<boolean> {
+    const extensions = ['pdf', 'jpg', 'jpeg', 'png', 'svg', 'webp'];
+    
+    for (const ext of extensions) {
+      const fileName = `${registrationId}_college_logo.${ext}`;
+      const deleted = await this.deleteFile('college-logos', fileName);
+      if (deleted) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   // Download file (fetches blob and creates download link)
   async downloadFile(url: string, fileName: string): Promise<void> {
     try {

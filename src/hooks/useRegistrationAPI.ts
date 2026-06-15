@@ -33,6 +33,7 @@ export interface TeamRegistrationData {
   livestreamConsent?: boolean;
   coordinatorName?: string;
   coordinatorPhone?: string;
+  collegeLogoUpload?: File | null;
 }
 
 export interface SponsorRegistrationData {

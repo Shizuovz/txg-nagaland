@@ -28,7 +28,7 @@ const miniTournaments = [
 import { useState, useEffect } from "react";
 import TermsAndConditions from "./TermsAndConditions";
 import firebaseStorageService from "@/services/firebaseStorageService";
-import { AlertCircle, Users } from "lucide-react";
+import { AlertCircle, Users, Loader2 } from "lucide-react";
 
 // Component to display registration limit status
 interface RegistrationLimitDisplayProps {
@@ -99,6 +99,50 @@ const RegistrationLimitDisplay = ({ limit, isLoading, type }: RegistrationLimitD
       </div>
     </div>
   );
+};
+
+const initialFormData = {
+  teamName: "",
+  collegeName: "",
+  captainName: "",
+  captainEmail: "",
+  captainPhone: "",
+  game: "",
+  category: "",
+  sponsorType: "",
+  companyName: "",
+  contactPerson: "",
+  companyEmail: "",
+  companyPhone: "",
+  message: "",
+  agreeTerms: false,
+  address: "",
+  city: "",
+  state: "",
+  pinCode: "",
+  teamMembers: [
+    { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+    { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+    { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+    { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+    { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null }
+  ],
+  substitute: { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
+  nickName: "",
+  whatsappPhone: "",
+  phoneCallNumber: "",
+  age: "",
+  gender: "",
+  passportPhoto: null as File | null,
+  characterName: "",
+  gameName: "",
+  studentIdUpload: null as File | null,
+  aadhaarUpload: null as File | null,
+  collegeLogoUpload: null as File | null,
+  institutionDeclaration: false,
+  livestreamConsent: false,
+  coordinatorName: "",
+  coordinatorPhone: ""
 };
 
 const RegistrationSection = () => {
@@ -210,51 +254,7 @@ const RegistrationSection = () => {
     return directMapping[sponsorType] || null;
   };
 
-  const [formData, setFormData] = useState({
-    teamName: "",
-    collegeName: "",
-    captainName: "",
-    captainEmail: "",
-    captainPhone: "",
-    game: "",
-    category: "",
-    sponsorType: "",
-    companyName: "",
-    contactPerson: "",
-    companyEmail: "",
-    companyPhone: "",
-    message: "",
-    agreeTerms: false,
-    address: "",
-    city: "",
-    state: "",
-    pinCode: "",
-    teamMembers: [
-      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
-      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
-      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
-      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
-      { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null }
-    ],
-    substitute: { ign: "", gameId: "", fullName: "", studentIdUpload: null as File | null, aadhaarUpload: null as File | null },
-    // Mini tournament specific fields
-    nickName: "",
-    whatsappPhone: "",
-    phoneCallNumber: "",
-    age: "",
-    gender: "",
-    passportPhoto: null as File | null,
-    // Cosplay fields
-    characterName: "",
-    gameName: "",
-    // Legacy fields (kept for backward compatibility)
-    studentIdUpload: null as File | null,
-    aadhaarUpload: null as File | null,
-    institutionDeclaration: false,
-    livestreamConsent: false,
-    coordinatorName: "",
-    coordinatorPhone: ""
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   // Generate registration ID and set default game when type is selected
   useEffect(() => {
@@ -430,6 +430,7 @@ const RegistrationSection = () => {
           substitute: formData.substitute,
           termsAccepted: formData.agreeTerms,
           studentIdUpload: formData.studentIdUpload,
+          collegeLogoUpload: formData.collegeLogoUpload,
           institutionDeclaration: formData.institutionDeclaration,
           livestreamConsent: formData.livestreamConsent,
           coordinatorName: formData.coordinatorName,
@@ -570,6 +571,12 @@ const RegistrationSection = () => {
 
         console.log('Mini tournament registration completed');
       }
+
+      // Reset form state after successful submission
+      setFormData(initialFormData);
+      setRegistrationType(null);
+      setRegistrationId('');
+      
     } catch (err) {
       console.error('Registration error:', err);
     } finally {
@@ -622,6 +629,20 @@ const RegistrationSection = () => {
                     required
                   />
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="collegeLogo">College Logo (High Quality)</Label>
+                <Input
+                  id="collegeLogo"
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.svg,.webp"
+                  onChange={(e) => handleInputChange("collegeLogoUpload", e.target.files?.[0] || null)}
+                  className="mt-1"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Upload a high quality transparent logo of your college if possible (Optional but recommended)
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -885,7 +906,7 @@ const RegistrationSection = () => {
               />
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
-                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? 'Submitting...' : 'Submit College Registration'}
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Submit College Registration'}
               </Button>
             </form>
           </CardContent>
@@ -931,6 +952,20 @@ const RegistrationSection = () => {
                     required
                   />
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="orgLogo">Organization Logo (High Quality)</Label>
+                <Input
+                  id="orgLogo"
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.svg,.webp"
+                  onChange={(e) => handleInputChange("collegeLogoUpload", e.target.files?.[0] || null)}
+                  className="mt-1"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Upload a high quality transparent logo of your organization if possible (Optional)
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1151,7 +1186,7 @@ const RegistrationSection = () => {
               />
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
-                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? 'Submitting...' : 'Submit MOBA Tournament Registration'}
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Submit MOBA Tournament Registration'}
               </Button>
             </form>
           </CardContent>
@@ -1316,7 +1351,7 @@ const RegistrationSection = () => {
               />
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Register as Cosplayer"}
+                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : "Register as Cosplayer"}
               </Button>
             </form>
           </CardContent>
@@ -1461,7 +1496,7 @@ const RegistrationSection = () => {
               />
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Register as Vendor"}
+                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : "Register as Vendor"}
               </Button>
             </form>
           </CardContent>
@@ -1600,7 +1635,7 @@ const RegistrationSection = () => {
               />
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Register as Exhibitor"}
+                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : "Register as Exhibitor"}
               </Button>
             </form>
           </CardContent>
@@ -1729,7 +1764,7 @@ const RegistrationSection = () => {
               />
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Register as Media"}
+                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : "Register as Media"}
               </Button>
             </form>
           </CardContent>
@@ -1874,7 +1909,7 @@ const RegistrationSection = () => {
               />
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Register as Sponsor"}
+                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : "Register as Sponsor"}
               </Button>
             </form>
           </CardContent>
@@ -2053,7 +2088,7 @@ const RegistrationSection = () => {
               />
 
               <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
-                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? 'Submitting...' : 'Register for Mini Tournament'}
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for Mini Tournament'}
               </Button>
             </form>
           </CardContent>

@@ -1635,9 +1635,38 @@ const AdminDashboard = () => {
                                 <span className="font-medium capitalize">{team.registrationType.replace('_', ' ')}</span>
                               </div>
                               {team.collegeName && (
-                                <div className="flex justify-between">
+                                <div className="flex justify-between items-start">
                                   <span className="text-gray-600">College Name:</span>
-                                  <span className="font-medium">{team.collegeName}</span>
+                                  <div className="flex flex-col items-end">
+                                    <span className="font-medium">{team.collegeName}</span>
+                                    {team.collegeLogoUrl && (
+                                      <div className="mt-2 text-right">
+                                        <img 
+                                          src={team.collegeLogoUrl} 
+                                          alt="College Logo"
+                                          className="w-16 h-16 object-contain rounded border cursor-pointer hover:opacity-80 transition-opacity bg-gray-50"
+                                          onClick={() => window.open(team.collegeLogoUrl, '_blank')}
+                                          onError={(e) => {
+                                            (e.target as HTMLImageElement).style.display = 'none';
+                                          }}
+                                        />
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          className="text-xs h-6 px-2 w-full mt-1"
+                                          onClick={async (e) => {
+                                            e.stopPropagation();
+                                            if (team.collegeLogoUrl) {
+                                              await firebaseStorageService.downloadFile(team.collegeLogoUrl, `${team.registrationId}_college_logo.png`);
+                                            }
+                                          }}
+                                        >
+                                          <Download className="w-3 h-3 mr-1" />
+                                          DL
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               )}
                               {team.teamCategory && (
@@ -1939,7 +1968,22 @@ const AdminDashboard = () => {
                           <div>
                             <h3 className="text-lg font-semibold">{team.teamName}</h3>
                             <p className="text-sm text-gray-600">ID: {team.registrationId}</p>
-                            <p className="text-sm text-gray-600">Organization: {team.collegeName}</p>
+                            <div className="flex items-center gap-3">
+                              <p className="text-sm text-gray-600">Organization: {team.collegeName}</p>
+                              {team.collegeLogoUrl && (
+                                <div className="flex flex-col items-center">
+                                  <img 
+                                    src={team.collegeLogoUrl} 
+                                    alt="Organization Logo"
+                                    className="w-10 h-10 object-contain rounded border cursor-pointer hover:opacity-80 transition-opacity bg-gray-50"
+                                    onClick={(e) => { e.stopPropagation(); window.open(team.collegeLogoUrl, '_blank'); }}
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </div>
                           </div>
                           <Badge 
                             className={`${
