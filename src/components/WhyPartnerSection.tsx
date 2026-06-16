@@ -37,8 +37,7 @@ const partnershipBenefits = [
 const brandMetrics = [
   { iconId: GamingIcons.USERS, metric: "15,000-20,000", description: "Expected Visitors over 2 day period" },
   { iconId: GamingIcons.TROPHY, metric: "₹3,00,000", description: "Prize Pool" },
-  { iconId: GamingIcons.GLOBE, metric: "50+", description: "Colleges" },
-  { iconId: GamingIcons.TARGET, metric: "100+", description: "Exhibitors" }
+  { iconId: GamingIcons.GLOBE, metric: "50+", description: "Colleges" }
 ];
 
 const WhyPartnerSection = () => {
@@ -116,7 +115,7 @@ const WhyPartnerSection = () => {
             <h3 className="font-['Neiko'] text-4xl font-bold text-white text-center mb-8">
               Partnership <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#50D075] via-[#FFFF00] to-[#50D075] font-['Neiko']">Metrics</span>
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
               {brandMetrics.map((metric, i) => (
                 <div key={i} className="text-center">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#50D075]/10 to-[#FFFF00]/10 flex items-center justify-center mx-auto mb-3">
