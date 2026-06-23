@@ -1538,7 +1538,7 @@ const RegistrationSection = () => {
                 />
               </div>
 
-              {/* <div>
+              <div>
                 <Label htmlFor="teamName">Booth/Space Requirements</Label>
                 <Textarea
                   id="teamName"
@@ -1546,7 +1546,7 @@ const RegistrationSection = () => {
                   onChange={(e) => handleInputChange("teamName", e.target.value)}
                   placeholder="Describe your booth/space requirements (size, equipment, etc.)"
                 />
-              </div> */}
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -2188,13 +2188,13 @@ const RegistrationSection = () => {
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            onClick={() => setRegistrationType("moba-open")}
+            // onClick={() => setRegistrationType("moba-open")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.TROPHY} size={24} color="#ff6b6b" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2203,17 +2203,17 @@ const RegistrationSection = () => {
                 Open tournament for Mobile Legends 5v5 competition
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            onClick={() => setRegistrationType("mini-tournament")}
+            // onClick={() => setRegistrationType("mini-tournament")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.GAMEPAD} size={24} color="#ff6b6b" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2222,17 +2222,17 @@ const RegistrationSection = () => {
                 Register for quick action games and instant rewards
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            onClick={() => setRegistrationType("cosplayer")}
+            // onClick={() => setRegistrationType("cosplayer")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#ec4899" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2241,17 +2241,17 @@ const RegistrationSection = () => {
                 Register as a cosplayer and showcase your talent
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            onClick={() => setRegistrationType("vendor")}
+            // onClick={() => setRegistrationType("vendor")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.TARGET} size={24} color="#3b82f6" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2260,17 +2260,17 @@ const RegistrationSection = () => {
                 Sell your products and services at the event
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            onClick={() => setRegistrationType("exhibitor")}
+            // onClick={() => setRegistrationType("exhibitor")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-yellow-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-yellow-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.MONITOR} size={24} color="#eab308" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2279,17 +2279,17 @@ const RegistrationSection = () => {
                 Exhibit your products and connect with attendees
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.65 }}
-            onClick={() => setRegistrationType("media")}
+            // onClick={() => setRegistrationType("media")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.VIDEO} size={24} color="#a855f7" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2298,18 +2298,18 @@ const RegistrationSection = () => {
                 Press access for journalists, photographers, and content creators
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline">Register as Media</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             data-registration-type="sponsor"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            onClick={() => setRegistrationType("sponsor")}
+            // onClick={() => setRegistrationType("sponsor")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.PARTNERSHIP} size={24} color="#50D075" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2318,7 +2318,7 @@ const RegistrationSection = () => {
                 Partner with us and showcase your brand
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline">Become Partner</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
         </div>
 
