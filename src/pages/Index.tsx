@@ -1,4 +1,13 @@
 import Navbar from "@/components/Navbar";
+import SubHeader from "@/components/SubHeader";
+import HeroCarousel from "@/components/HeroCarousel";
+import AboutUsSection from "@/components/AboutUsSection";
+import JioGamingBanner from "@/components/JioGamingBanner";
+import ActivitySection from "@/components/ActivitySection";
+import CareerPathSection from "@/components/CareerPathSection";
+import CosplaySection from "@/components/CosplaySection";
+import GamingSection from "@/components/GamingSection";
+
 import HeroSection from "@/components/HeroSection";
 import WhyGamingSection from "@/components/WhyGamingSection";
 import AboutSection from "@/components/AboutSection";
@@ -21,18 +30,25 @@ const Index = () => {
     <main className="min-h-screen overflow-x-hidden">
       <Navbar />
       
-      {/* SLIDE 1 — NAGALAND GAMING EXPO 2026 (HERO) */}
+      {/* NEW WIREFRAME LAYOUT ADDITIONS & REORDERED HERO */}
+      <SubHeader />
       <HeroSection />
+      <AboutUsSection />
+      <JioGamingBanner />
+      <ActivitySection />
+      <CareerPathSection />
+      <CosplaySection />
+      <GamingSection />
+
+      {/* PREVIOUS CONTENT (PRESERVED) */}
       
       {/* SLIDE 2 — INTRODUCTION & VISION */}
-
       <VisionSection />
 
       {/* SLIDE 3 — WHY GAMING & ESPORTS */}
       <WhyGamingSection />
       
-      {/* SLIDE 4 — ABOUT TECH X GAMING EXPO */}
-      <AboutSection />
+      {/* SLIDE 4 — ABOUT TECH X GAMING EXPO (Removed as it is now at the top) */}
       
       {/* SLIDE 5 — WHAT MAKES TECH X GAMING EXPO UNIQUE */}
       <ExpoSection />
