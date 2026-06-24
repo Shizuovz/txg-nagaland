@@ -23,18 +23,12 @@ const tournaments = [
 ];
 
 const miniTournaments = [
-  { name: "Clash Royale", logo: "/logos/Clash Royale.png", color: "white" },
-  { name: "Street Fighter 6", logo: "/logos/Street_Fighter_6_Logo.png", color: "black" },
-  { name: "Dragon Ball Fighter Z", logo: "/logos/Dragon Ball Fighter Z.png", color: "white" },
   { name: "FC 26", logo: "/logos/FC26 White.png", color: "black" },
-  { name: "Guilty Gear Strive", logo: "/logos/Guilty Gear Black.png", color: "white" },
-  { name: "King Of Fighters XV", logo: "/logos/King Of Fighters XV.png", color: "black" },
-  { name: "Mortal Kombat 1", logo: "/logos/Mortal Kombat 1 Blue.png", color: "black" },
-  { name: "Ludo", logo: "/logos/Ludo Logo.png", color: "white" },
-  { name: "NBA 2K26", logo: "/logos/NBA 2K26.png", color: "black" },
-  { name: "Dirt Rally 2.0", logo: "/logos/Dirt_Rally_2.0_Logo.svg.png", color: "white" },
+  { name: "Clash Royale", logo: "/logos/Clash Royale.png", color: "white" },
   { name: "Tekken 8", logo: "/logos/Tekken-8-logo White.png", color: "black" },
-  { name: "Tetris", logo: "/logos/Tetris_logo.png", color: "black" },
+  { name: "Dirt Rally 2.0", logo: "/logos/Dirt_Rally_2.0_Logo.svg.png", color: "white" },
+  { name: "Street Fighter 6", logo: "/logos/Street_Fighter_6_Logo.png", color: "black" },
+  { name: "Ludo", logo: "/logos/Ludo Logo.png", color: "white" },
 ];
 
 const GamesSection = () => {

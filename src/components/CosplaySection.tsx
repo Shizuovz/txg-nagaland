@@ -41,9 +41,9 @@ const CosplaySection = () => {
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#FFFF00]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16 md:mb-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,7 +54,7 @@ const CosplaySection = () => {
             Enter the Multiverse
           </span>
           <h2 className="font-['Neiko'] text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-            COSPLAY <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF00FF] to-[#FF5F4F]">CHAMPIONSHIP</span>
+            Cosplay <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF00FF] to-[#FF5F4F]">Championship</span>
           </h2>
           <p className="text-[#a0a0a0] font-['Nonito'] text-lg max-w-3xl mx-auto leading-relaxed">
             Bring your favorite characters to life. Showcase your creativity and craftsmanship on the biggest stage in Northeast India. Compete for massive prizes, learn from industry pros, and be part of an unforgettable community.
@@ -74,20 +74,20 @@ const CosplaySection = () => {
             >
               {/* Card background gradient */}
               <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${feature.color} opacity-50 group-hover:opacity-100 transition-opacity`}></div>
-              
+
               <div className="relative z-10 flex flex-col h-full">
                 <div className="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-white/5">
                   <feature.icon className="w-7 h-7 text-white/80 group-hover:text-white transition-colors" />
                 </div>
-                
+
                 <h3 className="font-['Neiko'] text-2xl text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
                   {feature.title}
                 </h3>
-                
+
                 <p className="text-[#888] font-['Nonito'] text-sm leading-relaxed mb-6 flex-grow">
                   {feature.desc}
                 </p>
-                
+
                 <div className="mt-auto flex items-center text-sm font-['Neiko'] tracking-wider text-white/50 group-hover:text-white transition-colors">
                   <span className={`bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r ${feature.color}`}>LEARN MORE</span>
                   <ChevronRight className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
@@ -108,14 +108,14 @@ const CosplaySection = () => {
           {/* Subtle background glow */}
           <div className="absolute -left-32 -top-32 w-96 h-96 bg-[#FF00FF]/10 rounded-full blur-[100px] group-hover:bg-[#FF00FF]/20 transition-colors duration-700"></div>
           <div className="absolute -right-32 -bottom-32 w-96 h-96 bg-[#FF5F4F]/10 rounded-full blur-[100px] group-hover:bg-[#FF5F4F]/20 transition-colors duration-700"></div>
-          
+
           <div className="max-w-2xl relative z-10 mb-8 md:mb-0 text-center md:text-left">
             <h3 className="font-['Neiko'] text-3xl md:text-4xl text-white mb-4">Ready to take the stage?</h3>
             <p className="text-[#a0a0a0] font-['Nonito'] text-lg">
               Register for the cosplay competition, submit your portfolio, and secure your spot under the spotlight.
             </p>
           </div>
-          
+
           <div className="relative z-10 shrink-0">
             <motion.button
               onClick={() => {

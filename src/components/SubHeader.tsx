@@ -1,11 +1,40 @@
 import React from "react";
 
 const SubHeader = () => {
+  const tickerText = (
+    <React.Fragment>
+      <span className="text-[#EA4335] bg-white px-2 py-0.5 rounded-sm mr-3 font-extrabold">LATEST</span>
+      Pre-registrations for Inter-College Tournament are now live!
+      <span className="mx-8 text-white/50">•</span>
+    </React.Fragment>
+  );
+
   return (
-    <div className="w-full mt-16 md:mt-20 bg-[#111] border-b border-white/10 py-2 px-4 flex justify-center items-center relative z-40">
-      <p className="text-sm text-[#d0d0d0] font-['Nonito'] tracking-wide">
-        <span className="font-bold text-white">LATEST:</span> Pre-registrations for Open Category Tournament are now live!
-      </p>
+    <div className="w-full mt-16 md:mt-20 bg-[#DC143C] py-2.5 relative z-40 overflow-hidden flex items-center min-h-[44px]">
+      <div className="flex animate-marquee w-max">
+        {/* First set of tickers */}
+        <div className="flex shrink-0">
+          <div className="text-sm md:text-base text-white font-['Rajdhani'] font-bold tracking-widest uppercase flex items-center drop-shadow-sm pr-8">
+            {tickerText}
+            {tickerText}
+            {tickerText}
+            {tickerText}
+            {tickerText}
+            {tickerText}
+          </div>
+        </div>
+        {/* Second identical set for seamless loop */}
+        <div className="flex shrink-0">
+          <div className="text-sm md:text-base text-white font-['Rajdhani'] font-bold tracking-widest uppercase flex items-center drop-shadow-sm pr-8">
+            {tickerText}
+            {tickerText}
+            {tickerText}
+            {tickerText}
+            {tickerText}
+            {tickerText}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

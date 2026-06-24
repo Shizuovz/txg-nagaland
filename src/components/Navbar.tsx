@@ -6,9 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const navLinks = [
+  { name: "About", href: "#about-us" },
   { name: "Vision", href: "#introduction-vision" },
   { name: "Why Gaming", href: "#why-gaming" },
-  { name: "About", href: "#about" },
   { name: "Tournament", href: "#games" },
   { name: "Open Category", href: "#open-category" },
   { name: "Why Partner", href: "#why-partner" },

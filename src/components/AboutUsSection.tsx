@@ -58,8 +58,8 @@ const AboutUsSection = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-[#FF5F4F]/10 via-transparent to-[#00FFFF]/10"></div>
 
             {/* TXG Logo / Placeholder */}
-            <div className="relative z-10 flex flex-col items-center">
-              <img src="/txg-logo.png" alt="TXG Logo" className="w-48 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,95,79,0.5)]" />
+            <div className="relative z-10 flex flex-col items-center p-8">
+              <img src="/txg.png" alt="TXG Logo" className="w-72 md:w-96 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,95,79,0.5)]" />
             </div>
           </motion.div>
         </div>

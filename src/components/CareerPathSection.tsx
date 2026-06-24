@@ -41,9 +41,9 @@ const CareerPathSection = () => {
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#FF00FF]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16 md:mb-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,7 +54,7 @@ const CareerPathSection = () => {
             Your Future in Gaming
           </span>
           <h2 className="font-['Neiko'] text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-            DISCOVER YOUR <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#74A9FF] to-[#00FFFF]">CAREER PATH</span>
+            Discover Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#74A9FF] to-[#00FFFF]">Career Path</span>
           </h2>
           <p className="text-[#a0a0a0] font-['Nonito'] text-lg max-w-3xl mx-auto leading-relaxed">
             The gaming industry is booming with opportunities beyond just playing. Explore professional avenues, join workshops led by industry experts, and take your first steps toward a lucrative career.
@@ -74,20 +74,20 @@ const CareerPathSection = () => {
             >
               {/* Card background gradient */}
               <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${path.color} opacity-50 group-hover:opacity-100 transition-opacity`}></div>
-              
+
               <div className="relative z-10 flex flex-col h-full">
                 <div className="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-white/5">
                   <path.icon className="w-7 h-7 text-white/80 group-hover:text-white transition-colors" />
                 </div>
-                
+
                 <h3 className="font-['Neiko'] text-2xl text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
                   {path.title}
                 </h3>
-                
+
                 <p className="text-[#888] font-['Nonito'] text-sm leading-relaxed mb-6 flex-grow">
                   {path.desc}
                 </p>
-                
+
                 <div className="mt-auto flex items-center text-sm font-['Neiko'] tracking-wider text-white/50 group-hover:text-white transition-colors">
                   <span className={`bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r ${path.color}`}>LEARN MORE</span>
                   <ChevronRight className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
@@ -108,14 +108,14 @@ const CareerPathSection = () => {
           {/* Subtle background glow */}
           <div className="absolute -left-32 -top-32 w-96 h-96 bg-[#74A9FF]/10 rounded-full blur-[100px] group-hover:bg-[#74A9FF]/20 transition-colors duration-700"></div>
           <div className="absolute -right-32 -bottom-32 w-96 h-96 bg-[#00FFFF]/10 rounded-full blur-[100px] group-hover:bg-[#00FFFF]/20 transition-colors duration-700"></div>
-          
+
           <div className="max-w-2xl relative z-10 mb-8 md:mb-0 text-center md:text-left">
             <h3 className="font-['Neiko'] text-3xl md:text-4xl text-white mb-4">Ready to level up your career?</h3>
             <p className="text-[#a0a0a0] font-['Nonito'] text-lg">
               Register for our exclusive career workshops, panel discussions, and networking sessions with industry leaders.
             </p>
           </div>
-          
+
           <div className="relative z-10 shrink-0">
             <motion.button
               onClick={() => {

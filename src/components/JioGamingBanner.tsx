@@ -10,7 +10,7 @@ const JioGamingBanner = () => {
       <div className="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[120px] -translate-y-1/2 pointer-events-none"></div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -21,7 +21,7 @@ const JioGamingBanner = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
-            
+
             {/* Left side: Branding */}
             <div className="flex-1 text-center lg:text-left">
               <span className="text-sm font-semibold uppercase tracking-[0.3em] text-[#888] mb-4 block font-['Nonito']">
@@ -29,7 +29,7 @@ const JioGamingBanner = () => {
               </span>
               <h2 className="font-['Neiko'] text-5xl md:text-7xl font-bold mb-6">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0055FF] to-[#FF0033]">
-                  JIO GAMING
+                  JIO Gaming
                 </span>
               </h2>
               <p className="text-[#a0a0a0] font-['Nonito'] text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">
@@ -51,7 +51,7 @@ const JioGamingBanner = () => {
                   </span>
                 </div>
               ))}
-              
+
               {/* Explore Button taking up the 4th slot */}
               <div className="bg-gradient-to-br from-[#0055FF]/10 to-[#FF0033]/10 border border-white/10 p-6 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:border-white/30 hover:from-[#0055FF]/20 hover:to-[#FF0033]/20 transition-all duration-300 group/btn">
                 <span className="font-['Neiko'] font-bold text-white tracking-widest text-sm mb-3 group-hover/btn:text-transparent group-hover/btn:bg-clip-text group-hover/btn:bg-gradient-to-r group-hover/btn:from-[#0055FF] group-hover/btn:to-[#FF0033] transition-all">EXPLORE</span>
