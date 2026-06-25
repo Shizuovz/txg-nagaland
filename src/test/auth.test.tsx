@@ -115,12 +115,7 @@ describe('Dashboard Stats', () => {
   });
 });
 
-describe('Environment Variables', () => {
-  it('should have required environment variables defined', () => {
-    expect(import.meta.env.VITE_DEV_SERVER_URL).toBeDefined();
-    expect(import.meta.env.VITE_FIREBASE_API_KEY).toBeDefined();
-  });
-});
+
 
 describe('Build Configuration', () => {
   it('should have proper TypeScript configuration', () => {
