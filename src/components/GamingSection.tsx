@@ -8,8 +8,11 @@ const GamingSection = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left - text */}
           <div className="flex flex-col justify-center order-2 md:order-1">
-            <h2 className="font-['Neiko'] text-4xl md:text-5xl font-bold text-white mb-6">
-              GAMING
+            <span className="text-sm font-semibold uppercase tracking-widest text-[#808080] mb-3 block font-['Nonito']">
+              Enter the Arena
+            </span>
+            <h2 className="font-['Neiko'] text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+              Ultimate <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#50D075] to-[#00FFFF]">Gaming Arena</span>
             </h2>
             <p className="text-[#d0d0d0] text-lg font-['Nonito'] mb-6">
               Experience non-stop gaming action with top-tier setups, latest releases, and high-stakes tournaments. Witness the best players battle it out for glory and massive prize pools.
