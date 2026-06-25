@@ -1593,13 +1593,6 @@ const AdminDashboard = () => {
                       <Download className="w-4 h-4 mr-2" />
                       Export PDF
                     </Button>
-                    <Button 
-                      onClick={() => handleBulkDelete('teams')} 
-                      variant="destructive"
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      🗑️ Permanently Delete All Teams
-                    </Button>
                   </div>
                 </div>
 
@@ -2269,13 +2262,6 @@ const AdminDashboard = () => {
                       <Download className="w-4 h-4 mr-2" />
                       Export PDF
                     </Button>
-                    <Button 
-                      onClick={() => handleBulkDelete('sponsors')} 
-                      variant="destructive"
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      🗑️ Permanently Delete All Sponsors
-                    </Button>
                   </div>
                 </div>
 
@@ -2409,6 +2395,14 @@ const AdminDashboard = () => {
                                 Withdraw
                               </Button>
                             )}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteRegistration(sponsor.id, 'sponsor')}
+                              className="bg-red-800 hover:bg-red-900 text-white ml-auto"
+                            >
+                              Delete
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
@@ -2468,13 +2462,6 @@ const AdminDashboard = () => {
                     <Button onClick={() => window.print()} variant="outline" className="print:hidden">
                       <Download className="w-4 h-4 mr-2" />
                       Export PDF
-                    </Button>
-                    <Button 
-                      onClick={() => handleBulkDelete('media')} 
-                      variant="destructive"
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      🗑️ Permanently Delete All Media
                     </Button>
                   </div>
                 </div>
@@ -2607,6 +2594,14 @@ const AdminDashboard = () => {
                                 Withdraw
                               </Button>
                             )}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteRegistration(media.id, 'media')}
+                              className="bg-red-800 hover:bg-red-900 text-white ml-auto"
+                            >
+                              Delete
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
@@ -2839,13 +2834,6 @@ const AdminDashboard = () => {
                       <FileText className="w-4 h-4 mr-2" />
                       Download CSV
                     </Button>
-                    <Button 
-                      onClick={() => handleBulkDelete('vendors')} 
-                      variant="destructive"
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      🗑️ Permanently Delete All Vendors
-                    </Button>
                   </div>
                 </div>
 
@@ -3011,6 +2999,14 @@ const AdminDashboard = () => {
                                 Withdraw
                               </Button>
                             )}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteRegistration(vendor.id, 'vendor')}
+                              className="bg-red-800 hover:bg-red-900 text-white ml-auto"
+                            >
+                              Delete
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
@@ -3030,17 +3026,9 @@ const AdminDashboard = () => {
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Refresh
                     </Button>
-                    <Button onClick={downloadExhibitorRegistrationsCSV} variant="outline" size="sm">
+                    <Button onClick={downloadExhibitorRegistrationsCSV} variant="outline">
                       <FileText className="w-4 h-4 mr-2" />
                       Download CSV
-                    </Button>
-                    <Button 
-                      onClick={() => handleBulkDelete('exhibitors')} 
-                      variant="destructive"
-                      size="sm"
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      🗑️ Permanently Delete All Exhibitors
                     </Button>
                   </div>
                 </div>
@@ -3203,6 +3191,14 @@ const AdminDashboard = () => {
                                 Withdraw
                               </Button>
                             )}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteRegistration(exhibitor.id, 'exhibitor')}
+                              className="bg-red-800 hover:bg-red-900 text-white ml-auto"
+                            >
+                              Delete
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
