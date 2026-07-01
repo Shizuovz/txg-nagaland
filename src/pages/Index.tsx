@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import SubHeader from "@/components/SubHeader";
 import HeroCarousel from "@/components/HeroCarousel";
 import AboutUsSection from "@/components/AboutUsSection";
-import JioGamingBanner from "@/components/JioGamingBanner";
+// import JioGamingBanner from "@/components/JioGamingBanner";
 import ActivitySection from "@/components/ActivitySection";
 import CareerPathSection from "@/components/CareerPathSection";
 import CosplaySection from "@/components/CosplaySection";
@@ -34,7 +34,7 @@ const Index = () => {
       <SubHeader />
       <HeroSection />
       <AboutUsSection />
-      <JioGamingBanner />
+      {/* <JioGamingBanner /> */}
       <ActivitySection />
       <CareerPathSection />
       <CosplaySection />
