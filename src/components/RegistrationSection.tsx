@@ -581,6 +581,58 @@ const RegistrationSection = () => {
   const renderRegistrationForm = () => {
     if (!registrationType) return null;
 
+    if (registrationType === 'college') {
+      return (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GamingIcon iconId={GamingIcons.USERS} size={20} color="#00ff88" />
+              Inter-College Nagaland Tournament Registration
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="py-8 text-center space-y-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 mb-2">
+                <AlertCircle className="w-8 h-8 text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-red-500 mb-2">Registrations Closed</h3>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  Thank you for your interest! The Inter-College Nagaland Tournament registrations are now closed.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (registrationType === 'moba-open') {
+      return (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GamingIcon iconId={GamingIcons.TROPHY} size={20} color="#ff6b6b" />
+              MOBA 5v5 Open Tournament Registration
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="py-8 text-center space-y-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 mb-2">
+                <AlertCircle className="w-8 h-8 text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-red-500 mb-2">Registrations Closed</h3>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  Thank you for your interest! The MOBA 5v5 Open Tournament registrations are now closed.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
     const forms = {
       college: (
         <Card className="max-w-2xl mx-auto">
@@ -2163,13 +2215,13 @@ const RegistrationSection = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center hover:shadow-xl transition-all group cursor-pointer h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0 * 0.15 }}
-            onClick={() => setRegistrationType("college")}
+            // onClick={() => setRegistrationType("college")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.USERS} size={24} color="#00ff88" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2178,7 +2230,7 @@ const RegistrationSection = () => {
                 Register your college team for Mobile Legends tournament
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
@@ -2197,7 +2249,7 @@ const RegistrationSection = () => {
                 Open tournament for Mobile Legends 5v5 competition
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Coming Soon</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
