@@ -24,9 +24,9 @@ const JioGamingBanner = () => {
 
             {/* Left side: Branding */}
             <div className="flex-1 text-center lg:text-left">
-              <span className="text-sm font-semibold uppercase tracking-[0.3em] text-[#888] mb-4 block font-['Nonito']">
+              {/* <span className="text-sm font-semibold uppercase tracking-[0.3em] text-[#888] mb-4 block font-['Nonito']">
                 Title Sponsor
-              </span>
+              </span> */}
               <h2 className="font-['Neiko'] text-5xl md:text-7xl font-bold mb-6">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0055FF] to-[#FF0033]">
                   JIO Gaming
