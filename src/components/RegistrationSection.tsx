@@ -2088,6 +2088,51 @@ const RegistrationSection = () => {
                 </div>
               </div>
 
+              <div>
+                <Label htmlFor="address">Address *</Label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => handleInputChange("address", e.target.value)}
+                  placeholder="Street address"
+                  required
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="city">City *</Label>
+                  <Input
+                    id="city"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    placeholder="City"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="state">State/Region *</Label>
+                  <Input
+                    id="state"
+                    value={formData.state}
+                    onChange={(e) => handleInputChange("state", e.target.value)}
+                    placeholder="State/Region"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="pinCode">PIN Code *</Label>
+                <Input
+                  id="pinCode"
+                  value={formData.pinCode}
+                  onChange={(e) => handleInputChange("pinCode", e.target.value)}
+                  placeholder="PIN/Zip Code"
+                  required
+                />
+              </div>
+
               {/* Passport Photo Upload */}
               <div>
                 <Label htmlFor="passportPhoto">Passport Photo (White Background Only) *</Label>
@@ -2253,13 +2298,13 @@ const RegistrationSection = () => {
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/10 cursor-pointer h-full flex flex-col group"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-          // onClick={() => setRegistrationType("mini-tournament")}
+            onClick={() => setRegistrationType("mini-tournament")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
               <GamingIcon iconId={GamingIcons.GAMEPAD} size={24} color="#ff6b6b" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2268,7 +2313,7 @@ const RegistrationSection = () => {
                 Register for quick action games and instant rewards
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Coming Soon</Button>
+            <Button className="w-full text-sm sm:text-base group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-colors" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div

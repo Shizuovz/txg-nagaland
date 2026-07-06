@@ -562,9 +562,8 @@ export class FirebaseService {
 
   async getAllMiniTournamentCounts(): Promise<{ [gameName: string]: number }> {
     const miniTournamentGames = [
-      'Clash Royale', 'Street Fighter 6', 'Dragon Ball Fighter Z', 'FC 26',
-      'Guilty Gear Strive', 'King Of Fighters XV', 'Mortal Kombat 1',
-      'Ludo', 'NBA 2K26', 'Dirt Rally 2.0', 'Tekken 8', 'Tetris'
+      'Tekken 8', 'Street Fighter 6', 'Clash Royale', 'FC 26',
+      'Ludo', 'Dirt Rally 2.0'
     ];
 
     const counts: { [gameName: string]: number } = {};
