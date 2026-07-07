@@ -127,7 +127,6 @@ const initialFormData = {
   phoneCallNumber: "",
   age: "",
   gender: "",
-  passportPhoto: null as File | null,
   characterName: "",
   gameName: "",
   studentIdUpload: null as File | null,
@@ -522,32 +521,6 @@ const RegistrationSection = () => {
           message: formData.message
         });
       } else if (registrationType === 'mini-tournament') {
-        // Handle passport photo upload and store in Firebase Storage
-        let passportPhotoData = null;
-        if (formData.passportPhoto) {
-          try {
-            console.log('Attempting to upload passport photo to Firebase Storage...');
-            passportPhotoData = await firebaseStorageService.uploadPassportPhoto(
-              formData.passportPhoto,
-              registrationId
-            );
-            console.log('Passport photo uploaded to Firebase Storage:', passportPhotoData);
-          } catch (error) {
-            console.error('Error uploading passport photo to Firebase Storage:', error);
-            console.log('This might be due to Firebase Storage security rules or CORS issues.');
-            console.log('Registration will continue without photo upload for now.');
-
-            // For now, store a placeholder to indicate photo was attempted
-            // In production, you'd want to handle this more gracefully
-            passportPhotoData = {
-              url: '',
-              fileName: `${registrationId}_passport_photo.jpg`,
-              uploadedAt: new Date(),
-              error: 'Upload failed - likely due to Firebase Storage rules'
-            };
-          }
-        }
-
         // Submit visitor registration with all mini-tournament details
         await submitVisitorRegistration({
           fullName: formData.captainName,
@@ -560,7 +533,7 @@ const RegistrationSection = () => {
           registrationId: registrationId,
           // Store nickname in collegeName field so dashboard can display it
           collegeName: formData.nickName || 'N/A',
-          message: `Game: ${formData.game}\nPhone Call: ${formData.phoneCallNumber || 'N/A'}\nAge: ${formData.age || 'N/A'}\nGender: ${formData.gender || 'N/A'}\n${passportPhotoData ? `Passport Photo: ${passportPhotoData.url || 'Failed to upload'}` : ''}`
+          message: `Game: ${formData.game}\nPhone Call: ${formData.phoneCallNumber || 'N/A'}\nAge: ${formData.age || 'N/A'}\nGender: ${formData.gender || 'N/A'}`
         }, 'Mini tournament registration submitted successfully!');
 
         console.log('Mini tournament registration completed');
@@ -2131,45 +2104,6 @@ const RegistrationSection = () => {
                   placeholder="PIN/Zip Code"
                   required
                 />
-              </div>
-
-              {/* Passport Photo Upload */}
-              <div>
-                <Label htmlFor="passportPhoto">Passport Photo (White Background Only) *</Label>
-                <div className="flex items-center gap-4">
-                  <Input
-                    id="passportPhoto"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setFormData(prev => ({ ...prev, passportPhoto: file }));
-                      }
-                    }}
-                    className="hidden"
-                  />
-                  <div
-                    className="w-full max-w-xs h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
-                    onClick={() => document.getElementById('passportPhoto')?.click()}
-                  >
-                    {formData.passportPhoto ? (
-                      <div className="relative w-full h-full flex items-center justify-center">
-                        <img
-                          src={URL.createObjectURL(formData.passportPhoto)}
-                          alt="Passport photo preview"
-                          className="max-h-full max-w-full object-contain rounded"
-                        />
-                      </div>
-                    ) : (
-                      <div className="text-center">
-                        <GamingIcon iconId={GamingIcons.CAMERA} size={24} color="#9ca3af" />
-                        <p className="text-sm text-gray-500 mt-2">Click to upload passport photo</p>
-                        <p className="text-xs text-gray-400">White background only</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
               </div>
 
               <TermsAndConditions

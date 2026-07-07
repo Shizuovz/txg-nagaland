@@ -1,7 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface TermsAndConditionsProps {
   accepted: boolean;
@@ -71,22 +80,59 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
     }
   };
 
+  const [open, setOpen] = useState(false);
+  
+  // reset state when dialog closes
+  useEffect(() => {
+    if (!open && !accepted) {
+      setHasScrolledToBottom(false);
+    }
+  }, [open, accepted]);
+
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-lg">Terms and Conditions</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Please read and scroll through the complete terms and conditions for {getRegistrationTypeText()}
-        </p>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="border rounded-lg p-1">
-          <div 
-            className="h-64 w-full rounded-md border p-4 overflow-y-auto" 
-            ref={scrollAreaRef}
-            onScroll={handleScroll}
+    <div className="w-full flex flex-col gap-4 p-4 border rounded-lg bg-card">
+      <div className="flex items-start space-x-3">
+        <Checkbox 
+          id="terms-accept-main" 
+          checked={accepted}
+          disabled
+          className="mt-1"
+        />
+        <div className="grid gap-1.5 leading-none">
+          <Label 
+            htmlFor="terms-accept-main" 
+            className="text-sm font-medium leading-relaxed"
           >
-            <div className="space-y-4 text-sm">
+            {(registrationType === 'college' || registrationType === 'moba-open') 
+              ? "I confirm that I have read and agree to the TXG-Nagaland MOBA 5V5 Open Tournament Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
+              : registrationType === 'mini-tournament'
+              ? "I confirm that I have read and agree to the TXG Nagaland Mini Tournaments Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
+              : "I confirm that I have read and agree to the Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true. *"}
+          </Label>
+          {!accepted && (
+             <p className="text-xs text-amber-500 font-medium mt-2">
+               You must read and accept the Terms and Conditions to proceed.
+             </p>
+          )}
+        </div>
+      </div>
+      
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant={accepted ? "outline" : "default"} type="button" className="w-fit self-center sm:self-start">
+            {accepted ? "Review Terms & Conditions" : "Read & Accept Terms"}
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="w-[95vw] max-w-4xl max-h-[85dvh] flex flex-col gap-0 p-0 overflow-hidden">
+          <DialogHeader className="p-6 pb-4">
+            <DialogTitle className="text-lg">Terms and Conditions</DialogTitle>
+            <DialogDescription>
+              Please read and scroll through the complete terms and conditions for {getRegistrationTypeText()}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-y-auto px-6" ref={scrollAreaRef} onScroll={handleScroll}>
+             <div className="space-y-4 text-sm pb-6">
               {(registrationType === 'college' || registrationType === 'moba-open') ? (
                 <>
                   <h3 className="font-semibold text-base">TXG-Nagaland - MOBA 5V5 Open Tournament Terms and Conditions</h3>
@@ -3892,52 +3938,32 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
               )}
             </div>
           </div>
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <Checkbox
-            id="terms-checkbox"
-            checked={accepted}
-            onChange={handleCheckboxChange}
-            disabled={!hasScrolledToBottom}
-            className="mt-1 h-5 w-5 shrink-0 border-primary"
-          />
-          <Label 
-            htmlFor="terms-checkbox" 
-            className={`text-sm ${!hasScrolledToBottom ? 'text-muted-foreground' : ''}`}
-          >
-            {hasScrolledToBottom 
-              ? registrationType === 'mini-tournament' 
-                ? "I confirm that I have read and agree to the TXG Nagaland Mini Tournaments Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
-                : registrationType === 'cosplayer'
-                ? "I confirm that I have read and agree to the Cosplay Competition Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *"
-                : registrationType === 'vendor'
-                ? "I confirm that I have read and agree to the Vendor Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *"
-                : registrationType === 'exhibitor'
-                ? "I confirm that I have read and agree to the Exhibitor Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *"
-                : registrationType === 'media'
-                ? "I confirm that I have read and agree to the Media House / Press Registration Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *"
-                : registrationType === 'sponsor'
-                ? "I confirm that I have read and agree to the Sponsor Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *"
-                : "I confirm that I have read and agree to the Inter-College MOBA 5V5 Tournament Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register and represent my team/institution where applicable. *"
-              : "Please scroll through the complete terms and conditions to enable agreement *"
-            }
-          </Label>
-        </div>
-
-        {!hasScrolledToBottom && (
-          <div className="text-xs p-2 rounded">
-            ⚠️ You must scroll through the complete terms and conditions before you can agree.
-          </div>
-        )}
-
-        {hasScrolledToBottom && (
-          <div className="text-xs p-2 rounded">
-            ✅ Thank you for reading the terms and conditions. You can now agree to proceed.
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          
+          <DialogFooter className="p-6 pt-4 border-t">
+            <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
+              <div className="text-sm text-muted-foreground">
+                {!hasScrolledToBottom ? "Please scroll to the bottom to accept" : "Thank you for reading the terms."}
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+                  Cancel
+                </Button>
+                <Button 
+                  type="button" 
+                  onClick={() => {
+                    onAccept(true);
+                    setOpen(false);
+                  }}
+                  disabled={!hasScrolledToBottom}
+                >
+                  Accept Terms
+                </Button>
+              </div>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

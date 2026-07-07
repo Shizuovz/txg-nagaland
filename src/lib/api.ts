@@ -9,7 +9,7 @@ export class RegistrationAPI {
 
   // Registration Limits
   private readonly MOBA_TEAM_LIMIT = 32;
-  private readonly MINI_TOURNAMENT_LIMIT = 16;
+  private readonly MINI_TOURNAMENT_LIMIT = 32;
 
   // Check team registration limit
   async checkTeamRegistrationLimit(registrationType: 'college' | 'open_category'): Promise<{ allowed: boolean; current: number; limit: number }> {
