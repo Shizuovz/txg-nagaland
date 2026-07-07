@@ -1972,149 +1972,192 @@ const RegistrationSection = () => {
                 </select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="captainName">Full Name *</Label>
-                  <Input
-                    id="captainName"
-                    value={formData.captainName}
-                    onChange={(e) => handleInputChange("captainName", e.target.value)}
-                    placeholder="Your full name"
-                    required
+              {formData.game === "Dirt Rally 2.0" ? (
+                <div className="bg-muted/30 p-6 rounded-lg border border-border mt-6">
+                  <h3 className="text-xl font-bold text-white mb-4">DiRT Rally 2.0 – Driving Simulator Time Trial Challenge</h3>
+                  <div className="space-y-4 text-sm text-[#d0d0d0] font-['Nonito'] leading-relaxed">
+                    <p>
+                      The DiRT Rally 2.0 competition will be conducted as an open time-trial challenge on a dedicated driving simulator rig. No prior registration will be required. Participants may walk in during the event and attempt the challenge within the allotted competition hours.
+                    </p>
+                    <p>
+                      To ensure fairness, the competition will use one fixed track, one fixed car, and one fixed gameplay setting for all participants. The same simulator setup, controller configuration, assist settings, weather condition, and race parameters will be maintained throughout the competition.
+                    </p>
+                    <p>
+                      The challenge will remain open across both days of TXG Expo. Participants may attempt multiple runs during the event period, subject to crowd management and slot availability. Each participant's best valid lap time will be recorded on the official leaderboard.
+                    </p>
+                    <p>
+                      At the end of the event, the participant with the fastest valid lap time will be declared the winner.
+                    </p>
+                    
+                    <h4 className="text-lg font-bold text-white mt-6 mb-2">Format Summary</h4>
+                    <ul className="list-disc pl-5 space-y-1">
+                      <li><strong className="text-white">Game:</strong> DiRT Rally 2.0</li>
+                      <li><strong className="text-white">Mode:</strong> Time Trial</li>
+                      <li><strong className="text-white">Registration:</strong> Not required</li>
+                      <li><strong className="text-white">Setup:</strong> Driving simulator rig</li>
+                      <li><strong className="text-white">Duration:</strong> Open across 2 event days</li>
+                      <li><strong className="text-white">Track:</strong> One fixed track for all participants</li>
+                      <li><strong className="text-white">Car:</strong> One fixed car for all participants</li>
+                      <li><strong className="text-white">Settings:</strong> Same fixed settings for all participants</li>
+                      <li><strong className="text-white">Winning Criteria:</strong> Fastest valid lap time by the end of the event</li>
+                    </ul>
+
+                    <h4 className="text-lg font-bold text-white mt-6 mb-2">Fair Play Rules</h4>
+                    <p>
+                      All participants must use the official simulator setup provided at the venue. No custom settings, external devices, personal controllers, or changes to the game configuration will be allowed. Any attempt involving reset abuse, shortcut exploitation, tampering with the simulator, or unsporting behaviour may be disqualified at the discretion of the organisers.
+                    </p>
+                    <p>
+                      The organisers' recorded leaderboard will be considered final.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="captainName">Full Name *</Label>
+                      <Input
+                        id="captainName"
+                        value={formData.captainName}
+                        onChange={(e) => handleInputChange("captainName", e.target.value)}
+                        placeholder="Your full name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="nickName">Nick Name (for tournament overlay) *</Label>
+                      <Input
+                        id="nickName"
+                        value={formData.nickName}
+                        onChange={(e) => handleInputChange("nickName", e.target.value)}
+                        placeholder="Your gaming nickname"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="captainEmail">Email Address *</Label>
+                    <Input
+                      id="captainEmail"
+                      type="email"
+                      value={formData.captainEmail}
+                      onChange={(e) => handleInputChange("captainEmail", e.target.value)}
+                      placeholder="your.email@example.com"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="whatsappPhone">WhatsApp Phone Number *</Label>
+                      <Input
+                        id="whatsappPhone"
+                        value={formData.whatsappPhone}
+                        onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
+                        placeholder="+91 98765 43210"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="phoneCallNumber">Phone Call Number *</Label>
+                      <Input
+                        id="phoneCallNumber"
+                        value={formData.phoneCallNumber}
+                        onChange={(e) => handleInputChange("phoneCallNumber", e.target.value)}
+                        placeholder="+91 98765 43210"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="age">Age *</Label>
+                      <Input
+                        id="age"
+                        type="number"
+                        value={formData.age}
+                        onChange={(e) => handleInputChange("age", e.target.value)}
+                        placeholder="Your age"
+                        min="12"
+                        max="60"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="gender">Gender *</Label>
+                      <select
+                        id="gender"
+                        value={formData.gender || ''}
+                        onChange={(e) => handleInputChange("gender", e.target.value)}
+                        className="w-full p-2 border rounded-md"
+                        required
+                      >
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="address">Address *</Label>
+                    <Input
+                      id="address"
+                      value={formData.address}
+                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      placeholder="Street address"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="city">City *</Label>
+                      <Input
+                        id="city"
+                        value={formData.city}
+                        onChange={(e) => handleInputChange("city", e.target.value)}
+                        placeholder="City"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="state">State/Region *</Label>
+                      <Input
+                        id="state"
+                        value={formData.state}
+                        onChange={(e) => handleInputChange("state", e.target.value)}
+                        placeholder="State/Region"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="pinCode">PIN Code *</Label>
+                    <Input
+                      id="pinCode"
+                      value={formData.pinCode}
+                      onChange={(e) => handleInputChange("pinCode", e.target.value)}
+                      placeholder="PIN/Zip Code"
+                      required
+                    />
+                  </div>
+
+                  <TermsAndConditions
+                    accepted={formData.agreeTerms}
+                    onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
+                    registrationType="mini-tournament"
                   />
-                </div>
-                <div>
-                  <Label htmlFor="nickName">Nick Name (for tournament overlay) *</Label>
-                  <Input
-                    id="nickName"
-                    value={formData.nickName}
-                    onChange={(e) => handleInputChange("nickName", e.target.value)}
-                    placeholder="Your gaming nickname"
-                    required
-                  />
-                </div>
-              </div>
 
-              <div>
-                <Label htmlFor="captainEmail">Email Address *</Label>
-                <Input
-                  id="captainEmail"
-                  type="email"
-                  value={formData.captainEmail}
-                  onChange={(e) => handleInputChange("captainEmail", e.target.value)}
-                  placeholder="your.email@example.com"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="whatsappPhone">WhatsApp Phone Number *</Label>
-                  <Input
-                    id="whatsappPhone"
-                    value={formData.whatsappPhone}
-                    onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
-                    placeholder="+91 98765 43210"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phoneCallNumber">Phone Call Number *</Label>
-                  <Input
-                    id="phoneCallNumber"
-                    value={formData.phoneCallNumber}
-                    onChange={(e) => handleInputChange("phoneCallNumber", e.target.value)}
-                    placeholder="+91 98765 43210"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="age">Age *</Label>
-                  <Input
-                    id="age"
-                    type="number"
-                    value={formData.age}
-                    onChange={(e) => handleInputChange("age", e.target.value)}
-                    placeholder="Your age"
-                    min="12"
-                    max="60"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="gender">Gender *</Label>
-                  <select
-                    id="gender"
-                    value={formData.gender || ''}
-                    onChange={(e) => handleInputChange("gender", e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                    required
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="address">Address *</Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => handleInputChange("address", e.target.value)}
-                  placeholder="Street address"
-                  required
-                />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="city">City *</Label>
-                  <Input
-                    id="city"
-                    value={formData.city}
-                    onChange={(e) => handleInputChange("city", e.target.value)}
-                    placeholder="City"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="state">State/Region *</Label>
-                  <Input
-                    id="state"
-                    value={formData.state}
-                    onChange={(e) => handleInputChange("state", e.target.value)}
-                    placeholder="State/Region"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="pinCode">PIN Code *</Label>
-                <Input
-                  id="pinCode"
-                  value={formData.pinCode}
-                  onChange={(e) => handleInputChange("pinCode", e.target.value)}
-                  placeholder="PIN/Zip Code"
-                  required
-                />
-              </div>
-
-              <TermsAndConditions
-                accepted={formData.agreeTerms}
-                onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
-                registrationType="mini-tournament"
-              />
-
-              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
-                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for Mini Tournament'}
-              </Button>
+                  <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
+                    {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for Mini Tournament'}
+                  </Button>
+                </>
+              )}
             </form>
           </CardContent>
         </Card>
