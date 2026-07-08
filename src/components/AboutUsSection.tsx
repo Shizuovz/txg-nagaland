@@ -59,7 +59,7 @@ const AboutUsSection = () => {
 
             {/* TXG Logo / Placeholder */}
             <div className="relative z-10 flex flex-col items-center p-8">
-              <img src="/txg.png" alt="TXG Logo" className="w-72 md:w-96 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,95,79,0.5)]" />
+              <img src="/txg-logo-color.png" alt="TXG Logo" className="w-72 md:w-96 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,95,79,0.5)]" />
             </div>
           </motion.div>
         </div>
