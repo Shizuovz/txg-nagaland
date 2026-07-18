@@ -6,7 +6,6 @@ export interface HeroContent {
   subtitle: string;
   description: string;
   image: string;
-  video: string;
 }
 
 export interface StatItem {
@@ -45,8 +44,7 @@ const defaultContent: ContentData = {
     title: 'TECH X Gaming',
     subtitle: 'Expo Nagaland',
     description: 'Experience the ultimate gaming festival in Northeast India. Join us for tournaments, showcases, and the future of gaming.',
-    image: '/images/carousel/hero1.png',
-    video: '/videos/hero.mp4'
+    image: '/images/carousel/hero1.png'
   },
   stats: [
     { id: '1', value: 300000, prefix: '₹', suffix: '', label: 'Prize Pool', iconId: 'trophy', isActive: true },

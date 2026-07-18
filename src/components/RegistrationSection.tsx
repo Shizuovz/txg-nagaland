@@ -236,7 +236,7 @@ const RegistrationSection = () => {
   }, [registrationType]);
 
   // Helper function to map sponsor type string to tier ID
-  const getSponsorshipTierId = (sponsorType: string, tiers: any[]) => {
+  const getSponsorshipTierId = (sponsorType: string, tiers: SponsorshipTier[]) => {
     const directMapping: { [key: string]: number } = {
       'Title Sponsor': 1,
       'Powered By Sponsor': 2,
@@ -277,7 +277,7 @@ const RegistrationSection = () => {
     }
   }, [registrationType, registrationId, games]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | boolean | File | null) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

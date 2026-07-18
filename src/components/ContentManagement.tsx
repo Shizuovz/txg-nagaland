@@ -95,8 +95,7 @@ const ContentManagement = () => {
   const handleResetImages = () => {
     updateHero({
       ...hero,
-      image: '/images/carousel/hero1.png',
-      video: '/videos/gaming-hero.mp4'
+      image: '/images/carousel/hero1.png'
     });
     toast.success('Hero media reset to defaults');
   };
@@ -169,7 +168,7 @@ const ContentManagement = () => {
       
       const compressedImage = await compressImage(file);
       updateHero({
-        ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+        ...(hero || { title: '', subtitle: '', description: '', image: '' }),
         image: compressedImage
       });
       toast.success('Fallback image uploaded and compressed successfully');
@@ -179,32 +178,6 @@ const ContentManagement = () => {
     }
   };
 
-  const handleHeroVideoUpload = async (file: File) => {
-    try {
-      // Check file size (max 50MB)
-      if (file.size > 50 * 1024 * 1024) {
-        toast.error('Video size must be less than 50MB');
-        return;
-      }
-      
-      setLoading(true);
-      toast.info('Uploading hero video to Firebase Storage, please wait...');
-      
-      const fileName = `hero-video-${Date.now()}.mp4`;
-      const uploadedFile = await FirebaseStorageService.uploadFile('videos', fileName, file);
-      
-      updateHero({
-        ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
-        video: uploadedFile.url
-      });
-      toast.success('Hero video uploaded successfully!');
-    } catch (error) {
-      console.error('Error uploading hero video:', error);
-      toast.error('Failed to upload video to Firebase Storage');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-6">
@@ -278,7 +251,7 @@ const ContentManagement = () => {
                         id="hero-title"
                         value={hero?.title || ''}
                         onChange={(e) => updateHero({
-                          ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                          ...(hero || { title: '', subtitle: '', description: '', image: '' }),
                           title: e.target.value
                         })}
                         placeholder="TECH X Gaming"
@@ -290,7 +263,7 @@ const ContentManagement = () => {
                         id="hero-subtitle"
                         value={hero?.subtitle || ''}
                         onChange={(e) => updateHero({
-                          ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                          ...(hero || { title: '', subtitle: '', description: '', image: '' }),
                           subtitle: e.target.value
                         })}
                         placeholder="Expo Nagaland"
@@ -304,7 +277,7 @@ const ContentManagement = () => {
                       id="hero-description"
                       value={hero?.description || ''}
                       onChange={(e) => updateHero({
-                        ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                        ...(hero || { title: '', subtitle: '', description: '', image: '' }),
                         description: e.target.value
                       })}
                       rows={3}
@@ -320,7 +293,7 @@ const ContentManagement = () => {
                           id="hero-image"
                           value={hero?.image || ''}
                           onChange={(e) => updateHero({
-                            ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
+                            ...(hero || { title: '', subtitle: '', description: '', image: '' }),
                             image: e.target.value
                           })}
                           placeholder="/images/carousel/hero1.png"
@@ -343,37 +316,7 @@ const ContentManagement = () => {
                       </div>
                     </div>
                     
-                    <div>
-                      <Label htmlFor="hero-video">Looping Background Video</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id="hero-video"
-                          value={hero?.video || ''}
-                          onChange={(e) => updateHero({
-                            ...(hero || { title: '', subtitle: '', description: '', image: '', video: '' }),
-                            video: e.target.value
-                          })}
-                          placeholder="/videos/gaming-hero.mp4"
-                          disabled={loading}
-                        />
-                        <Button
-                          variant="outline"
-                          disabled={loading}
-                          onClick={() => {
-                            const input = document.createElement('input');
-                            input.type = 'file';
-                            input.accept = 'video/*';
-                            input.onchange = async (e) => {
-                              const file = (e.target as HTMLInputElement).files?.[0];
-                              if (file) handleHeroVideoUpload(file);
-                            };
-                            input.click();
-                          }}
-                        >
-                          <Upload className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
+
                   </div>
                 </CardContent>
               </Card>

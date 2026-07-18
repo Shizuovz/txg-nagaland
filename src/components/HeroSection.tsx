@@ -23,7 +23,6 @@ const HeroSection = () => {
     subtitle: 'Expo Nagaland',
     description: 'Experience the ultimate gaming festival in Northeast India. Join us for tournaments, showcases, and the future of gaming.',
     image: '/images/carousel/hero1.png',
-    video: '/videos/hero.mp4'
   };
 
   // Parallax effects for hero content
@@ -47,33 +46,13 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-10 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a]">
 
-      {/* 1. Looping Background Video */}
+      {/* 1. Background Image */}
       <div className="absolute inset-0 w-full h-full">
-        {hero.video ? (
-          <div className="absolute inset-0 w-full h-full overflow-hidden">
-            <video
-              key={hero.video}
-              src={hero.video}
-              autoPlay
-              loop
-              muted
-              playsInline
-              poster={hero.image || ''}
-              className="absolute inset-0 w-full h-full object-cover scale-105 filter brightness-[0.7] contrast-[1.1]"
-              style={{
-                objectPosition: 'top',
-              }}
-            >
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        ) : (
-          hero.image && (
-            <div
-              className="absolute inset-0 w-full h-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${hero.image})` }}
-            />
-          )
+        {hero.image && (
+          <div
+            className="absolute inset-0 w-full h-full bg-cover bg-center filter brightness-[0.7] contrast-[1.1]"
+            style={{ backgroundImage: `url(${hero.image})`, backgroundPosition: 'top' }}
+          />
         )}
         {/* <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/35 z-0"></div> */}
       </div>
