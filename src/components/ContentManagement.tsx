@@ -95,7 +95,7 @@ const ContentManagement = () => {
   const handleResetImages = () => {
     updateHero({
       ...hero,
-      image: '/images/carousel/hero1.png'
+      image: '/images/carousel/hero.png'
     });
     toast.success('Hero media reset to defaults');
   };
