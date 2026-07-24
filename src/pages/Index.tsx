@@ -55,7 +55,7 @@ const Index = () => {
       {/* <JioGamingBanner /> */}
       {/* <ActivitySection /> */}
       {/* <CareerPathSection /> */}
-      {/* <CosplaySection /> */}
+      <CosplaySection />
       <GamingSection />
 
       {/* PREVIOUS CONTENT (PRESERVED) */}

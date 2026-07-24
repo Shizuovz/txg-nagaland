@@ -2294,13 +2294,13 @@ const RegistrationSection = () => {
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-pink-500/50 hover:shadow-lg hover:shadow-pink-500/10 cursor-pointer h-full flex flex-col group"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-          // onClick={() => setRegistrationType("cosplayer")}
+            onClick={() => setRegistrationType("cosplayer")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#ec4899" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -2309,7 +2309,7 @@ const RegistrationSection = () => {
                 Register as a cosplayer and showcase your talent
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Coming Soon</Button>
+            <Button className="w-full text-sm sm:text-base group-hover:bg-pink-500 group-hover:text-white group-hover:border-pink-500 transition-colors" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div
