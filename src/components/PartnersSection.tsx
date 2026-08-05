@@ -71,6 +71,18 @@ const partnerships = [
     role: "Production Partner",
     image: "images/orion.png",
     color: "from-[#00FFFF] to-[#FF00FF]",
+  },
+  {
+    name: "AK Events",
+    role: "Tent Partner",
+    image: "images/partners/ak-events.png",
+    color: "from-[#FF3B30] to-[#FF9500]",
+  },
+  {
+    name: "Novaturient",
+    role: "Talent Partner",
+    image: "images/partners/nova.png",
+    color: "from-[#FFFF00] to-[#FF5F4F]",
   }
 ];
 
