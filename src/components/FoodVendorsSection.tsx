@@ -5,7 +5,7 @@ const foodVendors = [
   {
     name: "Kk Corner Stall",
     role: "Nagaland",
-    image: "images/vendors/kkcorner.png", // placeholder
+    image: "images/vendors/kk.jpeg", // placeholder
     color: "from-[#FF3B30] to-[#FF9500]", // Orange/Red
   },
   {
@@ -37,7 +37,7 @@ const foodVendors = [
     role: "Nagaland",
     image: "images/vendors/bambusa.jpg",
     color: "from-[#FF3B30] to-[#FF9500]", // Orange/Red
-  }
+  },
 ];
 
 const VendorCard = ({ name, role, image, color, delay }) => (
