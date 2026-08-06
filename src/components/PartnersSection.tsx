@@ -35,19 +35,19 @@ const partnerships = [
     image: "images/partners/esfi.png",
     color: "from-[#FF3B30] to-[#FF9500]",
   },
-  {
-    name: "Trinity Gaming",
-    role: "Sport Partner",
-    image: "images/partners/trinity-gaming.png",
-    color: "from-[#00FFFF] to-[#74A9FF]",
-    noPadding: true
-  },
-  {
-    name: "Gimi Michi",
-    role: "Food Partner",
-    image: "images/partners/gimi-michi.avif",
-    color: "from-[#50D075] to-[#00FFFF]",
-  },
+  // {
+  //   name: "Trinity Gaming",
+  //   role: "Sport Partner",
+  //   image: "images/partners/trinity-gaming.png",
+  //   color: "from-[#00FFFF] to-[#74A9FF]",
+  //   noPadding: true
+  // },
+  // {
+  //   name: "Gimi Michi",
+  //   role: "Food Partner",
+  //   image: "images/partners/gimi-michi.avif",
+  //   color: "from-[#50D075] to-[#00FFFF]",
+  // },
   {
     name: "Fingerprint Nagaland",
     role: "Print Partner",
@@ -66,12 +66,12 @@ const partnerships = [
     image: "images/partners/elpalazzo.jpg",
     color: "from-[#FF5F4F] to-[#FF00FF]",
   },
-  {
-    name: "Orion",
-    role: "Production Partner",
-    image: "images/orion.png",
-    color: "from-[#00FFFF] to-[#FF00FF]",
-  },
+  // {
+  //   name: "Orion",
+  //   role: "Production Partner",
+  //   image: "images/orion.png",
+  //   color: "from-[#00FFFF] to-[#FF00FF]",
+  // },
   {
     name: "AK Events",
     role: "Tent Partner",
