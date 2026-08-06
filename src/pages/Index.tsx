@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import SubHeader from "@/components/SubHeader";
 import HeroCarousel from "@/components/HeroCarousel";
@@ -35,6 +36,20 @@ import VisionSection from "@/components/VisionSection";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const Index = () => {
+  useEffect(() => {
+    // Check if there is a hash in the URL on initial load
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1); // remove '#'
+      // Add a slight delay to ensure all components are rendered
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500); 
+    }
+  }, []);
+
   return (
     <main className="min-h-screen overflow-x-hidden">
       <Navbar />
