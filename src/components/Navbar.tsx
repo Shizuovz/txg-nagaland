@@ -3,16 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import GamingIcon, { GamingIcons } from "./GamingIcons";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const navLinks = [
-  { name: "About", href: "#about-us" },
-  { name: "Vision", href: "#introduction-vision" },
-  { name: "Why Gaming", href: "#why-gaming" },
-  { name: "Tournament", href: "#games" },
-  { name: "Open Category", href: "#open-category" },
-  { name: "Why Partner", href: "#why-partner" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", href: "/" },
+  { name: "Tournaments", href: "/tournaments" },
+  { name: "Speakers", href: "/speakers" },
+  { name: "Contact", href: "/contact" },
 ];
 
 const Navbar = () => {
@@ -21,6 +18,7 @@ const Navbar = () => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -44,15 +42,16 @@ const Navbar = () => {
 
   const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, href: string) => {
     e.preventDefault();
-    const element = document.querySelector(href);
-    
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (href.startsWith('#')) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        navigate(`/${href}`);
+      }
     } else {
-      // Fallback: If on another page (e.g. /login), navigate back to home + hash
-      navigate(`/${href}`);
+      navigate(href);
     }
-    
     setMobileOpen(false);
   };
 
@@ -82,19 +81,27 @@ const Navbar = () => {
           </motion.a>
 
           {/* Desktop Links */}
-          <div className="hidden lg:flex items-center justify-center flex-grow mx-4 max-w-5xl">
+          <div className="hidden lg:flex items-center justify-center flex-grow gap-8 mx-4">
             {navLinks.map((link, i) => (
               <a
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleSmoothScroll(e, link.href)}
-                className={`flex-1 text-center whitespace-nowrap text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
-                  scrolled 
-                    ? "text-[#b0b0b0] hover:text-[#00ff88] hover:bg-[#1a1a1a]/50" 
-                    : "text-[#d0d0d0] hover:text-[#50D075] hover:bg-[#50D075]/10"
+                className={`relative text-center whitespace-nowrap text-base font-semibold transition-all duration-200 px-4 py-2 ${
+                  location.pathname === link.href 
+                    ? "text-[#00ff88]" 
+                    : (scrolled ? "text-[#b0b0b0] hover:text-[#00ff88] hover:bg-[#1a1a1a]/50 rounded-lg" : "text-[#d0d0d0] hover:text-[#50D075] hover:bg-[#50D075]/10 rounded-lg")
                 }`}
               >
                 {link.name}
+                {location.pathname === link.href && (
+                  <motion.div
+                    layoutId="navbar-active-indicator"
+                    className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#00ff88]"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </a>
             ))}
           </div>
@@ -137,7 +144,7 @@ const Navbar = () => {
                           <GamingIcon iconId={GamingIcons.USER} size={16} color="#00ff88" className="mr-2" /> Profile
                         </Button>
                         <Button variant="ghost" size="sm" className="w-full justify-start text-[#e0e0e0] hover:text-[#808080] font-['Nonito']" onClick={(e) => {
-                          handleSmoothScroll(e, "#register");
+                          handleSmoothScroll(e, "/register");
                           setUserDropdownOpen(false);
                         }}>
                           <GamingIcon iconId={GamingIcons.TROPHY} size={16} color="#00ff88" /> Register
@@ -168,9 +175,9 @@ const Navbar = () => {
                 </Button> */}
                 <Button 
                   size="sm" 
-                  className={`transition-all duration-200 font-['Nonito'] bg-gradient-to-r from-[#50D075] to-[#FFFF00]/70 text-black hover:bg-[#00ff88]/90`}
-                  style={{fontFamily:"'Nonito'"}}
-                  onClick={(e) => handleSmoothScroll(e, "#register")}
+                  className={`transition-all duration-200 bg-gradient-to-r from-[#50D075] to-[#FFFF00]/70 text-black hover:bg-[#00ff88]/90`}
+                  style={{fontFamily:"'Neo_Triad', sans-serif"}}
+                  onClick={(e) => handleSmoothScroll(e, "/register")}
                 >
                   Register
                 </Button>
@@ -218,10 +225,14 @@ const Navbar = () => {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="flex items-center justify-between py-4 px-5 rounded-2xl bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 text-[#e0e0e0] font-semibold text-lg hover:bg-[#2a2a2a]/50 transition-all duration-200"
+                    className={`flex items-center justify-between py-4 px-5 rounded-2xl border transition-all duration-200 ${
+                      location.pathname === link.href 
+                        ? "bg-[#00ff88]/10 border-[#00ff88]/50 text-[#00ff88]" 
+                        : "bg-[#1a1a1a]/50 border-[#2a2a2a]/50 text-[#e0e0e0] hover:bg-[#2a2a2a]/50"
+                    }`}
                   >
                     {link.name}
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#00ff88]/40" />
+                    <div className={`h-1.5 w-1.5 rounded-full ${location.pathname === link.href ? "bg-[#00ff88]" : "bg-[#00ff88]/40"}`} />
                   </motion.a>
                 ))}
               </div>
@@ -240,7 +251,7 @@ const Navbar = () => {
                     <Button variant="ghost" size="sm" className="w-full justify-start text-[#e0e0e0] hover:text-[#808080] font-['Nonito']" onClick={() => navigate('/dashboard')}>
                       <GamingIcon iconId={GamingIcons.DASHBOARD} size={16} color="#00ff88" className="mr-2" /> Dashboard
                     </Button>
-                    <Button variant="ghost" size="sm" className="w-full justify-start text-[#e0e0e0] hover:text-[#808080] font-['Nonito']" onClick={(e) => handleSmoothScroll(e, "#register")}>
+                    <Button variant="ghost" size="sm" className="w-full justify-start text-[#e0e0e0] hover:text-[#808080] font-['Nonito']" onClick={(e) => handleSmoothScroll(e, "/register")}>
                       <GamingIcon iconId={GamingIcons.TROPHY} size={16} color="#000000" /> Register
                     </Button>
                     <Button variant="ghost" size="sm" className="w-full justify-start text-[#ff4444] hover:text-[#ff6666] font-['Nonito']" onClick={async () => {
@@ -257,7 +268,7 @@ const Navbar = () => {
                   <Button variant="ghost" size="sm" className="w-full justify-start text-[#e0e0e0] hover:text-[#808080] font-['Nonito']" onClick={() => navigate('/login')}>
                     <GamingIcon iconId={GamingIcons.USER} size={16} color="#00ff88" className="mr-2" /> Login
                   </Button>
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-[#e0e0e0] hover:text-[#808080] font-['Nonito']" onClick={(e) => handleSmoothScroll(e, "#register")}>
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-[#e0e0e0] hover:text-[#808080] font-['Nonito']" onClick={(e) => handleSmoothScroll(e, "/register")}>
                     <GamingIcon iconId={GamingIcons.TROPHY} size={16} color="#00ff88" /> Register
                   </Button>
                 </div>

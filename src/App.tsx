@@ -9,6 +9,10 @@ import { Suspense, lazy, useEffect } from "react";
 
 // Lazy load only heavy components
 const Index = lazy(() => import("./pages/Index"));
+const Tournaments = lazy(() => import("./pages/Tournaments"));
+const Register = lazy(() => import("./pages/Register"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Speakers = lazy(() => import("./pages/Speakers"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const LoginForm = lazy(() => import("./components/auth/LoginForm"));
 const AdminLoginForm = lazy(() => import("./components/auth/AdminLoginForm"));
@@ -63,6 +67,10 @@ const App = () => (
         <AuthProvider>
           <Routes>
           <Route path="/" element={<Suspense fallback={<LoadingSpinner />}><Index /></Suspense>} />
+          <Route path="/tournaments" element={<Suspense fallback={<LoadingSpinner />}><Tournaments /></Suspense>} />
+          <Route path="/register" element={<Suspense fallback={<LoadingSpinner />}><Register /></Suspense>} />
+          <Route path="/contact" element={<Suspense fallback={<LoadingSpinner />}><Contact /></Suspense>} />
+          <Route path="/speakers" element={<Suspense fallback={<LoadingSpinner />}><Speakers /></Suspense>} />
           <Route path="/login" element={<LoginRoute />} />
           <Route path="/dashboard" element={
             <Suspense fallback={<LoadingSpinner />}>

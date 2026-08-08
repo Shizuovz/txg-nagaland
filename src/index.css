@@ -575,6 +575,68 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Tactical HUD Brackets for Speakers Page */
+.hud-bracket {
+  position: relative;
+}
+.hud-bracket::before, .hud-bracket::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+.hud-bracket::before {
+  top: 0; left: 0;
+  border-top: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+}
+.hud-bracket::after {
+  bottom: 0; right: 0;
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+.hud-bracket-full::before {
+  top: 0; left: 0; border-top: 2px solid currentColor; border-left: 2px solid currentColor;
+}
+.hud-bracket-full > div::before {
+  content: ''; position: absolute; top: 0; right: 0; width: 16px; height: 16px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; pointer-events: none;
+}
+.hud-bracket-full > div::after {
+  content: ''; position: absolute; bottom: 0; left: 0; width: 16px; height: 16px; border-bottom: 2px solid currentColor; border-left: 2px solid currentColor; pointer-events: none;
+}
+.hud-bracket-full::after {
+  bottom: 0; right: 0; border-bottom: 2px solid currentColor; border-right: 2px solid currentColor;
+}
+
+/* Topographic / Grid Pattern */
+.bg-grid {
+  background-image: 
+      linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Scanner Line */
+@keyframes scan {
+  0% { top: -10%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 110%; opacity: 0; }
+}
+.scanner-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.5;
+  box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  animation: scan 4s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
 /* Print Styles for PDF Export */
 @media print {
   body {
