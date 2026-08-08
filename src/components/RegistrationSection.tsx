@@ -135,11 +135,14 @@ const initialFormData = {
   institutionDeclaration: false,
   livestreamConsent: false,
   coordinatorName: "",
-  coordinatorPhone: ""
+  coordinatorPhone: "",
+  deviceType: "",
+  digitalArtSoftware: "",
+  emergencyContact: ""
 };
 
 const RegistrationSection = () => {
-  const [registrationType, setRegistrationType] = useState<"college" | "moba-open" | "cosplayer" | "vendor" | "exhibitor" | "media" | "sponsor" | "mini-tournament" | null>(null);
+  const [registrationType, setRegistrationType] = useState<"college" | "moba-open" | "cosplayer" | "vendor" | "exhibitor" | "media" | "sponsor" | "mini-tournament" | "digital-art" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationId, setRegistrationId] = useState("");
 
@@ -260,7 +263,8 @@ const RegistrationSection = () => {
                 registrationType === 'exhibitor' ? 'EXH' :
                   registrationType === 'sponsor' ? 'SPN' :
                     registrationType === 'media' ? 'MDA' :
-                      registrationType === 'mini-tournament' ? 'MIN' : 'VST';
+                      registrationType === 'mini-tournament' ? 'MIN' : 
+                        registrationType === 'digital-art' ? 'ART' : 'VST';
         const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
         const id = `${prefix}${randomNum}`;
         setRegistrationId(id);
@@ -537,6 +541,19 @@ const RegistrationSection = () => {
         }, 'Mini tournament registration submitted successfully!');
 
         console.log('Mini tournament registration completed');
+      } else if (registrationType === 'digital-art') {
+        await submitVisitorRegistration({
+          fullName: formData.captainName,
+          email: formData.captainEmail,
+          phone: formData.whatsappPhone,
+          address: formData.city, // Storing District/Town in address
+          city: formData.city,
+          state: 'Nagaland', // Default or user input
+          pinCode: '000000', // Default if unused
+          registrationId: registrationId,
+          collegeName: formData.deviceType, // Using unused field
+          message: `Age: ${formData.age}\nEmergency Contact: ${formData.emergencyContact}\nDevice Type: ${formData.deviceType}\nSoftware: ${formData.digitalArtSoftware}`
+        }, 'Digital Art Competition registration submitted successfully!');
       }
 
       // Reset form state after successful submission
@@ -2161,6 +2178,133 @@ const RegistrationSection = () => {
             </form>
           </CardContent>
         </Card>
+      ),
+      'digital-art': (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GamingIcon iconId={GamingIcons.GAMEPAD} size={20} color="#ff6b6b" />
+              Digital Art Competition Registration
+            </CardTitle>
+            {registrationId && (
+              <p className="hidden text-sm text-muted-foreground">Registration ID: {registrationId}</p>
+            )}
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="captainName">Full Name *</Label>
+                  <Input
+                    id="captainName"
+                    value={formData.captainName}
+                    onChange={(e) => handleInputChange("captainName", e.target.value)}
+                    placeholder="Your full name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="age">Age *</Label>
+                  <Input
+                    id="age"
+                    type="number"
+                    value={formData.age}
+                    onChange={(e) => handleInputChange("age", e.target.value)}
+                    placeholder="Your age"
+                    min="12"
+                    max="60"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="whatsappPhone">Mobile / WhatsApp Number *</Label>
+                  <Input
+                    id="whatsappPhone"
+                    value={formData.whatsappPhone}
+                    onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
+                    placeholder="+91 98765 43210"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="captainEmail">Email Address *</Label>
+                  <Input
+                    id="captainEmail"
+                    type="email"
+                    value={formData.captainEmail}
+                    onChange={(e) => handleInputChange("captainEmail", e.target.value)}
+                    placeholder="your.email@example.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="city">District / Town *</Label>
+                  <Input
+                    id="city"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    placeholder="Your district or town"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="emergencyContact">Emergency Contact Number *</Label>
+                  <Input
+                    id="emergencyContact"
+                    value={formData.emergencyContact}
+                    onChange={(e) => handleInputChange("emergencyContact", e.target.value)}
+                    placeholder="+91 98765 43210"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="deviceType">Device you will use *</Label>
+                  <select
+                    id="deviceType"
+                    value={formData.deviceType}
+                    onChange={(e) => handleInputChange("deviceType", e.target.value)}
+                    className="w-full p-2 border rounded-md"
+                    required
+                  >
+                    <option value="">Select device</option>
+                    <option value="Laptop">Laptop</option>
+                    <option value="Tablet / iPad">Tablet / iPad</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="digitalArtSoftware">Preferred Digital Art Software *</Label>
+                  <Input
+                    id="digitalArtSoftware"
+                    value={formData.digitalArtSoftware}
+                    onChange={(e) => handleInputChange("digitalArtSoftware", e.target.value)}
+                    placeholder="e.g. Photoshop, Procreate, Krita"
+                    required
+                  />
+                </div>
+              </div>
+
+              <TermsAndConditions
+                accepted={formData.agreeTerms}
+                onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
+                registrationType="digital-art"
+              />
+
+              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
+                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for Digital Art Competition'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       )
     };
 
@@ -2310,6 +2454,25 @@ const RegistrationSection = () => {
               </p>
             </div>
             <Button className="w-full text-sm sm:text-base group-hover:bg-pink-500 group-hover:text-white group-hover:border-pink-500 transition-colors" variant="outline">Register Now</Button>
+          </motion.div>
+
+          <motion.div
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-teal-500/50 hover:shadow-lg hover:shadow-teal-500/10 cursor-pointer h-full flex flex-col group"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            onClick={() => setRegistrationType("digital-art")}
+          >
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-teal-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
+              <GamingIcon iconId={GamingIcons.MONITOR} size={24} color="#14b8a6" />
+            </div>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Digital Art</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Compete in the live digital art creation challenge
+              </p>
+            </div>
+            <Button className="w-full text-sm sm:text-base group-hover:bg-teal-500 group-hover:text-white group-hover:border-teal-500 transition-colors" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div

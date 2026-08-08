@@ -65,6 +65,8 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
         return 'MOBA 5V5 Open Tournament Registration';
       case 'mini-tournament':
         return 'Mini Tournament Registration';
+      case 'digital-art':
+        return 'Digital Art Competition Registration';
       case 'cosplayer':
         return 'Cosplayer Registration';
       case 'vendor':
@@ -107,6 +109,8 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
               ? "I confirm that I have read and agree to the TXG-Nagaland MOBA 5V5 Open Tournament Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
               : registrationType === 'mini-tournament'
               ? "I confirm that I have read and agree to the TXG Nagaland Mini Tournaments Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
+              : registrationType === 'digital-art'
+              ? "By registering for the TXG Digital Art Competition, I confirm that I have read and accepted the Terms & Conditions. I understand that my artwork must be created during the allotted competition time and that the use of generative AI is strictly prohibited. I agree to follow the instructions of the organizers and accept the final decision of the judges. *"
               : "I confirm that I have read and agree to the Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true. *"}
           </Label>
           {!accepted && (
@@ -640,6 +644,127 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                 <p>TXG-Nagaland - Inter-College MOBA 5V5 Tournament Terms and Conditions</p>
                 <p>© 2026 TXG-Nagaland. All rights reserved.</p>
               </div>
+                </>
+              ) : registrationType === 'digital-art' ? (
+                <>
+                  <h3 className="font-semibold text-base">Digital Art Competition – Terms & Conditions</h3>
+                  
+                  <section>
+                    <h4 className="font-semibold mb-2">1. Participation</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The competition will be conducted physically at the TXG Expo venue.</li>
+                      <li>Registered participants must be present at the venue at the reporting time communicated by the organizers.</li>
+                      <li>Late participants may not be given additional time.</li>
+                    </ul>
+                  </section>
+                  
+                  <section>
+                    <h4 className="font-semibold mb-2">2. Competition Format</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Participants will create their digital artwork during the allotted competition period.</li>
+                      <li>Participants are free to create an artwork of their choice, subject to these rules.</li>
+                      <li>All work must be started and completed during the official competition time.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">3. Original Work</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The artwork must be created by the registered participant.</li>
+                      <li>Pre-made artwork, previously completed artwork, templates containing substantial pre-created artwork, or another person's work may not be submitted.</li>
+                      <li>Plagiarism or unauthorized copying will result in disqualification.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">4. Generative AI</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The use of generative AI is strictly prohibited.</li>
+                      <li>AI-generated images, AI-generated elements, generative fill, text-to-image tools, or similar generative features may not be used in any part of the artwork.</li>
+                      <li>Participants found using generative AI may be immediately disqualified.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">5. Software & Equipment</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Participants may use digital art software of their choice, provided it complies with the competition rules.</li>
+                      <li>Participants are responsible for knowing how to operate their own device and software.</li>
+                      <li>Any technical issue with a participant's personal device or software does not automatically entitle the participant to additional time.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">6. Permitted Resources</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Brushes, fonts, basic shapes, textures and standard software tools may be used.</li>
+                      <li>Any resource used must not constitute substantial pre-created artwork or violate another person's copyright.</li>
+                      <li>Organizers may inspect the participant's working file, layers, history or other relevant information when necessary to verify that the artwork was created during the competition.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">7. Content Restrictions</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Artwork must not contain unlawful, hateful, discriminatory, sexually explicit or otherwise inappropriate content.</li>
+                      <li>The organizers reserve the right to reject or disqualify an entry that violates event guidelines.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">8. Submission</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The completed artwork must be submitted within the allotted time and according to the submission instructions provided at the venue.</li>
+                      <li>Entries submitted after the deadline may be rejected.</li>
+                      <li>Participants must ensure that the submitted file can be opened and viewed correctly.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">9. Judging</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Entries will be evaluated by the appointed judges according to the competition's judging criteria.</li>
+                      <li>The judges' decision will be final.</li>
+                      <li>The organizers are not required to provide individual scores or detailed feedback to every participant.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">10. Verification & Disqualification</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Organizers may request the original working file or other evidence necessary to verify how an artwork was created.</li>
+                      <li>Violation of competition rules, plagiarism, use of generative AI, unfair assistance, submission of pre-created work or other forms of misconduct may result in disqualification.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">11. Use of Submitted Artwork</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>By participating, participants permit TXG and its organizers to display, photograph and publish submitted artworks for event documentation, exhibition and promotional purposes.</li>
+                      <li>Ownership of the original artwork remains with the respective artist.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">12. Event Rules</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Participants must follow instructions given by competition officials and venue staff.</li>
+                      <li>Any attempt to gain an unfair advantage, interfere with another participant or disrupt the competition may result in disqualification.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">13. Changes</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The organizers reserve the right to make reasonable changes to the competition schedule, format or rules where necessary for the proper conduct of the event.</li>
+                      <li>Any important changes will be communicated to registered participants.</li>
+                    </ul>
+                  </section>
+
+                  <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
+                    <p>TXG Digital Art Competition Terms & Conditions</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
+                  </div>
                 </>
               ) : registrationType === 'mini-tournament' ? (
                 <>
