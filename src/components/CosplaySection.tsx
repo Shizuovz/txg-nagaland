@@ -90,7 +90,7 @@ const CosplaySection = () => {
                 className="text-[10px] md:text-[11px] leading-[1.4] tracking-[0.1em] font-medium text-[#5c5d5e] uppercase mb-2"
                 style={{ fontFamily: "'Nonito', sans-serif" }}
               >
-                FIRST PRIZE WINNER
+                PRIZE POOL
               </div>
               <p
                 className="text-[13px] md:text-[14px] leading-[1.6] font-normal text-[#c8c6c5]"
@@ -101,14 +101,13 @@ const CosplaySection = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 mb-5 relative z-20">
-              <Link
-                to="/register"
-                className="bg-[#be0000] text-[#FFFFFF] text-[12px] md:text-[14px] font-bold uppercase px-4 py-2 tracking-wider hover:bg-[#e5e2e1] hover:text-[#131313] transition-all duration-300 flex items-center justify-center gap-1.5 w-fit"
+              <div
+                className="bg-[#333333] text-[#aaaaaa] text-[12px] md:text-[14px] font-bold uppercase px-4 py-2 tracking-wider flex items-center justify-center gap-1.5 w-fit border border-[#444444] cursor-not-allowed"
                 style={{ fontFamily: "'Neo_Triad', sans-serif" }}
+                title="Registration update coming soon"
               >
-                REGISTER NOW
-                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-              </Link>
+                COMING SOON
+              </div>
               {/* <button 
                 className="bg-transparent border border-[#e5e2e1] text-[#e5e2e1] text-[12px] md:text-[14px] font-bold uppercase px-4 py-2 tracking-wider hover:bg-[#e5e2e1] hover:text-[#131313] transition-all duration-300" 
                 style={{ fontFamily: "'Neo_Triad', sans-serif" }}

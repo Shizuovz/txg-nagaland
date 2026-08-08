@@ -137,6 +137,7 @@ const initialFormData = {
   coordinatorName: "",
   coordinatorPhone: "",
   deviceType: "",
+  otherDeviceType: "",
   digitalArtSoftware: "",
   emergencyContact: ""
 };
@@ -551,8 +552,8 @@ const RegistrationSection = () => {
           state: 'Nagaland', // Default or user input
           pinCode: '000000', // Default if unused
           registrationId: registrationId,
-          collegeName: formData.deviceType, // Using unused field
-          message: `Age: ${formData.age}\nEmergency Contact: ${formData.emergencyContact}\nDevice Type: ${formData.deviceType}\nSoftware: ${formData.digitalArtSoftware}`
+          collegeName: formData.deviceType === 'Other' ? formData.otherDeviceType : formData.deviceType, // Using unused field
+          message: `Age: ${formData.age}\nEmergency Contact: ${formData.emergencyContact}\nDevice Type: ${formData.deviceType === 'Other' ? formData.otherDeviceType : formData.deviceType}\nSoftware: ${formData.digitalArtSoftware}`
         }, 'Digital Art Competition registration submitted successfully!');
       }
 
@@ -2272,7 +2273,7 @@ const RegistrationSection = () => {
                     id="deviceType"
                     value={formData.deviceType}
                     onChange={(e) => handleInputChange("deviceType", e.target.value)}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border rounded-md bg-background text-foreground"
                     required
                   >
                     <option value="">Select device</option>
@@ -2280,6 +2281,18 @@ const RegistrationSection = () => {
                     <option value="Tablet / iPad">Tablet / iPad</option>
                     <option value="Other">Other</option>
                   </select>
+                  {formData.deviceType === "Other" && (
+                    <div className="mt-4">
+                      <Label htmlFor="otherDeviceType">Specify Device *</Label>
+                      <Input
+                        id="otherDeviceType"
+                        value={formData.otherDeviceType}
+                        onChange={(e) => handleInputChange("otherDeviceType", e.target.value)}
+                        placeholder="Please specify"
+                        required
+                      />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="digitalArtSoftware">Preferred Digital Art Software *</Label>
@@ -2438,11 +2451,11 @@ const RegistrationSection = () => {
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-pink-500/50 hover:shadow-lg hover:shadow-pink-500/10 cursor-pointer h-full flex flex-col group"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col group"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            onClick={() => setRegistrationType("cosplayer")}
+            // onClick={() => setRegistrationType("cosplayer")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#ec4899" />
@@ -2453,7 +2466,7 @@ const RegistrationSection = () => {
                 Register as a cosplayer and showcase your talent
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base group-hover:bg-pink-500 group-hover:text-white group-hover:border-pink-500 transition-colors" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base border-muted text-muted-foreground" variant="outline" disabled>Coming Soon</Button>
           </motion.div>
 
           <motion.div

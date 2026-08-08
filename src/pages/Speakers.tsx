@@ -52,7 +52,7 @@ const Speakers = () => {
                   <div className="absolute bottom-0 left-1/2 w-px h-2 bg-current"></div>
                 </div>
                 <div className="scanner-line"></div>
-                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcOCvejXqn07FMNylpWBPd34inFgrdZemAuLggDtfqsj3cy5ZsNGrQ-lUSjj78ik-GA6OLjOJjW8ZjP6CDAEVJvAL1sPrAyNDjfu1DMT0tV9aYWqWxXa_D-6ncY5h6gY1kPH64DKVQ6WbiSFEaEXNwgbCenrZzfOhSj8LGtYfV3Xg1joO5TFr9UTJ-lu1bDVAETEWln42Ksy5MT-a-gZsglGf4ELwtcYd1bWEp6Ko8WDdzMNzAPSNhXZMwhCCB3NwhGuc" alt="Ahmed Ameen Khan" className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0" />
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcOCvejXqn07FMNylpWBPd34inFgrdZemAuLggDtfqsj3cy5ZsNGrQ-lUSjj78ik-GA6OLjOJjW8ZjP6CDAEVJvAL1sPrAyNDjfu1DMT0tV9aYWqWxXa_D-6ncY5h6gY1kPH64DKVQ6WbiSFEaEXNwgbCenrZzfOhSj8LGtYfV3Xg1joO5TFr9UTJ-lu1bDVAETEWln42Ksy5MT-a-gZsglGf4ELwtcYd1bWEp6Ko8WDdzMNzAPSNhXZMwhCCB3NwhGuc" alt="Ahmed Ameen Khan" className="w-full h-full object-cover object-top grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0" />
               </div>
               <div className="flex flex-col gap-2">
                 <h3 className="font-['Neiko'] font-bold text-[32px] md:text-[40px] leading-[1.2] text-white uppercase">Ahmed Ameen Khan</h3>
@@ -182,7 +182,7 @@ const Speakers = () => {
                   <h4 className="font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase" style={{ color: '#10b981' }}>Robotics // STEM Education</h4>
                 </div>
                 <p className="font-Nonito text-[16px] md:text-[18px] text-[#e7bdb6] mt-2 leading-relaxed max-w-3xl">
-                  NAGABOTS (officially registered as NAGABOTS Tech Ventures Private Limited) is Nagalandâ€™s very first robotics and STEM education enterprise. Founded in May 2021 and associated with IndiaFirst Robotics, the organisation focuses on transforming the educational landscape of Northeast India by teaching robotics, block-based and textual coding, artificial intelligence, and 3D printing to young learners.
+                  NAGABOTS (officially registered as NAGABOTS Tech Ventures Private Limited) is Nagaland's very first robotics and STEM education enterprise. Founded in May 2021 and associated with IndiaFirst Robotics, the organisation focuses on transforming the educational landscape of Northeast India by teaching robotics, block-based and textual coding, artificial intelligence, and 3D printing to young learners.
                 </p>
               </div>
             </article>
