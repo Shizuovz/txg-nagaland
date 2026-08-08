@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Gamepad2, Search, RefreshCw, FileText, Settings, Download, Eye } from 'lucide-react';
+import { TrendingUp, Gamepad2, Search, RefreshCw, FileText, Settings, Download, Eye, Trash2 } from 'lucide-react';
 import GamingIcon, { GamingIcons } from "@/components/GamingIcons";
 import { useRegistrationAPI } from '@/hooks/useRegistrationAPI';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
@@ -148,6 +148,7 @@ const AdminDashboard = () => {
   const [exhibitorRegistrations, setExhibitorRegistrations] = useState<SponsorRegistration[]>([]);
   const [visitorRegistrations, setVisitorRegistrations] = useState<any[]>([]);
   const [miniTournamentRegistrations, setMiniTournamentRegistrations] = useState<any[]>([]);
+  const [digitalArtRegistrations, setDigitalArtRegistrations] = useState<any[]>([]);
   const [mobaOpenRegistrations, setMobaOpenRegistrations] = useState<TeamRegistration[]>([]);
 
   // Mini Tournament Games List
@@ -226,6 +227,10 @@ const AdminDashboard = () => {
         (v.message && v.message.includes('Game:'))
       );
       setMiniTournamentRegistrations(miniTournaments);
+
+      // Digital Art: Visitor registrations with ART prefix
+      const digitalArt = (visitors || []).filter(v => v.registrationId && v.registrationId.startsWith('ART'));
+      setDigitalArtRegistrations(digitalArt);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     } finally {
@@ -351,7 +356,7 @@ const AdminDashboard = () => {
   };
 
   // Status Management Functions
-  const handleStatusUpdate = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
+  const handleStatusUpdate = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament' | 'digital-art', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     let success = false;
     let registrationData: any = null;
     
@@ -388,6 +393,10 @@ const AdminDashboard = () => {
           break;
         case 'mini-tournament':
           registrationData = miniTournamentRegistrations.find(m => m.id === id);
+          success = await updateVisitorStatus(id, status);
+          break;
+        case 'digital-art':
+          registrationData = digitalArtRegistrations.find(m => m.id === id);
           success = await updateVisitorStatus(id, status);
           break;
       }
@@ -448,7 +457,7 @@ const AdminDashboard = () => {
   };
 
   // Delete Registration Function
-  const handleDeleteRegistration = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament') => {
+  const handleDeleteRegistration = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament' | 'digital-art') => {
     if (!window.confirm('Are you sure you want to permanently delete this registration? This action cannot be undone.')) {
       return;
     }
@@ -467,6 +476,7 @@ const AdminDashboard = () => {
           break;
         case 'cosplayer':
         case 'mini-tournament':
+        case 'digital-art':
           result = await deleteVisitorRegistration(id);
           break;
         case 'media':
@@ -972,6 +982,46 @@ const AdminDashboard = () => {
     downloadCSV(csvData, 'mini_tournament_registrations', headers);
   };
 
+  const downloadDigitalArtRegistrationsCSV = () => {
+    const headers = [
+      'registrationId',
+      'fullName',
+      'email',
+      'whatsapp',
+      'districtTown',
+      'age',
+      'emergencyContact',
+      'deviceType',
+      'software',
+      'status',
+      'createdAt'
+    ];
+
+    const csvData = digitalArtRegistrations.map((registration) => {
+      const message = registration.message || '';
+      const age = message.includes('Age:') ? message.split('Age:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const emergencyContact = message.includes('Emergency Contact:') ? message.split('Emergency Contact:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const deviceType = message.includes('Device Type:') ? message.split('Device Type:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const software = message.includes('Software:') ? message.split('Software:')[1]?.split('\n')[0]?.trim() : 'N/A';
+
+      return {
+        registrationId: registration.registrationId || '',
+        fullName: registration.fullName || '',
+        email: registration.email || '',
+        whatsapp: registration.phone || '',
+        districtTown: registration.address || '',
+        age: age,
+        emergencyContact: emergencyContact,
+        deviceType: deviceType,
+        software: software,
+        status: registration.status || '',
+        createdAt: formatDate(registration.createdAt)
+      };
+    });
+
+    downloadCSV(csvData, 'digital_art_registrations', headers);
+  };
+
   const downloadExhibitorRegistrationsCSV = () => {
     const headers = [
       'registrationId',
@@ -1257,7 +1307,7 @@ const AdminDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"
         >
           <Card className="bg-white/80 backdrop-blur-sm border-purple-200">
             <CardContent className="p-6">
@@ -1297,6 +1347,18 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
 
+          <Card className="bg-white/80 backdrop-blur-sm border-teal-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Digital Art</p>
+                  <p className="text-3xl font-bold text-teal-600">{digitalArtRegistrations.length || 0}</p>
+                </div>
+                <GamingIcon iconId={GamingIcons.MONITOR} size={32} color="#14b8a6" />
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="bg-white/80 backdrop-blur-sm border-orange-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -1306,7 +1368,8 @@ const AdminDashboard = () => {
                     {teamRegistrations.filter(t => t.status === 'pending').length +
                      sponsorRegistrations.filter(s => s.status === 'pending').length +
                      mediaRegistrations.filter(m => m.status === 'pending').length +
-                     miniTournamentRegistrations.filter(m => m.status === 'pending').length}
+                     miniTournamentRegistrations.filter(m => m.status === 'pending').length +
+                     digitalArtRegistrations.filter(a => a.status === 'pending').length}
                   </p>
                 </div>
                 <GamingIcon iconId={GamingIcons.CLOCK_ICON} size={32} color="#ea580c" />
@@ -1332,6 +1395,7 @@ const AdminDashboard = () => {
               <TabsTrigger value="exhibitors" className="flex-1 min-w-fit">Exhibitors</TabsTrigger>
               <TabsTrigger value="media" className="flex-1 min-w-fit">Media</TabsTrigger>
               <TabsTrigger value="mini-tournaments" className="flex-1 min-w-fit">Mini Tournaments</TabsTrigger>
+              <TabsTrigger value="digital-art" className="flex-1 min-w-fit">Digital Art</TabsTrigger>
               <TabsTrigger value="manual-entry" className="flex-1 min-w-fit">Manual Entry</TabsTrigger>
               <TabsTrigger value="content" className="flex-1 min-w-fit">Content</TabsTrigger>
             </TabsList>
@@ -3417,6 +3481,145 @@ const AdminDashboard = () => {
                     </div>
                   );
                 })()}
+              </div>
+            </TabsContent>
+
+            {/* Digital Art Competition Tab */}
+            <TabsContent value="digital-art">
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold text-gray-800">Digital Art Competition Registrations</h2>
+                  <div className="flex gap-4 items-center">
+                    <Badge className="bg-teal-100 text-teal-800 h-6">
+                      Total: {digitalArtRegistrations.length}
+                    </Badge>
+                    <Badge className="bg-orange-100 text-orange-800 h-6">
+                      Pending: {digitalArtRegistrations.filter(r => r.status === 'pending').length}
+                    </Badge>
+                    <Badge className="bg-green-100 text-green-800 h-6">
+                      Approved: {digitalArtRegistrations.filter(r => r.status === 'approved').length}
+                    </Badge>
+                    <Button onClick={downloadDigitalArtRegistrationsCSV} variant="outline" size="sm">
+                      <Download className="mr-2 h-4 w-4" /> Export CSV
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {digitalArtRegistrations.map((registration) => (
+                    <Card key={registration.id} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                      <div className={`h-2 w-full ${
+                        registration.status === 'pending' ? 'bg-orange-400' :
+                        registration.status === 'approved' ? 'bg-green-500' :
+                        registration.status === 'rejected' ? 'bg-red-500' : 'bg-gray-400'
+                      }`} />
+                      <CardHeader className="pb-3 border-b bg-gray-50/50">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-lg text-gray-900">{registration.fullName}</CardTitle>
+                            <CardDescription className="text-xs mt-1">ID: {registration.registrationId}</CardDescription>
+                          </div>
+                          <Badge variant={
+                            registration.status === 'approved' ? 'default' :
+                            registration.status === 'rejected' ? 'destructive' :
+                            registration.status === 'pending' ? 'outline' : 'secondary'
+                          } className={registration.status === 'approved' ? 'bg-green-600' : ''}>
+                            {registration.status?.toUpperCase() || 'PENDING'}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-4 space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">Email:</span>
+                          <span className="text-sm">{registration.email}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">Phone:</span>
+                          <span className="text-sm">{registration.phone}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">District/Town:</span>
+                          <span className="text-sm">{registration.address}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">Age:</span>
+                          <span className="text-sm">
+                            {registration.message && registration.message.includes('Age:') 
+                              ? registration.message.split('Age:')[1]?.split('\n')[0]?.trim() 
+                              : 'N/A'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">Emergency Contact:</span>
+                          <span className="text-sm">
+                            {registration.message && registration.message.includes('Emergency Contact:') 
+                              ? registration.message.split('Emergency Contact:')[1]?.split('\n')[0]?.trim() 
+                              : 'N/A'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">Device Type:</span>
+                          <span className="text-sm">
+                            {registration.message && registration.message.includes('Device Type:') 
+                              ? registration.message.split('Device Type:')[1]?.split('\n')[0]?.trim() 
+                              : 'N/A'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">Software:</span>
+                          <span className="text-sm truncate max-w-[120px]" title={
+                            registration.message && registration.message.includes('Software:') 
+                              ? registration.message.split('Software:')[1]?.split('\n')[0]?.trim() 
+                              : 'N/A'
+                          }>
+                            {registration.message && registration.message.includes('Software:') 
+                              ? registration.message.split('Software:')[1]?.split('\n')[0]?.trim() 
+                              : 'N/A'}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">Registered:</span>
+                          <span className="text-sm">{formatDate(registration.createdAt)}</span>
+                        </div>
+                        
+                        <div className="flex gap-2 mt-4 pt-2 border-t">
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(registration.id, 'digital-art', 'approved')}
+                            className="bg-green-600 hover:bg-green-700 text-white flex-1"
+                            disabled={registration.status === 'approved'}
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(registration.id, 'digital-art', 'rejected')}
+                            className="bg-red-600 hover:bg-red-700 text-white flex-1"
+                            disabled={registration.status === 'rejected'}
+                          >
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteRegistration(registration.id, 'digital-art')}
+                            className="bg-red-800 hover:bg-red-900 text-white"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {digitalArtRegistrations.length === 0 && (
+                    <div className="col-span-full py-12 text-center text-gray-500 bg-gray-50 rounded-lg border border-dashed">
+                      <GamingIcon iconId={GamingIcons.MONITOR} size={48} className="mx-auto text-gray-300 mb-4" />
+                      <p className="text-lg font-medium">No registrations yet</p>
+                      <p className="text-sm mt-1">Digital Art Competition registrations will appear here.</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </TabsContent>
 

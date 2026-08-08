@@ -3,9 +3,10 @@ import { motion } from "framer-motion";
 
 const competitions = [
   {
-    title: "30-Second AI Video Generation Competition",
-    description: "Participants will create a short AI-generated video based on a theme provided by the organizers. The top selected entries will be displayed at the Expo and judged by the appointed panel. 1st, 2nd and 3rd winners will receive cash prizes and goodies.",
-    image: "images/ai.jpeg", // placeholder
+    title: "Cosplay Championship",
+    description: "Showcase your creativity and craftsmanship on the biggest stage in Northeast India. Bring your favourite game characters to life. Amazing cash prizes, merchandise & exclusive goodies await the winners.",
+    image: "images/cosplay-bg.jpg", 
+    characterImage: "images/cosplay-character.png",
     color: "from-[#FF5F4F] to-[#FF00FF]", // Red to Pink
   },
   {
@@ -73,14 +74,21 @@ const CompetitionsSection = () => {
                 <img src={item.image} alt={item.title} className="w-full h-full object-cover opacity-40 group-hover:opacity-50 group-hover:scale-110 transition-all duration-700" onError={(e) => (e.currentTarget.src = "/placeholder.svg")} />
               </div>
 
+              {/* Character Image Overlay (if any) */}
+              {item.characterImage && (
+                <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-10">
+                  <img src={item.characterImage} alt={`${item.title} Character`} className="w-[100%] h-[90%] object-contain object-bottom group-hover:scale-110 transition-all duration-700 drop-shadow-2xl translate-y-4" />
+                </div>
+              )}
+
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent opacity-90"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent opacity-90 z-10"></div>
 
               {/* Colored Glow on Hover */}
               <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 bg-gradient-to-t ${item.color} transition-opacity duration-500`}></div>
 
               {/* Content */}
-              <div className="absolute inset-0 p-8 flex flex-col justify-end">
+              <div className="absolute inset-0 p-8 flex flex-col justify-end z-20 pointer-events-none">
                 <h3 className={`font-['Nonito'] text-2xl font-bold mb-4 tracking-wide text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r ${item.color} transition-all duration-300`}>
                   {item.title}
                 </h3>
