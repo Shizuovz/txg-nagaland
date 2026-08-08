@@ -1,30 +1,38 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import GamingIcon, { GamingIcons } from "./GamingIcons";
 import PrivacyPolicy from "./PrivacyPolicy";
 import TermsOfService from "./TermsOfService";
 
 const quickLinks = [
-  { label: "Vision", href: "#introduction-vision" },
-  { label: "Why Gaming", href: "#why-gaming" },
-  { label: "About", href: "#about" },
-  { label: "Tournament", href: "#games" },
-  { label: "Open Category", href: "#open-category" },
-  { label: "Why Partner", href: "#why-partner" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "Tournaments", href: "/tournaments" },
+  { label: "Speakers", href: "/speakers" },
+  { label: "Contact", href: "/contact" },
+  { label: "Register", href: "/register" },
 ];
 
 const Footer = () => {
   const [isPrivacyPolicyOpen, setIsPrivacyPolicyOpen] = useState(false);
   const [isTermsOfServiceOpen, setIsTermsOfServiceOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    const targetId = href.replace('#', '');
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (href.startsWith('#')) {
+      if (location.pathname !== '/') {
+        navigate('/' + href);
+      } else {
+        const targetId = href.replace('#', '');
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
     } else {
-      window.location.href = href;
+      navigate(href);
+      window.scrollTo(0, 0);
     }
   };
 
