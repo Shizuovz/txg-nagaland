@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 const CosplaySection = () => {
   return (
     <section id="cosplay" className="py-8 md:py-10 bg-[#131313] relative overflow-hidden tech-grid">
@@ -108,12 +108,75 @@ const CosplaySection = () => {
               >
                 COMING SOON
               </div>
-              {/* <button 
-                className="bg-transparent border border-[#e5e2e1] text-[#e5e2e1] text-[12px] md:text-[14px] font-bold uppercase px-4 py-2 tracking-wider hover:bg-[#e5e2e1] hover:text-[#131313] transition-all duration-300" 
-                style={{ fontFamily: "'Neo_Triad', sans-serif" }}
-              >
-                VIEW RULES
-              </button> */}
+              
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button 
+                    className="bg-transparent border border-[#e5e2e1] text-[#e5e2e1] text-[12px] md:text-[14px] font-bold uppercase px-4 py-2 tracking-wider hover:bg-[#e5e2e1] hover:text-[#131313] transition-all duration-300" 
+                    style={{ fontFamily: "'Neo_Triad', sans-serif" }}
+                  >
+                    VIEW RULES
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-[#131313] border-[#353534] text-[#e5e2e1]">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-[#e5e2e1] font-['Neo_Triad'] uppercase tracking-wider border-b border-[#353534] pb-4 mb-4">
+                      Cosplay Competition Guidelines
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6 font-['Nonito'] text-sm leading-relaxed">
+                    <div>
+                      <h4 className="text-lg font-bold text-white mb-2 uppercase">Guidelines</h4>
+                      <ol className="list-decimal pl-5 space-y-2 text-[#c8c6c5]">
+                        <li>Cosplayers are requested to refrain from using obscene/vulgar language/gestures while performing on stage.</li>
+                        <li>Use of open flames, confetti, liquids, sharpened or loaded props are prohibited.</li>
+                        <li>Original characters or characters which are not of game origin will not be qualified to participate in the TXG Cosplay Competition.</li>
+                        <li>No additional points will be awarded or deducted for background visual or audio edits and/or stage props.</li>
+                        <li>Cosplayers are responsible for their own personal belongings at the venue. The management will not be held responsible for loss or damage of personal items.</li>
+                        <li>All are requested to be mindful and respectful towards those around you. Kindly adhere to venue guidelines.</li>
+                      </ol>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-lg font-bold text-white mb-2 uppercase">Judging Criteria</h4>
+                      <ul className="list-disc pl-5 space-y-2 text-[#c8c6c5]">
+                        <li><strong className="text-[#ffb4a8]">COSTUME DETAIL (10 Points):</strong> All elements of the character's original design, as shown in the game, must be present. All details must match the character reference photo which was submitted during registration.</li>
+                        <li><strong className="text-[#ffb4a8]">CRAFTSMANSHIP (10 Points):</strong> Foamwork, needlework, functionality, durability and overall quality of the cosplay.</li>
+                        <li><strong className="text-[#ffb4a8]">Stage Performance (10 Points):</strong> Overall entertainment value.</li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-bold text-white mb-2 uppercase">Contest Categories</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex justify-between items-center">
+                          <span>Grand Winner</span>
+                          <strong className="text-[#00ff88]">₹60,000</strong>
+                        </div>
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex justify-between items-center">
+                          <span>Best Foam work</span>
+                          <strong className="text-[#00ff88]">₹10,000</strong>
+                        </div>
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex justify-between items-center">
+                          <span>Best Needlework</span>
+                          <strong className="text-[#00ff88]">₹10,000</strong>
+                        </div>
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex justify-between items-center">
+                          <span>Fan Favorite</span>
+                          <strong className="text-[#00ff88]">₹10,000</strong>
+                        </div>
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex flex-col justify-center sm:col-span-2">
+                          <div className="flex justify-between items-center">
+                            <span>Best MOBA 5V5 character cosplay</span>
+                            <strong className="text-[#00ff88]">₹10,000</strong>
+                          </div>
+                          <span className="text-xs text-muted-foreground mt-1">Sponsored by Community Heroes Nagaland</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
 
             {/* <div

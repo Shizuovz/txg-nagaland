@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import GamingIcon, { GamingIcons } from "./GamingIcons";
 import { useRegistrationAPI } from "@/hooks/useRegistrationAPI";
 import { Game, College, SponsorshipTier } from '@/lib/firebase';
@@ -1258,6 +1259,72 @@ const RegistrationSection = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Rules Modal */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full border-pink-500/50 text-pink-400 hover:bg-pink-500/10 hover:text-pink-300">
+                    View Full Guidelines & Prizes
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-[#131313] border-[#353534] text-[#e5e2e1]">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-pink-400 font-['Neo_Triad'] uppercase tracking-wider border-b border-[#353534] pb-4 mb-4">Cosplay Competition Guidelines</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6 font-['Nonito'] text-sm leading-relaxed">
+                    <div>
+                      <h4 className="text-lg font-bold text-white mb-2 uppercase">Guidelines</h4>
+                      <ol className="list-decimal pl-5 space-y-2 text-[#c8c6c5]">
+                        <li>Cosplayers are requested to refrain from using obscene/vulgar language/gestures while performing on stage.</li>
+                        <li>Use of open flames, confetti, liquids, sharpened or loaded props are prohibited.</li>
+                        <li>Original characters or characters which are not of game origin will not be qualified to participate in the TXG Cosplay Competition.</li>
+                        <li>No additional points will be awarded or deducted for background visual or audio edits and/or stage props.</li>
+                        <li>Cosplayers are responsible for their own personal belongings at the venue. The management will not be held responsible for loss or damage of personal items.</li>
+                        <li>All are requested to be mindful and respectful towards those around you. Kindly adhere to venue guidelines.</li>
+                      </ol>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-lg font-bold text-white mb-2 uppercase">Judging Criteria</h4>
+                      <ul className="list-disc pl-5 space-y-2 text-[#c8c6c5]">
+                        <li><strong className="text-[#ffb4a8]">COSTUME DETAIL (10 Points):</strong> All elements of the character's original design, as shown in the game, must be present. All details must match the character reference photo which was submitted during registration.</li>
+                        <li><strong className="text-[#ffb4a8]">CRAFTSMANSHIP (10 Points):</strong> Foamwork, needlework, functionality, durability and overall quality of the cosplay.</li>
+                        <li><strong className="text-[#ffb4a8]">Stage Performance (10 Points):</strong> Overall entertainment value.</li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-bold text-white mb-2 uppercase">Contest Categories</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex justify-between items-center">
+                          <span>Grand Winner</span>
+                          <strong className="text-[#00ff88]">₹60,000</strong>
+                        </div>
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex justify-between items-center">
+                          <span>Best Foam work</span>
+                          <strong className="text-[#00ff88]">₹10,000</strong>
+                        </div>
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex justify-between items-center">
+                          <span>Best Needlework</span>
+                          <strong className="text-[#00ff88]">₹10,000</strong>
+                        </div>
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex justify-between items-center">
+                          <span>Fan Favorite</span>
+                          <strong className="text-[#00ff88]">₹10,000</strong>
+                        </div>
+                        <div className="bg-[#1c1b1b] p-3 border border-[#353534] rounded flex flex-col justify-center sm:col-span-2">
+                          <div className="flex justify-between items-center">
+                            <span>Best MOBA 5V5 character cosplay</span>
+                            <strong className="text-[#00ff88]">₹10,000</strong>
+                          </div>
+                          <span className="text-xs text-muted-foreground mt-1">Sponsored by Community Heroes Nagaland</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
               <div>
                 <Label htmlFor="captainName">Full Name *</Label>
                 <Input
@@ -2451,11 +2518,11 @@ const RegistrationSection = () => {
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col group"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-pink-500/50 hover:shadow-lg hover:shadow-pink-500/10 cursor-pointer h-full flex flex-col group"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            // onClick={() => setRegistrationType("cosplayer")}
+            onClick={() => setRegistrationType("cosplayer")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#ec4899" />
@@ -2466,7 +2533,7 @@ const RegistrationSection = () => {
                 Register as a cosplayer and showcase your talent
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base border-muted text-muted-foreground" variant="outline" disabled>Coming Soon</Button>
+            <Button className="w-full text-sm sm:text-base group-hover:bg-pink-500 group-hover:text-white group-hover:border-pink-500 transition-colors" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div

@@ -1,11 +1,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useContentManagement from "@/hooks/useContentManagement";
 
 const HeroSection = () => {
   const { scrollYProgress } = useScroll();
   const [isHeroVisible, setIsHeroVisible] = useState(true);
   const { contentData } = useContentManagement();
+  const navigate = useNavigate();
 
   // State to cycle visibility of the hero texts (6s visible, 4s hidden)
   const [showText, setShowText] = useState(true);
@@ -169,10 +171,14 @@ const HeroSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 1.2, ease: "easeOut" }}
-                className="flex flex-col sm:flex-row gap-4 justify-center pt-2"
+                className="flex flex-col sm:flex-row gap-4 justify-center pt-2 mt-4 z-20 relative pointer-events-auto"
               >
                 <motion.a
-                  href="#register"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate('/register');
+                  }}
+                  href="/register"
                   className="relative inline-block px-8 py-3 bg-transparent font-['Neo_Triad'] tracking-widest font-bold text-xl rounded-lg transition-all duration-300 group"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
