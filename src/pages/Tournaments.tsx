@@ -7,6 +7,7 @@ import TechExhibitionSection from "@/components/TechExhibitionSection";
 import CompetitionsSection from "@/components/CompetitionsSection";
 import CosplaySection from "@/components/CosplaySection";
 import DigitalArtChallengeSection from "@/components/DigitalArtChallengeSection";
+import AICreativeVideoSection from "@/components/AICreativeVideoSection";
 import ProfileSection from "@/components/ProfileSection";
 import GameJamSection from "@/components/GameJamSection";
 import VisitorExperienceSection from "@/components/VisitorExperienceSection";
@@ -34,6 +35,7 @@ const Tournaments = () => {
       <GameJamSection />
       <CosplaySection />
       <DigitalArtChallengeSection />
+      <AICreativeVideoSection />
       <VisitorExperienceSection />
       <PartnersSection />
       <FoodVendorsSection />

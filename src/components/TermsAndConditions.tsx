@@ -67,6 +67,8 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
         return 'Mini Tournament Registration';
       case 'digital-art':
         return 'Digital Art Competition Registration';
+      case 'ai-video':
+        return 'AI Creative Video Challenge Registration';
       case 'cosplayer':
         return 'Cosplayer Registration';
       case 'vendor':
@@ -111,6 +113,8 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
               ? "I confirm that I have read and agree to the TXG Nagaland Mini Tournaments Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
               : registrationType === 'digital-art'
               ? "By registering for the TXG Digital Art Competition, I confirm that I have read and accepted the Terms & Conditions. I understand that my artwork must be created during the allotted competition time and that the use of generative AI is strictly prohibited. I agree to follow the instructions of the organizers and accept the final decision of the judges. *"
+              : registrationType === 'ai-video'
+              ? "I have read and agree to the AI Creative Video Challenge Terms & Conditions. *"
               : "I confirm that I have read and agree to the Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true. *"}
           </Label>
           {!accepted && (
@@ -763,6 +767,121 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>TXG Digital Art Competition Terms & Conditions</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
+                  </div>
+                </>
+              ) : registrationType === 'ai-video' ? (
+                <>
+                  <h3 className="font-semibold text-base">AI Creative Video Challenge – Terms & Conditions</h3>
+                  <p className="mb-4">
+                    By registering for and submitting an entry to the AI Creative Video Challenge, participants agree to the following Terms & Conditions:
+                  </p>
+                  
+                  <section>
+                    <h4 className="font-semibold mb-2">1. Entry & Eligibility</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Each entry must be submitted through the official registration form within the announced submission period.</li>
+                      <li>Participants must provide accurate and complete information during registration.</li>
+                      <li>Entries may be submitted individually or as a team, where permitted by the competition.</li>
+                      <li>Incomplete or late submissions may not be considered.</li>
+                    </ul>
+                  </section>
+                  
+                  <section>
+                    <h4 className="font-semibold mb-2">2. Video Requirements</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The submitted video must be 30 seconds in duration.</li>
+                      <li>The competition follows an open theme, and participants may create a video on any subject or concept of their choice.</li>
+                      <li>AI video-generation technology must form a meaningful part of the creation process.</li>
+                      <li>Participants must provide the Video Title, Video Description, AI Tool(s) Used, and final Video during submission.</li>
+                      <li>All entries must comply with the AI Creative Video Challenge Creative Guidelines.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">3. Originality & Rights</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The submitted work must be the participant's or team's original creation.</li>
+                      <li>Participants must not submit copied, plagiarised, or substantially reproduced work belonging to another creator.</li>
+                      <li>Participants are responsible for ensuring they have the necessary rights or permissions for any third-party material incorporated into their submission, including music, images, footage, voices, characters, logos, or other protected material.</li>
+                      <li>Submission of an entry does not transfer ownership of the video to the organisers. The creator retains ownership of their work.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">4. Content Standards</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Entries must be suitable for screening at a public event.</li>
+                      <li>Entries containing prohibited or inappropriate material as specified in the Creative Guidelines may be rejected or disqualified.</li>
+                      <li>The organisers reserve the right not to screen any entry considered unsuitable for the Expo, even if the entry has already been submitted.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">5. Judging & Selection</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Entries will be evaluated based on criteria determined by the competition organisers and judging panel, including creativity, originality, effective use of AI, concept, and overall execution.</li>
+                      <li>The decisions of the judging panel regarding selection and results shall be final.</li>
+                      <li>The organisers are not obligated to provide individual scores, explanations, or feedback to participants.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">6. Top 10 Showcase</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The Top 10 selected videos will be screened throughout the TXG Expo.</li>
+                      <li>Selection for the Top 10 does not necessarily indicate the participant's final competition ranking unless otherwise announced.</li>
+                      <li>By submitting an entry, participants grant the organisers permission to publicly display and screen their submitted video during the TXG Expo.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">7. Promotional Use</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Participants grant the organisers permission to use the submitted video, excerpts, screenshots, title, and creator/team name for purposes directly related to the AI Creative Video Challenge and TXG Expo, including event promotion, social media, documentation, and post-event coverage.</li>
+                      <li>Wherever reasonably practical, the creator or team will be credited.</li>
+                      <li>This permission does not transfer copyright ownership of the submitted work to the organisers.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">8. Disqualification</h4>
+                    <p className="mb-2">An entry may be rejected or disqualified if:</p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>It violates the Creative Guidelines or these Terms & Conditions.</li>
+                      <li>It contains plagiarised or unauthorised material.</li>
+                      <li>False or misleading information is provided during registration.</li>
+                      <li>The participant misrepresents another person's work as their own.</li>
+                      <li>The entry does not meet the required duration or submission requirements.</li>
+                      <li>The organisers reasonably determine that the entry is unsuitable for public screening.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">9. Technical Responsibility</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Participants are responsible for ensuring that their uploaded video is complete, playable, and submitted in the required format.</li>
+                      <li>The organisers will not be responsible for corrupted files, failed uploads, incorrect files, or other submission issues originating from the participant's device or internet connection.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">10. Changes & Event Administration</h4>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>The organisers reserve the right to make reasonable changes to the competition schedule, judging process, screening arrangements, or other administrative aspects where necessary.</li>
+                      <li>Any significant changes affecting participants will be communicated through the appropriate official channels.</li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h4 className="font-semibold mb-2">11. Acceptance</h4>
+                    <p>
+                      By submitting an entry, the participant confirms that they have read, understood, and agreed to these Terms & Conditions and the AI Creative Video Challenge Creative Guidelines.
+                    </p>
+                  </section>
+
+                  <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
+                    <p>TXG AI Creative Video Challenge Terms & Conditions</p>
                     <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>

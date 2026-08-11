@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Gamepad2, Search, RefreshCw, FileText, Settings, Download, Eye, Trash2 } from 'lucide-react';
+import { TrendingUp, Gamepad2, Search, RefreshCw, FileText, Settings, Download, Eye, Trash2, ExternalLink } from 'lucide-react';
 import GamingIcon, { GamingIcons } from "@/components/GamingIcons";
 import { useRegistrationAPI } from '@/hooks/useRegistrationAPI';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
@@ -149,6 +149,7 @@ const AdminDashboard = () => {
   const [visitorRegistrations, setVisitorRegistrations] = useState<any[]>([]);
   const [miniTournamentRegistrations, setMiniTournamentRegistrations] = useState<any[]>([]);
   const [digitalArtRegistrations, setDigitalArtRegistrations] = useState<any[]>([]);
+  const [aiVideoRegistrations, setAiVideoRegistrations] = useState<any[]>([]);
   const [mobaOpenRegistrations, setMobaOpenRegistrations] = useState<TeamRegistration[]>([]);
 
   // Mini Tournament Games List
@@ -231,6 +232,10 @@ const AdminDashboard = () => {
       // Digital Art: Visitor registrations with ART prefix
       const digitalArt = (visitors || []).filter(v => v.registrationId && v.registrationId.startsWith('ART'));
       setDigitalArtRegistrations(digitalArt);
+      
+      // AI Video: Visitor registrations with AIV prefix
+      const aiVideo = (visitors || []).filter(v => v.registrationId && v.registrationId.startsWith('AIV'));
+      setAiVideoRegistrations(aiVideo);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     } finally {
@@ -356,7 +361,7 @@ const AdminDashboard = () => {
   };
 
   // Status Management Functions
-  const handleStatusUpdate = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament' | 'digital-art', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
+  const handleStatusUpdate = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament' | 'digital-art' | 'ai-video', status: 'pending' | 'approved' | 'rejected' | 'withdrawn') => {
     let success = false;
     let registrationData: any = null;
     
@@ -397,6 +402,10 @@ const AdminDashboard = () => {
           break;
         case 'digital-art':
           registrationData = digitalArtRegistrations.find(m => m.id === id);
+          success = await updateVisitorStatus(id, status);
+          break;
+        case 'ai-video':
+          registrationData = aiVideoRegistrations.find(m => m.id === id);
           success = await updateVisitorStatus(id, status);
           break;
       }
@@ -457,7 +466,7 @@ const AdminDashboard = () => {
   };
 
   // Delete Registration Function
-  const handleDeleteRegistration = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament' | 'digital-art') => {
+  const handleDeleteRegistration = async (id: string, type: 'inter-college' | 'moba-open' | 'sponsor' | 'cosplayer' | 'vendor' | 'exhibitor' | 'media' | 'mini-tournament' | 'digital-art' | 'ai-video') => {
     if (!window.confirm('Are you sure you want to permanently delete this registration? This action cannot be undone.')) {
       return;
     }
@@ -477,6 +486,7 @@ const AdminDashboard = () => {
         case 'cosplayer':
         case 'mini-tournament':
         case 'digital-art':
+        case 'ai-video':
           result = await deleteVisitorRegistration(id);
           break;
         case 'media':
@@ -767,10 +777,9 @@ const AdminDashboard = () => {
       'city',
       'state',
       'pinCode',
-      'cosplayGroupTeamName', // Cosplay Group/Team Name
-      'cosplayExperience', // Cosplay Experience
-      'cosplayCharacterName', // Cosplay Character Name
-      'cosplayGameName', // Cosplay Game Name
+      'additionalDetails',
+      'cosplayCharacterName',
+      'cosplayGameName',
       'status',
       'createdAt'
     ];
@@ -784,10 +793,9 @@ const AdminDashboard = () => {
       city: cosplayer.city || '',
       state: cosplayer.state || '',
       pinCode: cosplayer.pinCode || '',
-      cosplayGroupTeamName: cosplayer.collegeName || '', // Cosplay Group/Team Name
-      cosplayExperience: cosplayer.message || '', // Cosplay Experience
-      cosplayCharacterName: cosplayer.characterName || '', // Cosplay Character Name
-      cosplayGameName: cosplayer.gameName || '', // Cosplay Game Name
+      additionalDetails: cosplayer.message || '', // Contains Instagram, Performance Duration, File URLs
+      cosplayCharacterName: cosplayer.characterName || '',
+      cosplayGameName: cosplayer.gameName || '',
       status: cosplayer.status || '',
       createdAt: formatDate(cosplayer.createdAt)
     }));
@@ -1020,6 +1028,70 @@ const AdminDashboard = () => {
     });
 
     downloadCSV(csvData, 'digital_art_registrations', headers);
+  };
+
+  const downloadAiVideoRegistrationsCSV = () => {
+    const headers = [
+      'registrationId',
+      'fullName',
+      'email',
+      'mobilePhone',
+      'whatsapp',
+      'district',
+      'institution',
+      'age',
+      'gender',
+      'participantType',
+      'entryType',
+      'teamName',
+      'teamMembers',
+      'videoTitle',
+      'videoDescription',
+      'aiToolsUsed',
+      'videoUrl',
+      'status',
+      'createdAt'
+    ];
+
+    const csvData = aiVideoRegistrations.map((registration) => {
+      const message = registration.message || '';
+      
+      const age = message.includes('Age:') ? message.split('Age:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const gender = message.includes('Gender:') ? message.split('Gender:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const whatsapp = message.includes('WhatsApp:') ? message.split('WhatsApp:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const participantType = message.includes('Participant Type:') ? message.split('Participant Type:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const entryType = message.includes('Entry Type:') ? message.split('Entry Type:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const teamName = message.includes('Team Name:') ? message.split('Team Name:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const teamMembers = message.includes('Team Members:') ? message.split('Team Members:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const videoTitle = message.includes('Video Title:') ? message.split('Video Title:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const videoDescription = message.includes('Video Description:') ? message.split('Video Description:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const aiToolsUsed = message.includes('AI Tools Used:') ? message.split('AI Tools Used:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const videoUrl = message.includes('Video URL:') ? message.split('Video URL:')[1]?.split('\n')[0]?.trim() : 'N/A';
+
+      return {
+        registrationId: registration.registrationId || '',
+        fullName: registration.fullName || '',
+        email: registration.email || '',
+        mobilePhone: registration.phone || '',
+        whatsapp: whatsapp,
+        district: registration.address || '',
+        institution: registration.collegeName || '',
+        age,
+        gender,
+        participantType,
+        entryType,
+        teamName,
+        teamMembers,
+        videoTitle,
+        videoDescription,
+        aiToolsUsed,
+        videoUrl,
+        status: registration.status || '',
+        createdAt: formatDate(registration.createdAt)
+      };
+    });
+
+    downloadCSV(csvData, 'ai_video_registrations', headers);
   };
 
   const downloadExhibitorRegistrationsCSV = () => {
@@ -1307,7 +1379,7 @@ const AdminDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8"
         >
           <Card className="bg-white/80 backdrop-blur-sm border-purple-200">
             <CardContent className="p-6">
@@ -1347,6 +1419,18 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
 
+          <Card className="bg-white/80 backdrop-blur-sm border-red-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">AI Video</p>
+                  <p className="text-3xl font-bold text-red-600">{aiVideoRegistrations.length || 0}</p>
+                </div>
+                <GamingIcon iconId={GamingIcons.GAMEPAD} size={32} color="#be0000" />
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="bg-white/80 backdrop-blur-sm border-teal-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -1369,7 +1453,8 @@ const AdminDashboard = () => {
                      sponsorRegistrations.filter(s => s.status === 'pending').length +
                      mediaRegistrations.filter(m => m.status === 'pending').length +
                      miniTournamentRegistrations.filter(m => m.status === 'pending').length +
-                     digitalArtRegistrations.filter(a => a.status === 'pending').length}
+                     digitalArtRegistrations.filter(a => a.status === 'pending').length +
+                     aiVideoRegistrations.filter(a => a.status === 'pending').length}
                   </p>
                 </div>
                 <GamingIcon iconId={GamingIcons.CLOCK_ICON} size={32} color="#ea580c" />
@@ -1396,6 +1481,7 @@ const AdminDashboard = () => {
               <TabsTrigger value="media" className="flex-1 min-w-fit">Media</TabsTrigger>
               <TabsTrigger value="mini-tournaments" className="flex-1 min-w-fit">Mini Tournaments</TabsTrigger>
               <TabsTrigger value="digital-art" className="flex-1 min-w-fit">Digital Art</TabsTrigger>
+              <TabsTrigger value="ai-video" className="flex-1 min-w-fit">AI Video</TabsTrigger>
               <TabsTrigger value="manual-entry" className="flex-1 min-w-fit">Manual Entry</TabsTrigger>
               <TabsTrigger value="content" className="flex-1 min-w-fit">Content</TabsTrigger>
             </TabsList>
@@ -1483,6 +1569,18 @@ const AdminDashboard = () => {
                                 tab: 'mini-tournaments',
                                 data: miniTournamentRegistrations,
                                 color: 'bg-fuchsia-500',
+                              },
+                              {
+                                name: 'Digital Art',
+                                tab: 'digital-art',
+                                data: digitalArtRegistrations,
+                                color: 'bg-teal-500',
+                              },
+                              {
+                                name: 'AI Video',
+                                tab: 'ai-video',
+                                data: aiVideoRegistrations,
+                                color: 'bg-red-500',
                               },
                             ];
 
@@ -2790,25 +2888,57 @@ const AdminDashboard = () => {
                             )}
                             {cosplayer.gameName && (
                               <div className="flex justify-between">
-                                <span className="text-gray-600">Game Name:</span>
+                                <span className="text-gray-600">Character origin(Game):</span>
                                 <span className="font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">{cosplayer.gameName}</span>
                               </div>
                             )}
-                            {cosplayer.collegeName && (
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">Cosplay Group/Team Name:</span>
-                                <span className="font-medium">{cosplayer.collegeName}</span>
-                              </div>
-                            )}
                             {cosplayer.message && (
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">Cosplay Experience:</span>
-                                <span className="font-medium text-xs max-w-xs truncate" title={cosplayer.message}>
-                                  {cosplayer.message}
-                                </span>
+                              <div className="mt-2 pt-2 border-t border-gray-100">
+                                <span className="text-gray-600 font-semibold mb-2 block">Additional Details:</span>
+                                <div className="space-y-2">
+                                  {cosplayer.message.split('\n').map((line: string, idx: number) => {
+                                    const parts = line.split(': ');
+                                    if (parts.length >= 2) {
+                                      const key = parts[0];
+                                      const value = parts.slice(1).join(': ');
+                                      if (value.startsWith('http')) {
+                                        // Extract a file extension from the URL if possible
+                                        let ext = value.split('?')[0].split('.').pop() || 'file';
+                                        if (ext.length > 5) ext = 'file'; // fallback if no valid extension
+                                        const fileName = `${cosplayer.registrationId}_${key.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase()}.${ext}`;
+                                        
+                                        return (
+                                          <div key={idx} className="flex justify-between items-center">
+                                            <span className="text-gray-600">{key}:</span>
+                                            <div className="flex gap-3">
+                                              <a href={value} target="_blank" rel="noreferrer" className="font-medium text-blue-600 hover:underline text-sm flex items-center gap-1">
+                                                <Eye className="w-3 h-3" />
+                                                View
+                                              </a>
+                                              <button 
+                                                onClick={() => firebaseStorageService.downloadFile(value, fileName)}
+                                                className="font-medium text-green-600 hover:underline text-sm flex items-center gap-1"
+                                              >
+                                                <Download className="w-3 h-3" />
+                                                Download
+                                              </button>
+                                            </div>
+                                          </div>
+                                        );
+                                      }
+                                      return (
+                                        <div key={idx} className="flex justify-between">
+                                          <span className="text-gray-600">{key}:</span>
+                                          <span className="font-medium">{value}</span>
+                                        </div>
+                                      );
+                                    }
+                                    return <div key={idx} className="text-gray-800">{line}</div>;
+                                  })}
+                                </div>
                               </div>
                             )}
-                            {!cosplayer.characterName && !cosplayer.gameName && !cosplayer.collegeName && !cosplayer.message && (
+                            {!cosplayer.characterName && !cosplayer.gameName && !cosplayer.message && (
                               <div className="text-xs text-orange-600 italic">
                                 Cosplay-specific details not available (may be from older registration)
                               </div>
@@ -3617,6 +3747,178 @@ const AdminDashboard = () => {
                       <GamingIcon iconId={GamingIcons.MONITOR} size={48} className="mx-auto text-gray-300 mb-4" />
                       <p className="text-lg font-medium">No registrations yet</p>
                       <p className="text-sm mt-1">Digital Art Competition registrations will appear here.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* AI Video Registrations Tab */}
+            <TabsContent value="ai-video">
+              <div className="space-y-6">
+                <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">AI Video Challenge Registrations</h3>
+                    <p className="text-sm text-gray-500">Manage participants for the AI Creative Video Challenge</p>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <Badge className="bg-gray-100 text-gray-800 h-6">
+                      Total: {aiVideoRegistrations.length}
+                    </Badge>
+                    <Badge className="bg-orange-100 text-orange-800 h-6">
+                      Pending: {aiVideoRegistrations.filter(r => r.status === 'pending').length}
+                    </Badge>
+                    <Badge className="bg-green-100 text-green-800 h-6">
+                      Approved: {aiVideoRegistrations.filter(r => r.status === 'approved').length}
+                    </Badge>
+                    <Button onClick={downloadAiVideoRegistrationsCSV} variant="outline" size="sm">
+                      <Download className="mr-2 h-4 w-4" /> Export CSV
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {aiVideoRegistrations.map((registration) => (
+                    <Card key={registration.id} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                      <div className={`h-2 w-full ${
+                        registration.status === 'pending' ? 'bg-orange-400' :
+                        registration.status === 'approved' ? 'bg-green-500' :
+                        registration.status === 'rejected' ? 'bg-red-500' : 'bg-gray-400'
+                      }`} />
+                      <CardHeader className="pb-3 border-b bg-gray-50/50">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-lg text-gray-900">{registration.fullName}</CardTitle>
+                            <CardDescription className="text-xs mt-1">ID: {registration.registrationId}</CardDescription>
+                          </div>
+                          <Badge variant={
+                            registration.status === 'approved' ? 'default' :
+                            registration.status === 'rejected' ? 'destructive' :
+                            registration.status === 'pending' ? 'outline' : 'secondary'
+                          } className={registration.status === 'approved' ? 'bg-green-600' : ''}>
+                            {registration.status?.toUpperCase() || 'PENDING'}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-4 space-y-3">
+                        <div className="space-y-4">
+                          {/* Video Info */}
+                          <div className="space-y-2">
+                            <h4 className="font-semibold text-gray-800 border-b pb-1 text-sm">Video Details</h4>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <span className="font-medium text-gray-600">Title:</span>
+                              <span className="truncate" title={registration.message?.includes('Video Title:') ? registration.message.split('Video Title:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
+                                {registration.message?.includes('Video Title:') ? registration.message.split('Video Title:')[1]?.split('\n')[0]?.trim() : 'N/A'}
+                              </span>
+                              
+                              <span className="font-medium text-gray-600">Description:</span>
+                              <span className="truncate" title={registration.message?.includes('Video Description:') ? registration.message.split('Video Description:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
+                                {registration.message?.includes('Video Description:') ? registration.message.split('Video Description:')[1]?.split('\n')[0]?.trim() : 'N/A'}
+                              </span>
+                              
+                              <span className="font-medium text-gray-600">AI Tools:</span>
+                              <span className="truncate" title={registration.message?.includes('AI Tools Used:') ? registration.message.split('AI Tools Used:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
+                                {registration.message?.includes('AI Tools Used:') ? registration.message.split('AI Tools Used:')[1]?.split('\n')[0]?.trim() : 'N/A'}
+                              </span>
+                              
+                              <span className="font-medium text-gray-600">Video Link:</span>
+                              <span>
+                                {registration.message?.includes('Video URL:') && registration.message.split('Video URL:')[1]?.split('\n')[0]?.trim() !== 'N/A' && registration.message.split('Video URL:')[1]?.split('\n')[0]?.trim() !== '' ? (
+                                  <a href={registration.message.split('Video URL:')[1]?.split('\n')[0]?.trim()} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">
+                                    <ExternalLink className="h-3 w-3" /> View Video
+                                  </a>
+                                ) : 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Participant Info */}
+                          <div className="space-y-2">
+                            <h4 className="font-semibold text-gray-800 border-b pb-1 text-sm">Participant Info</h4>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <span className="font-medium text-gray-600">Email:</span>
+                              <span className="truncate" title={registration.email}>{registration.email}</span>
+                              
+                              <span className="font-medium text-gray-600">Mobile:</span>
+                              <span>{registration.phone}</span>
+                              
+                              <span className="font-medium text-gray-600">WhatsApp:</span>
+                              <span>{registration.message?.includes('WhatsApp:') ? registration.message.split('WhatsApp:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
+                              
+                              <span className="font-medium text-gray-600">Age:</span>
+                              <span>{registration.message?.includes('Age:') ? registration.message.split('Age:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
+                              
+                              <span className="font-medium text-gray-600">Gender:</span>
+                              <span>{registration.message?.includes('Gender:') ? registration.message.split('Gender:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
+                              
+                              <span className="font-medium text-gray-600">District:</span>
+                              <span className="truncate" title={registration.address || 'N/A'}>{registration.address || 'N/A'}</span>
+                              
+                              <span className="font-medium text-gray-600">Institution:</span>
+                              <span className="truncate" title={registration.collegeName || 'N/A'}>{registration.collegeName || 'N/A'}</span>
+                              
+                              <span className="font-medium text-gray-600">Type:</span>
+                              <span>{registration.message?.includes('Participant Type:') ? registration.message.split('Participant Type:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
+                            </div>
+                          </div>
+                          
+                          {/* Entry Info */}
+                          <div className="space-y-2">
+                            <h4 className="font-semibold text-gray-800 border-b pb-1 text-sm">Entry Details</h4>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <span className="font-medium text-gray-600">Entry Type:</span>
+                              <span>{registration.message?.includes('Entry Type:') ? registration.message.split('Entry Type:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
+                              
+                              {registration.message?.includes('Team Name:') && registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim() && registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim() !== 'N/A' && (
+                                <>
+                                  <span className="font-medium text-gray-600">Team Name:</span>
+                                  <span className="truncate" title={registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim()}>{registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim()}</span>
+                                  
+                                  <span className="font-medium text-gray-600">Team Members:</span>
+                                  <span className="truncate" title={registration.message?.includes('Team Members:') ? registration.message.split('Team Members:')[1]?.split('\n')[0]?.trim() : 'N/A'}>{registration.message?.includes('Team Members:') ? registration.message.split('Team Members:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
+                                </>
+                              )}
+                              
+                              <span className="font-medium text-gray-600">Registered:</span>
+                              <span>{formatDate(registration.createdAt)}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2 mt-4 pt-2 border-t">
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(registration.id, 'ai-video', 'approved')}
+                            className="bg-green-600 hover:bg-green-700 text-white flex-1"
+                            disabled={registration.status === 'approved'}
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(registration.id, 'ai-video', 'rejected')}
+                            className="bg-red-600 hover:bg-red-700 text-white flex-1"
+                            disabled={registration.status === 'rejected'}
+                          >
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteRegistration(registration.id, 'ai-video')}
+                            className="bg-red-800 hover:bg-red-900 text-white"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {aiVideoRegistrations.length === 0 && (
+                    <div className="col-span-full py-12 text-center text-gray-500 bg-gray-50 rounded-lg border border-dashed">
+                      <GamingIcon iconId={GamingIcons.GAMEPAD} size={48} className="mx-auto text-gray-300 mb-4" />
+                      <p className="text-lg font-medium">No registrations yet</p>
+                      <p className="text-sm mt-1">AI Video Challenge registrations will appear here.</p>
                     </div>
                   )}
                 </div>

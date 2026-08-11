@@ -25,5 +25,15 @@ service firebase.storage {
     match /college-logos/{fileName} {
       allow write: if true;
     }
+
+    // Allow write access to cosplay uploads
+    match /cosplay-uploads/{fileName} {
+      allow write: if true;
+    }
+
+    // Allow write access to AI video uploads
+    match /ai-video-uploads/{fileName} {
+      allow write: if true;
+    }
   }
 }

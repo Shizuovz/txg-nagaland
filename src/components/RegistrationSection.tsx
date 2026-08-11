@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import GamingIcon, { GamingIcons } from "./GamingIcons";
 import { useRegistrationAPI } from "@/hooks/useRegistrationAPI";
 import { Game, College, SponsorshipTier } from '@/lib/firebase';
@@ -23,7 +23,8 @@ const miniTournaments = [
 import { useState, useEffect } from "react";
 import TermsAndConditions from "./TermsAndConditions";
 import firebaseStorageService from "@/services/firebaseStorageService";
-import { AlertCircle, Users, Loader2 } from "lucide-react";
+import { AlertCircle, Users, Loader2, Upload } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 // Component to display registration limit status
 interface RegistrationLimitDisplayProps {
@@ -140,13 +141,25 @@ const initialFormData = {
   deviceType: "",
   otherDeviceType: "",
   digitalArtSoftware: "",
-  emergencyContact: ""
+  emergencyContact: "",
+  instagram: "",
+  performanceDuration: "",
+  characterReferenceUpload: null as File | null,
+  backgroundAudioUpload: null as File | null,
+  participantType: "",
+  entryType: "",
+  aiVideoTitle: "",
+  aiVideoDescription: "",
+  aiToolsUsed: "",
+  aiVideoUpload: null as File | null,
+  originalWorkDeclaration: false
 };
 
 const RegistrationSection = () => {
-  const [registrationType, setRegistrationType] = useState<"college" | "moba-open" | "cosplayer" | "vendor" | "exhibitor" | "media" | "sponsor" | "mini-tournament" | "digital-art" | null>(null);
+  const [registrationType, setRegistrationType] = useState<"college" | "moba-open" | "cosplayer" | "vendor" | "exhibitor" | "media" | "sponsor" | "mini-tournament" | "digital-art" | "ai-video" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationId, setRegistrationId] = useState("");
+  const { toast } = useToast();
 
   // API hook
   const {
@@ -266,7 +279,8 @@ const RegistrationSection = () => {
                   registrationType === 'sponsor' ? 'SPN' :
                     registrationType === 'media' ? 'MDA' :
                       registrationType === 'mini-tournament' ? 'MIN' : 
-                        registrationType === 'digital-art' ? 'ART' : 'VST';
+                        registrationType === 'digital-art' ? 'ART' : 
+                          registrationType === 'ai-video' ? 'AIV' : 'VST';
         const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
         const id = `${prefix}${randomNum}`;
         setRegistrationId(id);
@@ -456,6 +470,44 @@ const RegistrationSection = () => {
           livestreamConsent: formData.livestreamConsent
         });
       } else if (registrationType === 'cosplayer') {
+        let characterReferenceUrl = '';
+        let backgroundAudioUrl = '';
+
+        if (formData.characterReferenceUpload) {
+          try {
+            const ext = formData.characterReferenceUpload.name.split('.').pop() || 'jpg';
+            const fileName = `${registrationId}_character_ref.${ext}`;
+            const result = await firebaseStorageService.uploadFile('cosplay-uploads', fileName, formData.characterReferenceUpload);
+            characterReferenceUrl = result.url;
+          } catch (e) {
+            console.error("Failed to upload character reference", e);
+            alert("Failed to upload character reference photo. Please try again.");
+            setIsSubmitting(false);
+            return;
+          }
+        }
+        
+        if (formData.backgroundAudioUpload) {
+          try {
+            const ext = formData.backgroundAudioUpload.name.split('.').pop() || 'mp3';
+            const fileName = `${registrationId}_bg_audio.${ext}`;
+            const result = await firebaseStorageService.uploadFile('cosplay-uploads', fileName, formData.backgroundAudioUpload);
+            backgroundAudioUrl = result.url;
+          } catch (e) {
+            console.error("Failed to upload background audio", e);
+            alert("Failed to upload background audio/video. Please try again.");
+            setIsSubmitting(false);
+            return;
+          }
+        }
+
+        const messageData = [
+          `Instagram: ${formData.instagram}`,
+          `Performance Duration: ${formData.performanceDuration}`,
+          characterReferenceUrl ? `Character Reference: ${characterReferenceUrl}` : '',
+          backgroundAudioUrl ? `Background Audio/Video: ${backgroundAudioUrl}` : ''
+        ].filter(Boolean).join('\n');
+
         // Use visitor registration for cosplayers with custom success message
         await submitVisitorRegistration({
           fullName: formData.captainName,
@@ -465,8 +517,7 @@ const RegistrationSection = () => {
           city: formData.city,
           state: formData.state,
           pinCode: formData.pinCode,
-          collegeName: formData.collegeName,
-          message: formData.message,
+          message: messageData,
           characterName: formData.characterName,
           gameName: formData.gameName,
           registrationId: registrationId
@@ -556,6 +607,93 @@ const RegistrationSection = () => {
           collegeName: formData.deviceType === 'Other' ? formData.otherDeviceType : formData.deviceType, // Using unused field
           message: `Age: ${formData.age}\nEmergency Contact: ${formData.emergencyContact}\nDevice Type: ${formData.deviceType === 'Other' ? formData.otherDeviceType : formData.deviceType}\nSoftware: ${formData.digitalArtSoftware}`
         }, 'Digital Art Competition registration submitted successfully!');
+      } else if (registrationType === 'ai-video') {
+        // Validation for AI Video
+        if (!formData.captainName || !formData.age || !formData.gender || !formData.captainPhone || !formData.captainEmail || !formData.city || !formData.participantType || !formData.entryType || !formData.aiVideoTitle || !formData.aiVideoDescription || !formData.aiToolsUsed || !formData.aiVideoUpload) {
+          toast({
+            title: "Error",
+            description: "Please fill in all required fields and upload your video.",
+            variant: "destructive"
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (formData.entryType === 'Team' && (!formData.teamName || !formData.teamMembers[0].fullName)) {
+          toast({
+            title: "Error",
+            description: "Please provide a team name and team members.",
+            variant: "destructive"
+          });
+          setIsSubmitting(false);
+          return;
+        }
+        
+        const wordCount = formData.aiVideoDescription.trim().split(/\s+/).length;
+        if (wordCount > 50) {
+          toast({
+            title: "Error",
+            description: "Video description must not exceed 50 words.",
+            variant: "destructive"
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (!formData.agreeTerms || !formData.originalWorkDeclaration) {
+          toast({
+            title: "Error",
+            description: "You must accept the terms, conditions, and the original work declaration.",
+            variant: "destructive"
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (!formData.aiVideoUpload) {
+          toast({
+            title: "Error",
+            description: "Please select a video file to upload.",
+            variant: "destructive"
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Upload Video
+        let videoUrl = '';
+        try {
+          const uploadResult = await firebaseStorageService.uploadFile('ai-video-uploads', `${registrationId}_video.mp4`, formData.aiVideoUpload as File);
+          videoUrl = uploadResult.url;
+        } catch (uploadError) {
+          console.error("Failed to upload AI video", uploadError);
+          toast({
+            title: "Upload Failed",
+            description: "Failed to upload video file. Please ensure it meets the size limits and try again.",
+            variant: "destructive"
+          });
+          setIsSubmitting(false);
+          return;
+        }
+        
+        let teamInfo = '';
+        if (formData.entryType === 'Team') {
+          const formattedTeamMembers = formData.teamMembers[0].fullName.replace(/\n/g, ', ');
+          teamInfo = `\nTeam Name: ${formData.teamName}\nTeam Members: ${formattedTeamMembers}`;
+        }
+
+        await submitVisitorRegistration({
+          fullName: formData.captainName,
+          email: formData.captainEmail,
+          phone: formData.captainPhone,
+          address: formData.city, // Storing District in address
+          city: formData.city,
+          state: 'Nagaland',
+          pinCode: '000000',
+          registrationId: registrationId,
+          collegeName: formData.collegeName || 'N/A', // Storing Institution
+          message: `Age: ${formData.age}\nGender: ${formData.gender}\nWhatsApp: ${formData.whatsappPhone || formData.captainPhone}\nParticipant Type: ${formData.participantType}\nEntry Type: ${formData.entryType}${teamInfo}\nVideo Title: ${formData.aiVideoTitle}\nVideo Description: ${formData.aiVideoDescription.replace(/\n/g, ' ')}\nAI Tools Used: ${formData.aiToolsUsed.replace(/\n/g, ', ')}\nVideo URL: ${videoUrl}\nOriginal Work Declaration: Yes`
+        }, 'AI Creative Video Challenge registration submitted successfully!');
       }
 
       // Reset form state after successful submission
@@ -1326,84 +1464,16 @@ const RegistrationSection = () => {
               </Dialog>
 
               <div>
-                <Label htmlFor="captainName">Full Name *</Label>
+                <Label htmlFor="captainName">Name *</Label>
                 <Input
                   id="captainName"
                   value={formData.captainName}
                   onChange={(e) => handleInputChange("captainName", e.target.value)}
-                  placeholder="Your full name"
+                  placeholder="Your name"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="captainEmail">Email *</Label>
-                  <Input
-                    id="captainEmail"
-                    type="email"
-                    value={formData.captainEmail}
-                    onChange={(e) => handleInputChange("captainEmail", e.target.value)}
-                    placeholder="Your email address"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="captainPhone">Phone *</Label>
-                  <Input
-                    id="captainPhone"
-                    value={formData.captainPhone}
-                    onChange={(e) => handleInputChange("captainPhone", e.target.value)}
-                    placeholder="Your phone number"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="characterName">Cosplay Character Name *</Label>
-                  <Input
-                    id="characterName"
-                    value={formData.characterName}
-                    onChange={(e) => handleInputChange("characterName", e.target.value)}
-                    placeholder="e.g. Geralt of Rivia, Jinx, etc."
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="gameName">Game Name *</Label>
-                  <Input
-                    id="gameName"
-                    value={formData.gameName}
-                    onChange={(e) => handleInputChange("gameName", e.target.value)}
-                    placeholder="e.g. The Witcher, League of Legends, etc."
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="collegeName">Cosplay Group/Team Name</Label>
-                <Input
-                  id="collegeName"
-                  value={formData.collegeName}
-                  onChange={(e) => handleInputChange("collegeName", e.target.value)}
-                  placeholder="Your cosplay group or team name (if any)"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="message">Cosplay Experience</Label>
-                <Textarea
-                  id="message"
-                  value={formData.message}
-                  onChange={(e) => handleInputChange("message", e.target.value)}
-                  placeholder="Tell us about your cosplay experience and characters you've portrayed"
-                />
-              </div>
-
-              {/* Address */}
               <div>
                 <Label htmlFor="address">Address *</Label>
                 <Textarea
@@ -1446,6 +1516,118 @@ const RegistrationSection = () => {
                     required
                   />
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="captainPhone">Phone number *</Label>
+                <Input
+                  id="captainPhone"
+                  value={formData.captainPhone}
+                  onChange={(e) => handleInputChange("captainPhone", e.target.value)}
+                  placeholder="Phone number"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="instagram">Instagram</Label>
+                <Input
+                  id="instagram"
+                  value={formData.instagram}
+                  onChange={(e) => handleInputChange("instagram", e.target.value)}
+                  placeholder="Your Instagram handle/link"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="characterName">Character Name *</Label>
+                  <Input
+                    id="characterName"
+                    value={formData.characterName}
+                    onChange={(e) => handleInputChange("characterName", e.target.value)}
+                    placeholder="Character Name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="gameName">Character origin(Game) *</Label>
+                  <Input
+                    id="gameName"
+                    value={formData.gameName}
+                    onChange={(e) => handleInputChange("gameName", e.target.value)}
+                    placeholder="Character origin(Game)"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="characterReferenceUpload">Character reference photo *</Label>
+                <Input
+                  id="characterReferenceUpload"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file && file.size > 10 * 1024 * 1024) {
+                      alert("File size exceeds 10MB limit.");
+                      e.target.value = '';
+                      handleInputChange("characterReferenceUpload", null);
+                    } else {
+                      handleInputChange("characterReferenceUpload", file || null);
+                    }
+                  }}
+                  required
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Maximum number of file: 1 | Maximum file size: 10MB
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="backgroundAudioUpload">Background Audio/video</Label>
+                <Input
+                  id="backgroundAudioUpload"
+                  type="file"
+                  accept="audio/*,video/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file && file.size > 10 * 1024 * 1024) {
+                      alert("File size exceeds 10MB limit.");
+                      e.target.value = '';
+                      handleInputChange("backgroundAudioUpload", null);
+                    } else {
+                      handleInputChange("backgroundAudioUpload", file || null);
+                    }
+                  }}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Maximum number of file: 1 | Maximum file size: 10MB
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="performanceDuration">Performance Duration *</Label>
+                <Input
+                  id="performanceDuration"
+                  value={formData.performanceDuration}
+                  onChange={(e) => handleInputChange("performanceDuration", e.target.value)}
+                  placeholder="e.g., 2 minutes"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="captainEmail">Email address *</Label>
+                <Input
+                  id="captainEmail"
+                  type="email"
+                  value={formData.captainEmail}
+                  onChange={(e) => handleInputChange("captainEmail", e.target.value)}
+                  placeholder="Your email address"
+                  required
+                />
               </div>
 
               <TermsAndConditions
@@ -2385,6 +2567,316 @@ const RegistrationSection = () => {
             </form>
           </CardContent>
         </Card>
+      ),
+      'ai-video': (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GamingIcon iconId={GamingIcons.GAMEPAD} size={20} color="#be0000" />
+              AI Creative Video Challenge Registration
+            </CardTitle>
+            {registrationId && (
+              <p className="hidden text-sm text-muted-foreground">Registration ID: {registrationId}</p>
+            )}
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="captainName">Full Name</Label>
+                  <Input
+                    id="captainName"
+                    value={formData.captainName}
+                    onChange={(e) => handleInputChange("captainName", e.target.value)}
+                    placeholder="Your full name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="age">Age</Label>
+                  <Input
+                    id="age"
+                    type="number"
+                    value={formData.age}
+                    onChange={(e) => handleInputChange("age", e.target.value)}
+                    placeholder="Your age"
+                    min="12"
+                    max="99"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="gender">Gender</Label>
+                  <select
+                    id="gender"
+                    value={formData.gender}
+                    onChange={(e) => handleInputChange("gender", e.target.value)}
+                    className="w-full p-2 border rounded-md bg-background text-foreground"
+                    required
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="captainPhone">Mobile Number</Label>
+                  <Input
+                    id="captainPhone"
+                    value={formData.captainPhone}
+                    onChange={(e) => handleInputChange("captainPhone", e.target.value)}
+                    placeholder="+91 98765 43210"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="whatsappPhone">WhatsApp Number (if different)</Label>
+                  <Input
+                    id="whatsappPhone"
+                    value={formData.whatsappPhone}
+                    onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
+                    placeholder="+91 98765 43210"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="captainEmail">Email Address</Label>
+                  <Input
+                    id="captainEmail"
+                    type="email"
+                    value={formData.captainEmail}
+                    onChange={(e) => handleInputChange("captainEmail", e.target.value)}
+                    placeholder="your.email@example.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="city">District</Label>
+                  <Input
+                    id="city"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    placeholder="Your district"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="collegeName">Institution / College / University / Organisation (if applicable)</Label>
+                  <Input
+                    id="collegeName"
+                    value={formData.collegeName}
+                    onChange={(e) => handleInputChange("collegeName", e.target.value)}
+                    placeholder="If applicable"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="participantType">Participant Type</Label>
+                  <select
+                    id="participantType"
+                    value={formData.participantType}
+                    onChange={(e) => handleInputChange("participantType", e.target.value)}
+                    className="w-full p-2 border rounded-md bg-background text-foreground"
+                    required
+                  >
+                    <option value="">Select type</option>
+                    <option value="Student">Student</option>
+                    <option value="Working Professional">Working Professional</option>
+                    <option value="Freelancer">Freelancer</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="entryType">Entry Type</Label>
+                  <select
+                    id="entryType"
+                    value={formData.entryType}
+                    onChange={(e) => handleInputChange("entryType", e.target.value)}
+                    className="w-full p-2 border rounded-md bg-background text-foreground"
+                    required
+                  >
+                    <option value="">Select entry type</option>
+                    <option value="Individual">Individual</option>
+                    <option value="Team">Team</option>
+                  </select>
+                </div>
+              </div>
+
+              {formData.entryType === 'Team' && (
+                <div className="grid grid-cols-1 gap-4 p-4 border rounded-md bg-primary/5">
+                  <div>
+                    <Label htmlFor="teamName">Team Name (for team entries)</Label>
+                    <Input
+                      id="teamName"
+                      value={formData.teamName}
+                      onChange={(e) => handleInputChange("teamName", e.target.value)}
+                      placeholder="Enter team name"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="teamMembers">Team Member Names (for team entries)</Label>
+                    <Textarea
+                      id="teamMembers"
+                      value={formData.teamMembers[0].fullName}
+                      onChange={(e) => {
+                        const newMembers = [...formData.teamMembers];
+                        newMembers[0].fullName = e.target.value;
+                        handleInputChange("teamMembers", newMembers);
+                      }}
+                      placeholder="List all team members separated by commas"
+                      required
+                      className="min-h-[80px]"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="aiVideoTitle">Video Title</Label>
+                  <Input
+                    id="aiVideoTitle"
+                    value={formData.aiVideoTitle}
+                    onChange={(e) => handleInputChange("aiVideoTitle", e.target.value)}
+                    placeholder="Enter the title of your video"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="aiVideoDescription">Brief Description of Video (maximum 50 words)</Label>
+                  <Textarea
+                    id="aiVideoDescription"
+                    value={formData.aiVideoDescription}
+                    onChange={(e) => handleInputChange("aiVideoDescription", e.target.value)}
+                    placeholder="Provide a brief description"
+                    required
+                    className="min-h-[100px]"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Word count: {formData.aiVideoDescription ? formData.aiVideoDescription.trim().split(/\s+/).length : 0} / 50
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="aiToolsUsed">AI Tool(s) Used</Label>
+                  <Input
+                    id="aiToolsUsed"
+                    value={formData.aiToolsUsed}
+                    onChange={(e) => handleInputChange("aiToolsUsed", e.target.value)}
+                    placeholder="e.g. Midjourney, Runway, Sora, ElevenLabs"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="aiVideoUpload">Upload Your Video</Label>
+                <p className="text-xs text-muted-foreground">Duration: 30 seconds • Recommended format: MP4 • Max size: ~50MB</p>
+                <div className="flex items-center gap-4">
+                  <Input
+                    id="aiVideoUpload"
+                    type="file"
+                    accept="video/mp4,video/x-m4v,video/*"
+                    onChange={(e) => handleInputChange("aiVideoUpload", e.target.files?.[0] || null)}
+                    className="hidden"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById("aiVideoUpload")?.click()}
+                    className="w-full h-24 border-dashed border-2 flex flex-col items-center justify-center gap-2"
+                  >
+                    <Upload className="w-6 h-6" />
+                    <span className="text-sm">Click to upload video</span>
+                    {formData.aiVideoUpload && (
+                      <span className="text-xs text-green-500">{formData.aiVideoUpload.name}</span>
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="p-4 border rounded-md bg-[#131313] border-[#353534] flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                  <h4 className="font-bold text-[#e5e2e1] uppercase">Creative Guidelines</h4>
+                  <p className="text-xs text-[#c8c6c5]">Please review the rules before submitting.</p>
+                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" type="button" className="shrink-0 border-[#be0000] text-[#be0000] hover:bg-[#be0000] hover:text-white">
+                      View Guidelines
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-[#131313] border-[#353534] text-[#e5e2e1]">
+                    <DialogHeader>
+                      <DialogTitle className="text-xl md:text-2xl font-bold text-[#e5e2e1] uppercase border-b border-[#353534] pb-4 mb-4">
+                        AI Creative Video Challenge — Creative Guidelines
+                      </DialogTitle>
+                      <DialogDescription className="hidden">
+                        Guidelines for the AI Creative Video Challenge
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6 text-sm md:text-base leading-relaxed">
+                      <p className="text-[#ffb4a8] font-bold tracking-widest uppercase text-xs md:text-sm">30 Seconds • Open Theme • Create Anything</p>
+                      <ul className="list-disc pl-5 space-y-3 text-[#c8c6c5]">
+                        <li><strong className="text-white">Be Original</strong> — Create your own concept. Do not copy, recreate, or closely imitate existing videos or another creator's work.</li>
+                        <li><strong className="text-white">Make It Unique</strong> — Creativity and originality matter. Avoid simply reproducing common AI trends, templates, or prompts.</li>
+                        <li><strong className="text-white">Use AI Meaningfully</strong> — AI video-generation tools must form a significant part of the video creation process.</li>
+                        <li><strong className="text-white">Keep It Appropriate</strong> — No sexually explicit or indecent content, excessive violence, hate, discrimination, harassment, or material unsuitable for a public all-age event.</li>
+                        <li><strong className="text-white">No Misleading Deepfakes</strong> — Do not falsely depict real people saying or doing things they did not do.</li>
+                        <li><strong className="text-white">Respect Copyright</strong> — Only use music, images, footage, characters, logos, voices, or other material you have the right to use.</li>
+                        <li><strong className="text-white">30-Second Limit</strong> — The complete video, including titles and credits, must be within 30 seconds.</li>
+                        <li><strong className="text-white">Top 10 Showcase</strong> — The Top 10 selected videos will be screened throughout the TXG Expo.</li>
+                      </ul>
+                      <div className="bg-[#1c1b1b] p-4 border-l-4 border-[#be0000] text-[#e5e2e1] italic text-xs md:text-sm">
+                        <strong className="text-[#ffb4a8] not-italic">Important:</strong> Open theme means creative freedom, not unrestricted content. Entries that are copied, inappropriate, misleading, or violate these guidelines may be disqualified.
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-[#353534]">
+                <h4 className="font-bold text-[#e5e2e1] uppercase">Declaration</h4>
+                
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="originalWorkDeclaration"
+                    checked={formData.originalWorkDeclaration}
+                    onChange={(e) => handleInputChange("originalWorkDeclaration", e.target.checked)}
+                  />
+                  <label
+                    htmlFor="originalWorkDeclaration"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    I confirm that this submission is my/our original work and complies with the Creative Guidelines.
+                  </label>
+                </div>
+                
+                <TermsAndConditions
+                  accepted={formData.agreeTerms}
+                  onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
+                  registrationType="ai-video"
+                />
+              </div>
+
+              <Button type="submit" className="w-full bg-[#be0000] hover:bg-[#a00000] text-white" disabled={!formData.agreeTerms || !formData.originalWorkDeclaration || isSubmitting}>
+                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for AI Video Challenge'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       )
     };
 
@@ -2553,6 +3045,25 @@ const RegistrationSection = () => {
               </p>
             </div>
             <Button className="w-full text-sm sm:text-base group-hover:bg-teal-500 group-hover:text-white group-hover:border-teal-500 transition-colors" variant="outline">Register Now</Button>
+          </motion.div>
+
+          <motion.div
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 cursor-pointer h-full flex flex-col group"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            onClick={() => setRegistrationType("ai-video")}
+          >
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
+              <GamingIcon iconId={GamingIcons.GAMEPAD} size={24} color="#be0000" />
+            </div>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">AI Video Challenge</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Submit your 30-second AI-generated masterpiece
+              </p>
+            </div>
+            <Button className="w-full text-sm sm:text-base group-hover:bg-red-500 group-hover:text-white group-hover:border-red-500 transition-colors" variant="outline">Register Now</Button>
           </motion.div>
 
           <motion.div
