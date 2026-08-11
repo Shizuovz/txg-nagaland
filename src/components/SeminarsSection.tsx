@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { BrainCircuit, Gamepad2, Smartphone, ShieldCheck, Cpu, Briefcase, GraduationCap } from "lucide-react";
+import { BrainCircuit, Gamepad2, Smartphone, ShieldCheck, Cpu, Briefcase, GraduationCap, User } from "lucide-react";
 
 const seminars = [
   {
@@ -54,55 +54,68 @@ const seminars = [
 ];
 
 const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0 }) => {
-  let color = "from-[#FF3B30] to-[#FF9500]";
-  let glowColor = "rgba(255,59,48,0.2)";
-  let dotColor = "bg-[#FF3B30]";
-  let textColor = "text-[#FF3B30]";
+  let avatarGlow = "border-2 border-[#FF5F4F] shadow-[0_0_12px_rgba(255,95,79,0.4)]";
+  let bulletColor = "bg-[#FF5F4F]";
+  let pillBg = "bg-[#FF5F4F]/10";
+  let pillText = "text-[#FF5F4F]";
+  let hoverBorder = "hover:border-[#FF5F4F]";
 
   if (colorGroup === "blue") {
-    color = "from-[#00FFFF] to-[#74A9FF]";
-    glowColor = "rgba(0,255,255,0.2)";
-    dotColor = "bg-[#00FFFF]";
-    textColor = "text-[#00FFFF]";
+    avatarGlow = "border-2 border-[#00FFFF] shadow-[0_0_12px_rgba(0,255,255,0.4)]";
+    bulletColor = "bg-[#00FFFF]";
+    pillBg = "bg-[#00FFFF]/10";
+    pillText = "text-[#00FFFF]";
+    hoverBorder = "hover:border-[#00FFFF]";
   } else if (colorGroup === "purple") {
-    color = "from-[#FF00FF] to-[#74A9FF]";
-    glowColor = "rgba(255,0,255,0.2)";
-    dotColor = "bg-[#FF00FF]";
-    textColor = "text-[#FF00FF]";
+    avatarGlow = "border-2 border-[#FF00FF] shadow-[0_0_12px_rgba(255,0,255,0.4)]";
+    bulletColor = "bg-[#FF00FF]";
+    pillBg = "bg-[#FF00FF]/10";
+    pillText = "text-[#FF00FF]";
+    hoverBorder = "hover:border-[#FF00FF]";
   }
+
+  const isTBD = name === "TBD";
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay, duration: 0.6 }}
-      className={`group relative bg-[#111] rounded-2xl border border-white/5 overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer flex flex-col sm:flex-row items-center sm:items-start gap-6 p-6 md:p-8`}
+      transition={{ delay, duration: 0.5 }}
+      className={`bg-[#131313] border border-[#353534] rounded-xl p-4 md:p-6 flex flex-row items-center gap-5 md:gap-6 transition-colors duration-300 hover:bg-[#1c1b1b] ${hoverBorder} group cursor-pointer`}
     >
-      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-br ${color} transition-opacity duration-500`} style={{ padding: '1px' }}>
-        <div className="w-full h-full bg-[#111] rounded-[15px]"></div>
-      </div>
+      {isTBD ? (
+        <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${avatarGlow} shrink-0 bg-gradient-to-br from-[#2a2a2a] to-[#0e0e0e] flex items-center justify-center`}>
+          <User className="w-8 h-8 md:w-10 md:h-10 text-[#5d3f38]" />
+        </div>
+      ) : (
+        <img
+          src={image}
+          alt={name}
+          className={`w-16 h-16 md:w-20 md:h-20 rounded-full object-cover ${avatarGlow} shrink-0 bg-[#222]`}
+          onError={(e) => {
+            e.currentTarget.src = "/placeholder.svg";
+          }}
+        />
+      )}
 
-      <div className="relative z-10 w-28 h-28 shrink-0">
-        <div className={`absolute inset-0 rounded-full bg-gradient-to-tr ${color} blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-500`} />
-        <div className="relative w-full h-full rounded-full border-2 border-white/10 overflow-hidden bg-black p-1 group-hover:border-transparent transition-colors duration-500">
-          <div className="w-full h-full rounded-full overflow-hidden bg-[#222]">
-            <img src={image} alt={name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onError={(e) => (e.currentTarget.style.display = 'none')} />
+      <div className="flex-grow flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4">
+        <div>
+          <h3 className="font-['Nonito'] text-lg md:text-xl text-[#e5e2e1] font-bold">
+            {name}
+          </h3>
+          <div className="font-['Nonito'] text-sm md:text-base text-[#e7bdb3] flex items-center space-x-2 mt-1">
+            {org !== "TBD" && (
+              <>
+                <span className={`w-2 h-2 rounded-full ${bulletColor} inline-block`}></span>
+                <span>{org}</span>
+              </>
+            )}
           </div>
         </div>
-      </div>
-
-      <div className="relative z-10 flex-grow text-center sm:text-left flex flex-col justify-center h-full sm:pt-2">
-        <h4 className={`font-['Nonito'] ${textColor} font-bold text-sm mb-2 tracking-widest bg-clip-text text-transparent bg-gradient-to-r ${color}`}>
+        <div className={`font-['Nonito'] font-bold text-xs md:text-sm ${pillText} uppercase md:text-right shrink-0 ${pillBg} px-3 py-1.5 md:px-4 md:py-2 rounded-md tracking-wider`}>
           {role}
-        </h4>
-        <h5 className="font-['Nonito'] text-white font-bold text-xl mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all">
-          {name}
-        </h5>
-        <p className="font-['Nonito'] text-[#888] text-sm font-medium flex items-center justify-center sm:justify-start gap-2">
-          <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
-          {org}
-        </p>
+        </div>
       </div>
     </motion.div>
   );
@@ -114,7 +127,7 @@ const day1Speakers = [
 ];
 
 const day2Speakers = [
-  { role: "Concept Art", name: "Ahmed Ameen Khan", org: "Founder, AKSOA", image: "speakers/ahmed.png" },
+  { role: "Concept Art", name: "Ahmed Ameen Khan", org: "Founder, AKSDA", image: "speakers/ahmed.png" },
   { role: "Outsource Work", name: "Masuk Ahmed", org: "Art Director, Formless Studio", image: "speakers/masuk.png" }
 ];
 
@@ -127,13 +140,13 @@ const day1Panelists = [
 
 const day2Panelists = [
   { role: "Game Tester", name: "Hichen Kath", org: "Project Manager, PTW", image: "speakers/panelist5.png" },
-  { role: "His Journey", name: "Jayant", org: "Pro, Night Tiger Animation Studio", image: "speakers/jayant.png" },
-  { role: "Game Development Awareness", name: "Pekru", org: "Co-founder, Redimension Games", image: "speakers/pekru.png" },
+  { role: "Mic Journey", name: "Jayant", org: "Pro, Night Tiger Animation Studio", image: "speakers/jayant.png" },
+  { role: "Game Dev Awareness", name: "Pekru", org: "Co-founder, Redimension Games", image: "speakers/pekru.png" },
   { role: "TBD", name: "TBD", org: "TBD", image: "speakers/panelist8.png" }
 ];
 
 const day1Trainers = [
-  { role: "Drone+ Robotics", name: "Kevin Khezhie", org: "NagaBots", image: "speakers/kevin.png" },
+  { role: "Drone + Robotics", name: "Kevin Khezhie", org: "NagaBots", image: "speakers/kevin.png" },
   { role: "TBD", name: "TBD", org: "TBD", image: "speakers/trainer2.png" }
 ];
 
@@ -228,121 +241,104 @@ const SeminarsSection = () => {
           </div>
         </motion.div>
 
-        {/* Speakers Section */}
-        <div className="mb-24">
-          <div className="mb-16">
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center font-['Nonito'] text-2xl md:text-3xl font-bold text-white mb-10 tracking-wide flex items-center justify-center gap-4"
-            >
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#FF3B30] hidden md:block"></span>
-              Day 1 Speakers (30 Min)
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#FF3B30] hidden md:block"></span>
-            </motion.h3>
-            <div className="grid lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        {/* Speakers Section (Stitch Layout) */}
+        <div className="w-full max-w-[1200px] mx-auto py-16 space-y-16">
+
+          {/* Day 1 Speakers */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#ffb4a2] block"></span>
+                <span>Day 1 Speakers</span>
+              </h2>
+              <span className="bg-[#2a2a2a] border border-[#ffb4a2]/30 text-[#ffb4a2] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,180,162,0.1)]">30 Min</span>
+            </div>
+            <div className="flex flex-col gap-3">
               {day1Speakers.map((person, i) => (
-                <PersonCard key={i} {...person} colorGroup="red" delay={i * 0.1} />
+                <PersonCard key={i} {...person} colorGroup="primary" />
               ))}
             </div>
-          </div>
+          </section>
 
-          <div>
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center font-['Nonito'] text-2xl md:text-3xl font-bold text-white mb-10 tracking-wide flex items-center justify-center gap-4"
-            >
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#FF3B30] hidden md:block"></span>
-              Day 2 Speakers (30 Min)
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#FF3B30] hidden md:block"></span>
-            </motion.h3>
-            <div className="grid lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {/* Day 2 Speakers */}
+          <section className="space-y-4 pt-4">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#a2e7ff] block"></span>
+                <span>Day 2 Speakers</span>
+              </h2>
+              <span className="bg-[#2a2a2a] border border-[#a2e7ff]/30 text-[#a2e7ff] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(162,231,255,0.1)]">30 Min</span>
+            </div>
+            <div className="flex flex-col gap-3">
               {day2Speakers.map((person, i) => (
-                <PersonCard key={i} {...person} colorGroup="red" delay={i * 0.1} />
+                <PersonCard key={i} {...person} colorGroup="secondary" />
               ))}
             </div>
-          </div>
-        </div>
+          </section>
 
-        {/* Panelist Section */}
-        <div className="mb-24">
-          <div className="mb-16">
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center font-['Nonito'] text-2xl md:text-3xl font-bold text-white mb-10 tracking-wide flex items-center justify-center gap-4"
-            >
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#FF00FF] hidden md:block"></span>
-              Day 1 Panelist (1 Hour For Both Day Each)
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#FF00FF] hidden md:block"></span>
-            </motion.h3>
-            <div className="grid lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {/* Day 1 Panelists */}
+          <section className="space-y-4 pt-4">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#e8b3ff] block"></span>
+                <span>Day 1 Panelists</span>
+              </h2>
+              <span className="bg-[#2a2a2a] border border-[#e8b3ff]/30 text-[#e8b3ff] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(232,179,255,0.1)]">1 Hour For Both Day Each</span>
+            </div>
+            <div className="flex flex-col gap-3">
               {day1Panelists.map((person, i) => (
-                <PersonCard key={i} {...person} colorGroup="purple" delay={i * 0.1} />
+                <PersonCard key={i} {...person} colorGroup="tertiary" />
               ))}
             </div>
-          </div>
+          </section>
 
-          <div>
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center font-['Nonito'] text-2xl md:text-3xl font-bold text-white mb-10 tracking-wide flex items-center justify-center gap-4"
-            >
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#FF00FF] hidden md:block"></span>
-              Day 2 Panelist (1 Hour For Both Day Each)
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#FF00FF] hidden md:block"></span>
-            </motion.h3>
-            <div className="grid lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {/* Day 2 Panelists */}
+          <section className="space-y-4 pt-4">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#e8b3ff] block"></span>
+                <span>Day 2 Panelists</span>
+              </h2>
+              <span className="bg-[#2a2a2a] border border-[#e8b3ff]/30 text-[#e8b3ff] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(232,179,255,0.1)]">1 Hour For Both Day Each</span>
+            </div>
+            <div className="flex flex-col gap-3">
               {day2Panelists.map((person, i) => (
-                <PersonCard key={i} {...person} colorGroup="purple" delay={i * 0.1} />
+                <PersonCard key={i} {...person} colorGroup="tertiary" />
               ))}
             </div>
-          </div>
-        </div>
+          </section>
 
-        {/* Workshop Trainer Section */}
-        <div className="mb-24">
-          <div className="mb-16">
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center font-['Nonito'] text-2xl md:text-3xl font-bold text-white mb-10 tracking-wide flex items-center justify-center gap-4"
-            >
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#00FFFF] hidden md:block"></span>
-              Day 1 Workshop Trainer (2 Hour For Both Day Each)
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#00FFFF] hidden md:block"></span>
-            </motion.h3>
-            <div className="grid lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {/* Day 1 Workshop Trainers */}
+          <section className="space-y-4 pt-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#353534] pb-2 gap-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#ffb4a2] block opacity-70"></span>
+                <span>Day 1 Workshop Trainers</span>
+              </h2>
+              <span className="bg-[#2a2a2a] border border-[#ffb4a2]/20 text-[#ffb4a2]/80 font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full">2 Hour For Both Day Each</span>
+            </div>
+            <div className="flex flex-col gap-3">
               {day1Trainers.map((person, i) => (
-                <PersonCard key={i} {...person} colorGroup="blue" delay={i * 0.1} />
+                <PersonCard key={i} {...person} colorGroup="primary" />
               ))}
             </div>
-          </div>
+          </section>
 
-          <div>
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center font-['Nonito'] text-2xl md:text-3xl font-bold text-white mb-10 tracking-wide flex items-center justify-center gap-4"
-            >
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#00FFFF] hidden md:block"></span>
-              Day 2 Workshop Trainer (2 Hour For Both Day Each)
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#00FFFF] hidden md:block"></span>
-            </motion.h3>
-            <div className="grid lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {/* Day 2 Workshop Trainers */}
+          <section className="space-y-4 pt-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#353534] pb-2 gap-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#a2e7ff] block opacity-70"></span>
+                <span>Day 2 Workshop Trainers</span>
+              </h2>
+            </div>
+            <div className="flex flex-col gap-3">
               {day2Trainers.map((person, i) => (
-                <PersonCard key={i} {...person} colorGroup="blue" delay={i * 0.1} />
+                <PersonCard key={i} {...person} colorGroup="secondary" />
               ))}
             </div>
-          </div>
+          </section>
+
         </div>
       </div>
     </section>

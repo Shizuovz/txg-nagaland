@@ -501,6 +501,22 @@ export const useRegistrationAPI = () => {
     }
   };
 
+  const checkVisitorEventLimit = async (prefix: string, limit: number) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await registrationAPI.checkVisitorEventLimit(prefix, limit);
+      setLoading(false);
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to check visitor event limit';
+      setError(errorMessage);
+      setLoading(false);
+      return { allowed: false, current: 0, limit };
+    }
+  };
+
   const getAllMiniTournamentCounts = async () => {
     setLoading(true);
     setError(null);
@@ -542,6 +558,7 @@ export const useRegistrationAPI = () => {
     deleteMediaRegistration,
     checkTeamRegistrationLimit,
     checkMiniTournamentLimit,
+    checkVisitorEventLimit,
     getAllMiniTournamentCounts
   };
 };

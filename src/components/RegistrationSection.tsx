@@ -30,7 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 interface RegistrationLimitDisplayProps {
   limit: { current: number; limit: number; isFull: boolean } | null;
   isLoading: boolean;
-  type: 'college' | 'moba-open' | 'mini-tournament';
+  type: 'college' | 'moba-open' | 'mini-tournament' | 'digital-art' | 'ai-video';
 }
 
 const RegistrationLimitDisplay = ({ limit, isLoading, type }: RegistrationLimitDisplayProps) => {
@@ -173,7 +173,8 @@ const RegistrationSection = () => {
     getColleges,
     getSponsorshipTiers,
     checkTeamRegistrationLimit,
-    checkMiniTournamentLimit
+    checkMiniTournamentLimit,
+    checkVisitorEventLimit
   } = useRegistrationAPI();
 
   // Reference data
@@ -240,6 +241,24 @@ const RegistrationSection = () => {
         } else if (registrationType === 'mini-tournament') {
           // Don't show limit until a game is selected
           if (isMounted) setRegistrationLimit(null);
+        } else if (registrationType === 'digital-art') {
+          const result = await checkVisitorEventLimit('ART', 32);
+          if (isMounted) {
+            setRegistrationLimit({
+              current: result.current,
+              limit: result.limit,
+              isFull: !result.allowed
+            });
+          }
+        } else if (registrationType === 'ai-video') {
+          const result = await checkVisitorEventLimit('AIV', 32);
+          if (isMounted) {
+            setRegistrationLimit({
+              current: result.current,
+              limit: result.limit,
+              isFull: !result.allowed
+            });
+          }
         }
       } catch (err) {
         console.error('Error checking registration limit:', err);
@@ -359,6 +378,17 @@ const RegistrationSection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    // Check if registration limit is reached
+    if (registrationLimit?.isFull) {
+      toast({
+        title: "Registration Full",
+        description: "This category has reached its maximum capacity of 32 participants.",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+      return;
+    }
 
     // Validation for college and MOBA open tournaments
     if ((registrationType === 'college' || registrationType === 'moba-open')) {
@@ -2442,6 +2472,11 @@ const RegistrationSection = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              <RegistrationLimitDisplay 
+                limit={registrationLimit} 
+                isLoading={isCheckingLimit} 
+                type="digital-art" 
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="captainName">Full Name *</Label>
@@ -2581,6 +2616,11 @@ const RegistrationSection = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              <RegistrationLimitDisplay 
+                limit={registrationLimit} 
+                isLoading={isCheckingLimit} 
+                type="ai-video" 
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="captainName">Full Name</Label>
@@ -2871,8 +2911,8 @@ const RegistrationSection = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-[#be0000] hover:bg-[#a00000] text-white" disabled={!formData.agreeTerms || !formData.originalWorkDeclaration || isSubmitting}>
-                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for AI Video Challenge'}
+              <Button type="submit" className="w-full bg-[#be0000] hover:bg-[#a00000] text-white" disabled={!formData.agreeTerms || !formData.originalWorkDeclaration || isSubmitting || registrationLimit?.isFull}>
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for AI Video Challenge'}
               </Button>
             </form>
           </CardContent>

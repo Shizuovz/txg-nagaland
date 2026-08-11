@@ -20,6 +20,12 @@ const competitions = [
     description: "Multiple tournaments are being organized to build esports as a structured ecosystem in Nagaland. The game list will expand annually across more genres and competitive formats.",
     image: "images/esports.jpeg",
     color: "from-[#50D075] to-[#00FFFF]", // Green to Cyan
+  },
+  {
+    title: "AI Creative Video Competition",
+    description: "Unleash your imagination by creating a stunning video using AI tools. Show us the future of visual storytelling and stand a chance to win exciting prizes.",
+    image: "/ai_creative_hero.png",
+    color: "from-[#FFA500] to-[#FF00FF]", // Orange to Pink
   }
 ];
 
@@ -59,7 +65,7 @@ const CompetitionsSection = () => {
         </motion.div>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-10 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-16">
           {competitions.map((item, index) => (
             <motion.div
               key={index}

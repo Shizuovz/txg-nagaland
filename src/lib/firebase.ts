@@ -560,6 +560,16 @@ export class FirebaseService {
     }).length;
   }
 
+  async getVisitorRegistrationCountByPrefix(prefix: string): Promise<number> {
+    const q = query(
+      this.visitorRegistrationsCollection,
+      where('registrationId', '>=', prefix),
+      where('registrationId', '<', prefix + '\uf8ff')
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.length;
+  }
+
   async getAllMiniTournamentCounts(): Promise<{ [gameName: string]: number }> {
     const miniTournamentGames = [
       'Tekken 8', 'Street Fighter 6', 'Clash Royale', 'FC 26',

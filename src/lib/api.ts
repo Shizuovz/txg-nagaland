@@ -32,6 +32,16 @@ export class RegistrationAPI {
     };
   }
 
+  // Check visitor event registration limit
+  async checkVisitorEventLimit(prefix: string, limit: number): Promise<{ allowed: boolean; current: number; limit: number }> {
+    const current = await this.firebaseService.getVisitorRegistrationCountByPrefix(prefix);
+    return {
+      allowed: current < limit,
+      current,
+      limit
+    };
+  }
+
   // Get all mini tournament registration counts
   async getAllMiniTournamentCounts(): Promise<{ [gameName: string]: number }> {
     return this.firebaseService.getAllMiniTournamentCounts();
@@ -345,6 +355,28 @@ export class RegistrationAPI {
             success: false,
             message: 'A cosplayer with this email or phone number has already registered. Multiple registrations are not allowed.',
             error: 'COSPLAYER_ALREADY_EXISTS'
+          };
+        }
+      }
+
+      if (cleanData.registrationId && cleanData.registrationId.startsWith('ART')) {
+        const limitCheck = await this.checkVisitorEventLimit('ART', 32);
+        if (!limitCheck.allowed) {
+          return {
+            success: false,
+            message: `Registration is full for Digital Art Competition. We have reached the maximum limit of ${limitCheck.limit} participants.`,
+            error: 'REGISTRATION_LIMIT_REACHED'
+          };
+        }
+      }
+
+      if (cleanData.registrationId && cleanData.registrationId.startsWith('AIV')) {
+        const limitCheck = await this.checkVisitorEventLimit('AIV', 32);
+        if (!limitCheck.allowed) {
+          return {
+            success: false,
+            message: `Registration is full for AI Video Challenge. We have reached the maximum limit of ${limitCheck.limit} participants.`,
+            error: 'REGISTRATION_LIMIT_REACHED'
           };
         }
       }
