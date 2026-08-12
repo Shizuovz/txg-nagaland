@@ -32,12 +32,6 @@ const foodVendors = [
     image: "images/vendors/towe.jpg",
     color: "from-[#FFFF00] to-[#FF5F4F]", // Yellow/Red
   },
-  {
-    name: "Bambusa",
-    role: "Nagaland",
-    image: "images/vendors/bambusa.jpg",
-    color: "from-[#FF3B30] to-[#FF9500]", // Orange/Red
-  },
 ];
 
 const VendorCard = ({ name, role, image, color, delay }) => (
