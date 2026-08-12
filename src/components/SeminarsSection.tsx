@@ -53,7 +53,7 @@ const seminars = [
   }
 ];
 
-const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, containImage = false }) => {
+const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, containImage = false, objectPosition = "center" }) => {
   let avatarGlow = "border-2 border-[#FF5F4F] shadow-[0_0_12px_rgba(255,95,79,0.4)]";
   let bulletColor = "bg-[#FF5F4F]";
   let pillBg = "bg-[#FF5F4F]/10";
@@ -93,6 +93,7 @@ const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, con
           src={image}
           alt={name}
           className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${containImage ? 'object-contain bg-white p-1.5' : 'object-cover bg-[#222]'} ${avatarGlow} shrink-0`}
+          style={{ objectPosition }}
           onError={(e) => {
             e.currentTarget.src = "/placeholder.svg";
           }}
@@ -127,7 +128,7 @@ const day1Speakers1 = [
 ];
 
 const day1PanelistsA = [
-  { role: "Panelist", name: "Victor Chang", org: "TBD", image: "speakers/victor.png" },
+  { role: "Panelist", name: "Victor Chang", org: "TBD", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCVxe8iUJkG9RmgRaWDRJ2_UeyEyxIZZG-AQCJJmpahpIuF542U4LUJkow_xjpt8T3Xb-WauSNac5moMkDghErkTibIzYjvFv-y0ld0BjLXeOdVH5lTillIqJJe6OXbhyLj76VIGxUD-xxlSg-3AQVzZ-Ly-Ef5qnUbx8LyYSLTbOh7PB_W4LfdvmsoTMx2EUVwdLSlkN5Xmu5temNE78GCF6f9qYpwbPynyUtgLEE64q1_o-Wf3RWUC8u_6i12GvaHf-s", objectPosition: "top" },
   // { role: "Panelist", name: "STPI", org: "STPI", image: "speakers/stpi.png" },
   // { role: "Panelist", name: "Advisor Khekrie", org: "TBD", image: "speakers/khekri.png" },
   // { role: "Panelist", name: "NIELIT", org: "NIELIT", image: "NIELIT.png", containImage: true }

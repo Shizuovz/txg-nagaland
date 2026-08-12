@@ -30,7 +30,7 @@ const Tournaments = () => {
       <PurposeSection />
       <SeminarsSection />
       <TechExhibitionSection />
-      <ProfileSection />
+      {/* <ProfileSection /> */}
       <CompetitionsSection />
       <GameJamSection />
       <CosplaySection />

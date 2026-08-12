@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Zap, Monitor, Users, Trophy, Award, Calendar, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
+import TermsAndConditions from "./TermsAndConditions";
 
 const DigitalArtChallengeSection = () => {
   return (
@@ -133,9 +134,15 @@ const DigitalArtChallengeSection = () => {
                 </div>
               </div> */}
 
-              <Button asChild className="bg-gradient-to-r from-[#50D075] to-[#FFFF00]/70 hover:from-[#50D075] hover:to-[#FFFF00] text-black font-bold px-6 py-5 rounded-lg text-base uppercase" style={{ fontFamily: "'Neo_Triad', sans-serif" }}>
-                <Link to="/register">Register Now</Link>
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full">
+                <Button asChild className="bg-gradient-to-r from-[#50D075] to-[#FFFF00]/70 hover:from-[#50D075] hover:to-[#FFFF00] text-black font-bold px-6 py-5 rounded-lg text-base uppercase" style={{ fontFamily: "'Neo_Triad', sans-serif" }}>
+                  <Link to="/register">Register Now</Link>
+                </Button>
+                <TermsAndConditions
+                  registrationType="digital-art-rules"
+                  variant="buttonOnly"
+                />
+              </div>
             </motion.div>
           </div>
 

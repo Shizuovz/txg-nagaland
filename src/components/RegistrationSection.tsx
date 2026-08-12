@@ -16,7 +16,6 @@ const miniTournaments = [
   { name: "FC 26", logo: "/logos/FC26 White.png" },
   { name: "Clash Royale", logo: "/logos/Clash Royale.png" },
   { name: "Tekken 8", logo: "/logos/Tekken-8-logo White.png" },
-  { name: "Dirt Rally 2.0", logo: "/logos/Dirt_Rally_2.0_Logo.svg.png" },
   { name: "Street Fighter 6", logo: "/logos/Street_Fighter_6_Logo.png" },
   { name: "Ludo", logo: "/logos/Ludo Logo.png" },
 ];
@@ -152,7 +151,13 @@ const initialFormData = {
   aiVideoDescription: "",
   aiToolsUsed: "",
   aiVideoUpload: null as File | null,
-  originalWorkDeclaration: false
+  originalWorkDeclaration: false,
+  digitalArtRules: false,
+  digitalArtTerms: false,
+  digitalArtDevice: false,
+  digitalArtNoProvide: false,
+  digitalArtNoAI: false,
+  digitalArtConsent: false
 };
 
 const RegistrationSection = () => {
@@ -628,14 +633,14 @@ const RegistrationSection = () => {
         await submitVisitorRegistration({
           fullName: formData.captainName,
           email: formData.captainEmail,
-          phone: formData.whatsappPhone,
-          address: formData.city, // Storing District/Town in address
+          phone: formData.captainPhone,
+          address: formData.address,
           city: formData.city,
           state: 'Nagaland', // Default or user input
           pinCode: '000000', // Default if unused
           registrationId: registrationId,
-          collegeName: formData.deviceType === 'Other' ? formData.otherDeviceType : formData.deviceType, // Using unused field
-          message: `Age: ${formData.age}\nEmergency Contact: ${formData.emergencyContact}\nDevice Type: ${formData.deviceType === 'Other' ? formData.otherDeviceType : formData.deviceType}\nSoftware: ${formData.digitalArtSoftware}`
+          collegeName: formData.collegeName,
+          message: `WhatsApp: ${formData.whatsappPhone}\nDevice Type: ${formData.deviceType === 'Other' ? formData.otherDeviceType : formData.deviceType}\nSoftware: ${formData.digitalArtSoftware}`
         }, 'Digital Art Competition registration submitted successfully!');
       } else if (registrationType === 'ai-video') {
         // Validation for AI Video
@@ -2269,48 +2274,7 @@ const RegistrationSection = () => {
                 </select>
               </div>
 
-              {formData.game === "Dirt Rally 2.0" ? (
-                <div className="bg-muted/30 p-6 rounded-lg border border-border mt-6">
-                  <h3 className="text-xl font-bold text-white mb-4">DiRT Rally 2.0 – Driving Simulator Time Trial Challenge</h3>
-                  <div className="space-y-4 text-sm text-[#d0d0d0] font-['Nonito'] leading-relaxed">
-                    <p>
-                      The DiRT Rally 2.0 competition will be conducted as an open time-trial challenge on a dedicated driving simulator rig. No prior registration will be required. Participants may walk in during the event and attempt the challenge within the allotted competition hours.
-                    </p>
-                    <p>
-                      To ensure fairness, the competition will use one fixed track, one fixed car, and one fixed gameplay setting for all participants. The same simulator setup, controller configuration, assist settings, weather condition, and race parameters will be maintained throughout the competition.
-                    </p>
-                    <p>
-                      The challenge will remain open across both days of TXG Expo. Participants may attempt multiple runs during the event period, subject to crowd management and slot availability. Each participant's best valid lap time will be recorded on the official leaderboard.
-                    </p>
-                    <p>
-                      At the end of the event, the participant with the fastest valid lap time will be declared the winner.
-                    </p>
-                    
-                    <h4 className="text-lg font-bold text-white mt-6 mb-2">Format Summary</h4>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li><strong className="text-white">Game:</strong> DiRT Rally 2.0</li>
-                      <li><strong className="text-white">Mode:</strong> Time Trial</li>
-                      <li><strong className="text-white">Registration:</strong> Not required</li>
-                      <li><strong className="text-white">Setup:</strong> Driving simulator rig</li>
-                      <li><strong className="text-white">Duration:</strong> Open across 2 event days</li>
-                      <li><strong className="text-white">Track:</strong> One fixed track for all participants</li>
-                      <li><strong className="text-white">Car:</strong> One fixed car for all participants</li>
-                      <li><strong className="text-white">Settings:</strong> Same fixed settings for all participants</li>
-                      <li><strong className="text-white">Winning Criteria:</strong> Fastest valid lap time by the end of the event</li>
-                    </ul>
-
-                    <h4 className="text-lg font-bold text-white mt-6 mb-2">Fair Play Rules</h4>
-                    <p>
-                      All participants must use the official simulator setup provided at the venue. No custom settings, external devices, personal controllers, or changes to the game configuration will be allowed. Any attempt involving reset abuse, shortcut exploitation, tampering with the simulator, or unsporting behaviour may be disqualified at the discretion of the organisers.
-                    </p>
-                    <p>
-                      The organisers' recorded leaderboard will be considered final.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="captainName">Full Name *</Label>
                       <Input
@@ -2453,8 +2417,6 @@ const RegistrationSection = () => {
                   <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
                     {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for Mini Tournament'}
                   </Button>
-                </>
-              )}
             </form>
           </CardContent>
         </Card>
@@ -2477,128 +2439,223 @@ const RegistrationSection = () => {
                 isLoading={isCheckingLimit} 
                 type="digital-art" 
               />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="captainName">Full Name *</Label>
-                  <Input
-                    id="captainName"
-                    value={formData.captainName}
-                    onChange={(e) => handleInputChange("captainName", e.target.value)}
-                    placeholder="Your full name"
-                    required
-                  />
+              <div className="space-y-4 pb-2 border-b border-white/10">
+                <h3 className="font-['Nonito'] text-lg text-[#e5e2e1] font-bold">Participant Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="captainName">Full Name *</Label>
+                    <Input
+                      id="captainName"
+                      value={formData.captainName}
+                      onChange={(e) => handleInputChange("captainName", e.target.value)}
+                      placeholder="Your full name"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="captainPhone">Mobile Number *</Label>
+                    <Input
+                      id="captainPhone"
+                      value={formData.captainPhone}
+                      onChange={(e) => handleInputChange("captainPhone", e.target.value)}
+                      placeholder="+91 98765 43210"
+                      required
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="age">Age *</Label>
-                  <Input
-                    id="age"
-                    type="number"
-                    value={formData.age}
-                    onChange={(e) => handleInputChange("age", e.target.value)}
-                    placeholder="Your age"
-                    min="12"
-                    max="60"
-                    required
-                  />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="whatsappPhone">WhatsApp Number *</Label>
+                    <Input
+                      id="whatsappPhone"
+                      value={formData.whatsappPhone}
+                      onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
+                      placeholder="+91 98765 43210"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="captainEmail">Email Address *</Label>
+                    <Input
+                      id="captainEmail"
+                      type="email"
+                      value={formData.captainEmail}
+                      onChange={(e) => handleInputChange("captainEmail", e.target.value)}
+                      placeholder="your.email@example.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="address">Address *</Label>
+                    <Input
+                      id="address"
+                      value={formData.address}
+                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      placeholder="Your complete address"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="city">District *</Label>
+                    <Input
+                      id="city"
+                      value={formData.city}
+                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      placeholder="Your district"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <Label htmlFor="collegeName">School/College/Organisation — Optional</Label>
+                    <Input
+                      id="collegeName"
+                      value={formData.collegeName}
+                      onChange={(e) => handleInputChange("collegeName", e.target.value)}
+                      placeholder="e.g. Tetso College"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="whatsappPhone">Mobile / WhatsApp Number *</Label>
-                  <Input
-                    id="whatsappPhone"
-                    value={formData.whatsappPhone}
-                    onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
-                    placeholder="+91 98765 43210"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="captainEmail">Email Address *</Label>
-                  <Input
-                    id="captainEmail"
-                    type="email"
-                    value={formData.captainEmail}
-                    onChange={(e) => handleInputChange("captainEmail", e.target.value)}
-                    placeholder="your.email@example.com"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="city">District / Town *</Label>
-                  <Input
-                    id="city"
-                    value={formData.city}
-                    onChange={(e) => handleInputChange("city", e.target.value)}
-                    placeholder="Your district or town"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="emergencyContact">Emergency Contact Number *</Label>
-                  <Input
-                    id="emergencyContact"
-                    value={formData.emergencyContact}
-                    onChange={(e) => handleInputChange("emergencyContact", e.target.value)}
-                    placeholder="+91 98765 43210"
-                    required
-                  />
+              <div className="space-y-4 pt-2 border-b border-white/10 pb-4">
+                <h3 className="font-['Nonito'] text-lg text-[#e5e2e1] font-bold">Competition Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="deviceType">Device You Will Bring *</Label>
+                    <select
+                      id="deviceType"
+                      value={formData.deviceType}
+                      onChange={(e) => handleInputChange("deviceType", e.target.value)}
+                      className="w-full p-2 border rounded-md bg-background text-foreground"
+                      required
+                    >
+                      <option value="">Select device</option>
+                      <option value="Laptop">Laptop</option>
+                      <option value="Tablet / iPad">Tablet / iPad</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {formData.deviceType === "Other" && (
+                      <div className="mt-4">
+                        <Label htmlFor="otherDeviceType">Specify Device *</Label>
+                        <Input
+                          id="otherDeviceType"
+                          value={formData.otherDeviceType}
+                          onChange={(e) => handleInputChange("otherDeviceType", e.target.value)}
+                          placeholder="Please specify"
+                          required
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="digitalArtSoftware">Digital Art Software/Application You Will Use *</Label>
+                    <Input
+                      id="digitalArtSoftware"
+                      value={formData.digitalArtSoftware}
+                      onChange={(e) => handleInputChange("digitalArtSoftware", e.target.value)}
+                      placeholder="e.g. Photoshop, Procreate, Krita"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="deviceType">Device you will use *</Label>
-                  <select
-                    id="deviceType"
-                    value={formData.deviceType}
-                    onChange={(e) => handleInputChange("deviceType", e.target.value)}
-                    className="w-full p-2 border rounded-md bg-background text-foreground"
-                    required
-                  >
-                    <option value="">Select device</option>
-                    <option value="Laptop">Laptop</option>
-                    <option value="Tablet / iPad">Tablet / iPad</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  {formData.deviceType === "Other" && (
-                    <div className="mt-4">
-                      <Label htmlFor="otherDeviceType">Specify Device *</Label>
-                      <Input
-                        id="otherDeviceType"
-                        value={formData.otherDeviceType}
-                        onChange={(e) => handleInputChange("otherDeviceType", e.target.value)}
-                        placeholder="Please specify"
-                        required
-                      />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="digitalArtSoftware">Preferred Digital Art Software *</Label>
-                  <Input
-                    id="digitalArtSoftware"
-                    value={formData.digitalArtSoftware}
-                    onChange={(e) => handleInputChange("digitalArtSoftware", e.target.value)}
-                    placeholder="e.g. Photoshop, Procreate, Krita"
-                    required
+              <div className="space-y-3 pt-2 pb-4">
+                <h3 className="font-['Nonito'] text-lg text-[#e5e2e1] font-bold mb-4">Required Confirmations</h3>
+                
+                <TermsAndConditions
+                  accepted={formData.digitalArtRules}
+                  onAccept={(accepted) => handleInputChange("digitalArtRules", accepted)}
+                  registrationType="digital-art-rules"
+                />
+                
+                <TermsAndConditions
+                  accepted={formData.digitalArtTerms}
+                  onAccept={(accepted) => handleInputChange("digitalArtTerms", accepted)}
+                  registrationType="digital-art"
+                />
+
+                <div className="flex items-start gap-3">
+                  <input 
+                    type="checkbox"
+                    id="digitalArtDevice" 
+                    checked={formData.digitalArtDevice}
+                    onChange={(e) => handleInputChange("digitalArtDevice", e.target.checked)}
+                    className="mt-1 w-4 h-4 accent-primary"
                   />
+                  <Label htmlFor="digitalArtDevice" className="text-sm font-normal leading-tight">
+                    I understand that I must bring my own device, stylus, charger and accessories. *
+                  </Label>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <input 
+                    type="checkbox"
+                    id="digitalArtNoProvide" 
+                    checked={formData.digitalArtNoProvide}
+                    onChange={(e) => handleInputChange("digitalArtNoProvide", e.target.checked)}
+                    className="mt-1 w-4 h-4 accent-primary"
+                  />
+                  <Label htmlFor="digitalArtNoProvide" className="text-sm font-normal leading-tight">
+                    I understand that devices will not be provided by the organisers. *
+                  </Label>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <input 
+                    type="checkbox"
+                    id="digitalArtNoAI" 
+                    checked={formData.digitalArtNoAI}
+                    onChange={(e) => handleInputChange("digitalArtNoAI", e.target.checked)}
+                    className="mt-1 w-4 h-4 accent-primary"
+                  />
+                  <Label htmlFor="digitalArtNoAI" className="text-sm font-normal leading-tight">
+                    I confirm that my artwork will be created at the venue without generative AI, tracing, copied artwork or pre-created elements. *
+                  </Label>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <input 
+                    type="checkbox"
+                    id="digitalArtConsent" 
+                    checked={formData.digitalArtConsent}
+                    onChange={(e) => handleInputChange("digitalArtConsent", e.target.checked)}
+                    className="mt-1 w-4 h-4 accent-primary"
+                  />
+                  <Label htmlFor="digitalArtConsent" className="text-sm font-normal leading-tight">
+                    I consent to photography, videography and event-related promotional use of my submitted artwork. *
+                  </Label>
                 </div>
               </div>
 
-              <TermsAndConditions
-                accepted={formData.agreeTerms}
-                onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
-                registrationType="digital-art"
-              />
-
-              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting}>
-                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for Digital Art Competition'}
-              </Button>
+              <div className="pt-2">
+                <p className="text-sm text-[#e7bdb3] mb-4 p-3 bg-[#ff003c]/10 border border-[#ff003c]/20 rounded-md">
+                  No artwork upload is required during online registration. The completed artwork and editable working file will be collected at the Digital Art section before <strong>4:00 PM on Day 1</strong>.
+                </p>
+                
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-[#ff003c] to-[#ff4d79] text-white hover:opacity-90 font-bold tracking-widest uppercase border-none" 
+                  disabled={
+                    !formData.digitalArtRules || 
+                    !formData.digitalArtTerms || 
+                    !formData.digitalArtDevice || 
+                    !formData.digitalArtNoProvide || 
+                    !formData.digitalArtNoAI || 
+                    !formData.digitalArtConsent || 
+                    isSubmitting
+                  }
+                >
+                  {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Submit Registration'}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>

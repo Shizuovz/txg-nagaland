@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import GamingIcon, { GamingIcons } from "./GamingIcons";
 
 const tournaments = [
@@ -26,12 +27,13 @@ const miniTournaments = [
   { name: "FC 26", logo: "/logos/FC26 White.png", color: "black" },
   { name: "Clash Royale", logo: "/logos/Clash Royale.png", color: "white" },
   { name: "Tekken 8", logo: "/logos/Tekken-8-logo White.png", color: "black" },
-  { name: "Dirt Rally 2.0", logo: "/logos/Dirt_Rally_2.0_Logo.svg.png", color: "white" },
   { name: "Street Fighter 6", logo: "/logos/Street_Fighter_6_Logo.png", color: "black" },
   { name: "Ludo", logo: "/logos/Ludo Logo.png", color: "white" },
 ];
 
 const GamesSection = () => {
+  const navigate = useNavigate();
+
   return (
     <section id="games" className="py-20 md:py-28 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)" }}>
       {/* Tech Corner Designs - Premium Geometric Patterns */}
@@ -244,7 +246,7 @@ const GamesSection = () => {
             <p className="text-[#d0d0d0] font-['Nonito']">Quick action games with instant rewards</p>
           </div>
           
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 max-w-6xl mx-auto">
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-3 md:gap-4 max-w-5xl mx-auto">
             {miniTournaments.map((mini, i) => (
               <motion.div
                 key={i}
@@ -317,14 +319,7 @@ const GamesSection = () => {
           transition={{ delay: 0.5 }}
         >
         <motion.button
-          onClick={() => {
-            const element = document.getElementById('register');
-            if (element) {
-              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else {
-              window.location.href = '#register';
-            }
-          }}
+          onClick={() => navigate('/register')}
           className="relative inline-block px-8 py-3 bg-transparent font-['Neo_Triad'] tracking-widest font-bold text-xl rounded-lg transition-all duration-300 group"
           style={{ 
             fontFamily: "'Neo_Triad', sans-serif",

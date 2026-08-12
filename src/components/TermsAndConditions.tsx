@@ -13,15 +13,17 @@ import {
 } from "@/components/ui/dialog";
 
 interface TermsAndConditionsProps {
-  accepted: boolean;
-  onAccept: (accepted: boolean) => void;
+  accepted?: boolean;
+  onAccept?: (accepted: boolean) => void;
   registrationType?: string;
+  variant?: 'default' | 'buttonOnly';
 }
 
 const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ 
-  accepted, 
+  accepted = false, 
   onAccept, 
-  registrationType 
+  registrationType,
+  variant = 'default'
 }) => {
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -42,16 +44,16 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked;
     if (checked && hasScrolledToBottom) {
-      onAccept(true);
+      if (onAccept) onAccept(true);
     } else {
-      onAccept(false);
+      if (onAccept) onAccept(false);
     }
   };
 
   // Reset scroll state when registration type changes
   useEffect(() => {
     setHasScrolledToBottom(false);
-    onAccept(false);
+    if (onAccept) onAccept(false);
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = 0;
     }
@@ -67,6 +69,8 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
         return 'Mini Tournament Registration';
       case 'digital-art':
         return 'Digital Art Competition Registration';
+      case 'digital-art-rules':
+        return 'Digital Art Competition Rules & Regulations';
       case 'ai-video':
         return 'AI Creative Video Challenge Registration';
       case 'cosplayer':
@@ -93,49 +97,37 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
     }
   }, [open, accepted]);
 
-  return (
-    <div className="w-full flex flex-col gap-4 p-4 border rounded-lg bg-card">
-      <div className="flex items-start space-x-3">
-        <Checkbox 
-          id="terms-accept-main" 
-          checked={accepted}
-          disabled
-          className="mt-1"
-        />
-        <div className="grid gap-1.5 leading-none">
-          <Label 
-            htmlFor="terms-accept-main" 
-            className="text-sm font-medium leading-relaxed"
-          >
-            {(registrationType === 'college' || registrationType === 'moba-open') 
-              ? "I confirm that I have read and agree to the TXG-Nagaland MOBA 5V5 Open Tournament Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
-              : registrationType === 'mini-tournament'
-              ? "I confirm that I have read and agree to the TXG Nagaland Mini Tournaments Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
-              : registrationType === 'digital-art'
-              ? "By registering for the TXG Digital Art Competition, I confirm that I have read and accepted the Terms & Conditions. I understand that my artwork must be created during the allotted competition time and that the use of generative AI is strictly prohibited. I agree to follow the instructions of the organizers and accept the final decision of the judges. *"
-              : registrationType === 'ai-video'
-              ? "I have read and agree to the AI Creative Video Challenge Terms & Conditions. *"
-              : "I confirm that I have read and agree to the Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true. *"}
-          </Label>
-          {!accepted && (
-             <p className="text-xs text-amber-500 font-medium mt-2">
-               You must read and accept the Terms and Conditions to proceed.
-             </p>
-          )}
-        </div>
-      </div>
-      
+  const isButtonOnly = variant === 'buttonOnly';
+  
+  const dialogTriggerButton = isButtonOnly ? (
+    <Button 
+      type="button" 
+      variant="outline"
+      className="bg-transparent border-[#e5e2e1] text-[#e5e2e1] font-bold uppercase px-6 py-5 rounded-lg text-base tracking-wider hover:bg-[#e5e2e1] hover:text-[#131313] transition-all duration-300"
+      style={{ fontFamily: "'Neo_Triad', sans-serif" }}
+    >
+      VIEW RULES
+    </Button>
+  ) : (
+    <Button variant={accepted ? "outline" : "default"} type="button" className="w-fit self-center sm:self-start">
+      {accepted 
+        ? (registrationType === 'digital-art-rules' ? "Review Rules & Regulations" : "Review Terms & Conditions") 
+        : (registrationType === 'digital-art-rules' ? "Read & Accept Rules" : "Read & Accept Terms")}
+    </Button>
+  );
+
+  const dialogContent = (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant={accepted ? "outline" : "default"} type="button" className="w-fit self-center sm:self-start">
-            {accepted ? "Review Terms & Conditions" : "Read & Accept Terms"}
-          </Button>
+          {dialogTriggerButton}
         </DialogTrigger>
         <DialogContent className="w-[95vw] max-w-4xl max-h-[85dvh] flex flex-col gap-0 p-0 overflow-hidden">
           <DialogHeader className="p-6 pb-4">
-            <DialogTitle className="text-lg">Terms and Conditions</DialogTitle>
+            <DialogTitle className="text-lg">
+              {registrationType === 'digital-art-rules' ? "Rules and Regulations" : "Terms and Conditions"}
+            </DialogTitle>
             <DialogDescription>
-              Please read and scroll through the complete terms and conditions for {getRegistrationTypeText()}
+              Please read and scroll through the complete {registrationType === 'digital-art-rules' ? "rules and regulations" : "terms and conditions"} for {getRegistrationTypeText()}
             </DialogDescription>
           </DialogHeader>
           
@@ -649,121 +641,75 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                 <p>© 2026 TXG-Nagaland. All rights reserved.</p>
               </div>
                 </>
+              ) : registrationType === 'digital-art-rules' ? (
+                <>
+                  <h3 className="font-semibold text-base">Digital Art Challenge 2026 – Rules and Regulations</h3>
+                  
+                  <div className="mt-4">
+                    <ol className="list-decimal list-inside space-y-3">
+                      <li>The competition will be held on <strong>Day 1 — 28 August 2026</strong> at NBCC Convention Hall, Kohima.</li>
+                      <li>The Digital Art section will remain open from the start of the Expo at <strong>10:00 AM until 4:00 PM</strong>.</li>
+                      <li>Participants may arrive, register and begin creating at any time during this period.</li>
+                      <li>All artwork must be completed and submitted before <strong>4:00 PM</strong>. No additional time will be given to participants who begin late.</li>
+                      <li>The theme is <strong>“One Frame, A Thousand Stories.”</strong></li>
+                      <li>Participants must bring their own tablet, laptop, digital drawing device, stylus, charger and other required accessories. Devices will not be provided by the organisers.</li>
+                      <li>The artwork must be created entirely at the venue after registration.</li>
+                      <li>Each participant may submit only one artwork.</li>
+                      <li>The artwork must be the participant’s original creation.</li>
+                      <li>Generative AI, generative fill, tracing, copied artwork, stock images, downloaded elements, templates and pre-created artwork are prohibited.</li>
+                      <li>Standard digital-art tools such as brushes, layers, masks, selection tools and colour adjustments are permitted.</li>
+                      <li>Participants must not receive assistance from another person while creating their artwork.</li>
+                      <li>Artwork containing obscene, hateful, discriminatory, defamatory, excessively violent or unlawful content will not be accepted.</li>
+                      <li>Participants must submit:
+                        <ul className="list-disc list-inside ml-6 mt-2 space-y-1">
+                          <li>Final artwork</li>
+                          <li>Original editable working file</li>
+                          <li>Artwork title</li>
+                          <li>Short description of the artwork</li>
+                        </ul>
+                      </li>
+                      <li>The organisers may inspect the working file, layers or creation process to verify originality.</li>
+                      <li>Entries will be judged on originality, interpretation of the theme, storytelling, composition, technical execution and overall impact.</li>
+                      <li>The jury’s decision will be final.</li>
+                      <li>Results and prize winners will be announced <strong>after the main event</strong>.</li>
+                      <li>The prizes are:
+                        <ul className="list-disc list-inside ml-6 mt-2 space-y-1">
+                          <li><strong>Grand Winner:</strong> ₹30,000 and Certificate</li>
+                          <li><strong>Runner-up:</strong> ₹10,000 and Certificate</li>
+                        </ul>
+                      </li>
+                    </ol>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
+                    <p>TXG Digital Art Challenge Rules & Regulations</p>
+                    <p>© 2026 TXG-Nagaland. All rights reserved.</p>
+                  </div>
+                </>
               ) : registrationType === 'digital-art' ? (
                 <>
                   <h3 className="font-semibold text-base">Digital Art Competition – Terms & Conditions</h3>
                   
-                  <section>
-                    <h4 className="font-semibold mb-2">1. Participation</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>The competition will be conducted physically at the TXG Expo venue.</li>
-                      <li>Registered participants must be present at the venue at the reporting time communicated by the organizers.</li>
-                      <li>Late participants may not be given additional time.</li>
-                    </ul>
-                  </section>
-                  
-                  <section>
-                    <h4 className="font-semibold mb-2">2. Competition Format</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>Participants will create their digital artwork during the allotted competition period.</li>
-                      <li>Participants are free to create an artwork of their choice, subject to these rules.</li>
-                      <li>All work must be started and completed during the official competition time.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">3. Original Work</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>The artwork must be created by the registered participant.</li>
-                      <li>Pre-made artwork, previously completed artwork, templates containing substantial pre-created artwork, or another person's work may not be submitted.</li>
-                      <li>Plagiarism or unauthorized copying will result in disqualification.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">4. Generative AI</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>The use of generative AI is strictly prohibited.</li>
-                      <li>AI-generated images, AI-generated elements, generative fill, text-to-image tools, or similar generative features may not be used in any part of the artwork.</li>
-                      <li>Participants found using generative AI may be immediately disqualified.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">5. Software & Equipment</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>Participants may use digital art software of their choice, provided it complies with the competition rules.</li>
-                      <li>Participants are responsible for knowing how to operate their own device and software.</li>
-                      <li>Any technical issue with a participant's personal device or software does not automatically entitle the participant to additional time.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">6. Permitted Resources</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>Brushes, fonts, basic shapes, textures and standard software tools may be used.</li>
-                      <li>Any resource used must not constitute substantial pre-created artwork or violate another person's copyright.</li>
-                      <li>Organizers may inspect the participant's working file, layers, history or other relevant information when necessary to verify that the artwork was created during the competition.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">7. Content Restrictions</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>Artwork must not contain unlawful, hateful, discriminatory, sexually explicit or otherwise inappropriate content.</li>
-                      <li>The organizers reserve the right to reject or disqualify an entry that violates event guidelines.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">8. Submission</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>The completed artwork must be submitted within the allotted time and according to the submission instructions provided at the venue.</li>
-                      <li>Entries submitted after the deadline may be rejected.</li>
-                      <li>Participants must ensure that the submitted file can be opened and viewed correctly.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">9. Judging</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>Entries will be evaluated by the appointed judges according to the competition's judging criteria.</li>
-                      <li>The judges' decision will be final.</li>
-                      <li>The organizers are not required to provide individual scores or detailed feedback to every participant.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">10. Verification & Disqualification</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>Organizers may request the original working file or other evidence necessary to verify how an artwork was created.</li>
-                      <li>Violation of competition rules, plagiarism, use of generative AI, unfair assistance, submission of pre-created work or other forms of misconduct may result in disqualification.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">11. Use of Submitted Artwork</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>By participating, participants permit TXG and its organizers to display, photograph and publish submitted artworks for event documentation, exhibition and promotional purposes.</li>
-                      <li>Ownership of the original artwork remains with the respective artist.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">12. Event Rules</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>Participants must follow instructions given by competition officials and venue staff.</li>
-                      <li>Any attempt to gain an unfair advantage, interfere with another participant or disrupt the competition may result in disqualification.</li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h4 className="font-semibold mb-2">13. Changes</h4>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>The organizers reserve the right to make reasonable changes to the competition schedule, format or rules where necessary for the proper conduct of the event.</li>
-                      <li>Any important changes will be communicated to registered participants.</li>
-                    </ul>
-                  </section>
+                  <div className="mt-4">
+                    <ol className="list-decimal list-inside space-y-3">
+                      <li>By registering or participating, the participant agrees to follow the Rules and Regulations.</li>
+                      <li>Participants may register online in advance or directly at the Digital Art section on Day 1.</li>
+                      <li>All registration information must be complete and accurate.</li>
+                      <li>Every participant must submit their completed entry before 4:00 PM, regardless of their starting time.</li>
+                      <li>Participants are responsible for bringing and maintaining their own devices, software, chargers and accessories.</li>
+                      <li>The organisers will not be responsible for loss, theft, equipment damage, battery failure, software failure or loss of data.</li>
+                      <li>The participant confirms that the submitted artwork is original and does not infringe any third-party copyright or intellectual-property rights.</li>
+                      <li>The organisers may inspect the editable working file, layers or creation process to verify originality.</li>
+                      <li>Any entry involving generative AI, plagiarism, tracing, copied work, pre-created elements or external assistance may be disqualified.</li>
+                      <li>Participants retain ownership of their original artwork.</li>
+                      <li>Participants permit TXG Expo Nagaland and Nagaland Esports Society to display and use their submitted artwork for exhibition, event documentation and promotional purposes, with credit wherever reasonably possible.</li>
+                      <li>Participants consent to photography and videography during the competition for event documentation and promotion.</li>
+                      <li>The organisers may make necessary changes to the schedule or competition arrangements.</li>
+                      <li>Results will be declared after the main event. Prizes will be awarded only after the entries have been verified.</li>
+                      <li>The jury’s decision will be final, and requests for re-evaluation will not be entertained.</li>
+                      <li>Registration information will be used only for competition administration, communication, verification and certificates.</li>
+                    </ol>
+                  </div>
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
                     <p>TXG Digital Art Competition Terms & Conditions</p>
@@ -4186,27 +4132,71 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
           <DialogFooter className="p-6 pt-4 border-t">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
               <div className="text-sm text-muted-foreground">
-                {!hasScrolledToBottom ? "Please scroll to the bottom to accept" : "Thank you for reading the terms."}
+                {isButtonOnly 
+                  ? "" 
+                  : (!hasScrolledToBottom ? "Please scroll to the bottom to accept" : "Thank you for reading the terms.")}
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" type="button" onClick={() => setOpen(false)}>
-                  Cancel
-                </Button>
+                {!isButtonOnly && (
+                  <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+                    Cancel
+                  </Button>
+                )}
                 <Button 
                   type="button" 
                   onClick={() => {
-                    onAccept(true);
+                    if (onAccept) onAccept(true);
                     setOpen(false);
                   }}
-                  disabled={!hasScrolledToBottom}
+                  disabled={!isButtonOnly && !hasScrolledToBottom}
                 >
-                  Accept Terms
+                  {isButtonOnly ? "Close" : (registrationType === 'digital-art-rules' ? "Accept Rules" : "Accept Terms")}
                 </Button>
               </div>
             </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+  );
+
+  if (isButtonOnly) {
+    return dialogContent;
+  }
+
+  return (
+    <div className="w-full flex flex-col gap-4 p-4 border rounded-lg bg-card">
+      <div className="flex items-start space-x-3">
+        <Checkbox 
+          id="terms-accept-main" 
+          checked={accepted}
+          disabled
+          className="mt-1"
+        />
+        <div className="grid gap-1.5 leading-none">
+          <Label 
+            htmlFor="terms-accept-main" 
+            className="text-sm font-medium leading-relaxed"
+          >
+            {(registrationType === 'college' || registrationType === 'moba-open') 
+              ? "I confirm that I have read and agree to the TXG-Nagaland MOBA 5V5 Open Tournament Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
+              : registrationType === 'mini-tournament'
+              ? "I confirm that I have read and agree to the TXG Nagaland Mini Tournaments Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true, that I am eligible to participate, and that I am authorised to register where applicable. *" 
+              : registrationType === 'digital-art'
+              ? "I have read and accept the Terms and Conditions. *"
+              : registrationType === 'digital-art-rules'
+              ? "I have read and agree to follow the Rules and Regulations. *"
+              : registrationType === 'ai-video'
+              ? "I have read and agree to the AI Creative Video Challenge Terms & Conditions. *"
+              : "I confirm that I have read and agree to the Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true. *"}
+          </Label>
+          {!accepted && (
+             <p className="text-xs text-amber-500 font-medium mt-2">
+               {registrationType === 'digital-art-rules' ? "You must read and accept the Rules and Regulations to proceed." : "You must read and accept the Terms and Conditions to proceed."}
+             </p>
+          )}
+        </div>
+      </div>
+      {dialogContent}
     </div>
   );
 };

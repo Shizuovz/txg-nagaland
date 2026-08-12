@@ -994,11 +994,12 @@ const AdminDashboard = () => {
     const headers = [
       'registrationId',
       'fullName',
+      'mobileNumber',
+      'whatsappNumber',
       'email',
-      'whatsapp',
-      'districtTown',
-      'age',
-      'emergencyContact',
+      'address',
+      'district',
+      'schoolCollegeOrg',
       'deviceType',
       'software',
       'status',
@@ -1007,19 +1008,19 @@ const AdminDashboard = () => {
 
     const csvData = digitalArtRegistrations.map((registration) => {
       const message = registration.message || '';
-      const age = message.includes('Age:') ? message.split('Age:')[1]?.split('\n')[0]?.trim() : 'N/A';
-      const emergencyContact = message.includes('Emergency Contact:') ? message.split('Emergency Contact:')[1]?.split('\n')[0]?.trim() : 'N/A';
+      const whatsappNumber = message.includes('WhatsApp:') ? message.split('WhatsApp:')[1]?.split('\n')[0]?.trim() : 'N/A';
       const deviceType = message.includes('Device Type:') ? message.split('Device Type:')[1]?.split('\n')[0]?.trim() : 'N/A';
       const software = message.includes('Software:') ? message.split('Software:')[1]?.split('\n')[0]?.trim() : 'N/A';
 
       return {
         registrationId: registration.registrationId || '',
         fullName: registration.fullName || '',
+        mobileNumber: registration.phone || '',
+        whatsappNumber: whatsappNumber,
         email: registration.email || '',
-        whatsapp: registration.phone || '',
-        districtTown: registration.address || '',
-        age: age,
-        emergencyContact: emergencyContact,
+        address: registration.address || '',
+        district: registration.city || '',
+        schoolCollegeOrg: registration.collegeName || '',
         deviceType: deviceType,
         software: software,
         status: registration.status || '',
@@ -1339,6 +1340,53 @@ const AdminDashboard = () => {
     }
   };
 
+  const downloadStatsCSV = () => {
+    const categoriesStats = [
+      { name: 'Inter-College Teams', data: teamRegistrations },
+      { name: 'MOBA 5v5 Teams', data: mobaOpenRegistrations },
+      { name: 'Sponsors', data: getPureSponsorRegistrations() },
+      { name: 'Cosplayers', data: cosplayerRegistrations },
+      { name: 'Vendors', data: vendorRegistrations },
+      { name: 'Exhibitors', data: exhibitorRegistrations },
+      { name: 'Media', data: mediaRegistrations },
+      { name: 'Mini Tournaments', data: miniTournamentRegistrations },
+      { name: 'Digital Art', data: digitalArtRegistrations },
+      { name: 'AI Video', data: aiVideoRegistrations },
+    ];
+
+    let csv = 'Event Category,Total Registrations,Approved,Pending,Rejected / Other\n';
+
+    let grandTotal = 0;
+    let grandApproved = 0;
+    let grandPending = 0;
+    let grandOther = 0;
+
+    categoriesStats.forEach(cat => {
+      const total = cat.data.length;
+      const approved = cat.data.filter(x => x.status === 'approved').length;
+      const pending = cat.data.filter(x => x.status === 'pending').length;
+      const other = total - approved - pending;
+      
+      grandTotal += total;
+      grandApproved += approved;
+      grandPending += pending;
+      grandOther += other;
+
+      csv += `"${cat.name}",${total},${approved},${pending},${other}\n`;
+    });
+
+    csv += `"Total Participants",${grandTotal},${grandApproved},${grandPending},${grandOther}\n`;
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Registration_Statistics_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (dashboardLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
@@ -1501,9 +1549,20 @@ const AdminDashboard = () => {
                           A real-time overview of registration counts across all event categories. Click a row to view details.
                         </p>
                       </div>
-                      <Badge className="bg-purple-100 text-purple-800 border-none font-semibold px-3 py-1 text-xs">
-                        Live Stats
-                      </Badge>
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 text-xs border-purple-200 text-purple-700 hover:bg-purple-50"
+                          onClick={downloadStatsCSV}
+                        >
+                          <Download className="w-3.5 h-3.5 mr-1.5" />
+                          Export CSV
+                        </Button>
+                        <Badge className="bg-purple-100 text-purple-800 border-none font-semibold px-3 py-1 text-xs">
+                          Live Stats
+                        </Badge>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-0">
@@ -3668,24 +3727,24 @@ const AdminDashboard = () => {
                           <span className="text-sm">{registration.phone}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium text-gray-600">District/Town:</span>
-                          <span className="text-sm">{registration.address}</span>
+                          <span className="text-sm font-medium text-gray-600">Address:</span>
+                          <span className="text-sm">{registration.address || 'N/A'}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium text-gray-600">Age:</span>
+                          <span className="text-sm font-medium text-gray-600">District:</span>
+                          <span className="text-sm">{registration.city || 'N/A'}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">WhatsApp:</span>
                           <span className="text-sm">
-                            {registration.message && registration.message.includes('Age:') 
-                              ? registration.message.split('Age:')[1]?.split('\n')[0]?.trim() 
+                            {registration.message && registration.message.includes('WhatsApp:') 
+                              ? registration.message.split('WhatsApp:')[1]?.split('\n')[0]?.trim() 
                               : 'N/A'}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium text-gray-600">Emergency Contact:</span>
-                          <span className="text-sm">
-                            {registration.message && registration.message.includes('Emergency Contact:') 
-                              ? registration.message.split('Emergency Contact:')[1]?.split('\n')[0]?.trim() 
-                              : 'N/A'}
-                          </span>
+                          <span className="text-sm font-medium text-gray-600">School/College/Org:</span>
+                          <span className="text-sm">{registration.collegeName || 'N/A'}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm font-medium text-gray-600">Device Type:</span>

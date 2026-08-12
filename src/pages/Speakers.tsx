@@ -161,7 +161,7 @@ const Speakers = () => {
                   <div className="absolute bottom-0 left-1/2 w-px h-2 bg-current"></div>
                 </div>
                 <div className="scanner-line"></div>
-                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk2Vxn8FdwZUGjMCy8sJsLHmjBHOG8K3ct__QZdEBcLrQyJdyqUmb0W5BeHDXod3B9wIrOSesWSbM8ziQp7lmZI-bQKwQdepodgkG0XR758iQEhImvNjybevr1UySOkYeGy9w07ckqlr_-ScV-RmKaaZjiO7Lie-1blZNB03_OVfhjPoKcKpud_szwTW-lQK2u2f_aE4PQ_QumOup8I5C0vJRJDtXYq8IGbRe8HwUJX7Ai9eKfHIjoCjVOnGxvachhvfY" alt="Masuk Ahmed" className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0" />
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk2Vxn8FdwZUGjMCy8sJsLHmjBHOG8K3ct__QZdEBcLrQyJdyqUmb0W5BeHDXod3B9wIrOSesWSbM8ziQp7lmZI-bQKwQdepodgkG0XR758iQEhImvNjybevr1UySOkYeGy9w07ckqlr_-ScV-RmKaaZjiO7Lie-1blZNB03_OVfhjPoKcKpud_szwTW-lQK2u2f_aE4PQ_QumOup8I5C0vJRJDtXYq8IGbRe8HwUJX7Ai9eKfHIjoCjVOnGxvachhvfY" alt="Masuk Ahmed" className="w-full h-full object-cover object-top grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0" />
               </div>
               <div className="flex flex-col gap-2">
                 <h3 className="font-['Neiko'] font-bold text-[32px] md:text-[40px] leading-[1.2] text-white uppercase">Masuk Ahmed</h3>
@@ -170,6 +170,34 @@ const Speakers = () => {
                   <p>Masuk Ahmed is a veteran Game Development Art Director and Lead 3D Character Artist with over 12 years of experience delivering top-tier visuals for AAA games, real-time cinematics, and outsourcing studios. Currently serving as an Art Director and Mentor at Formless Studio, he excels at translating creative direction into production-ready standards, establishing visual targets, and optimizing pipelines.</p>
                   <p>His extensive leadership experience includes co-founding a successful game-art outsourcing studio and directing a globally distributed, 50-person team to deliver over 300 player likenesses for Netflixâ€™s FIFA World Cup Launch Edition.</p>
                   <p>He has dedicated himself to industry growth by mentoring more than 40 artists in advanced anatomy, workflows, and portfolio development.</p>
+                </div>
+              </div>
+            </article>
+
+            {/* Speaker 6: Island Victor Chang (Neon Pink) */}
+            <article className="bg-[#1c1b1b] border border-[#353534] p-6 relative flex flex-col gap-6 group hud-bracket hud-bracket-full" style={{ color: '#ff003c' }}>
+              <div></div>
+              <div className="flex justify-between items-start font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase">
+                <span className="text-[#e5e2e1]">ID: SP-06</span>
+                <span className="border px-2 py-0.5" style={{ borderColor: '#ff003c' }}>PANELIST</span>
+              </div>
+              <div className="relative aspect-square w-full bg-black overflow-hidden border border-[#353534] p-2">
+                <div className="absolute inset-0 border m-2 z-10 pointer-events-none opacity-50" style={{ borderColor: '#ff003c' }}>
+                  <div className="absolute top-1/2 left-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-1/2 right-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-0 left-1/2 w-px h-2 bg-current"></div>
+                  <div className="absolute bottom-0 left-1/2 w-px h-2 bg-current"></div>
+                </div>
+                <div className="scanner-line"></div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVxe8iUJkG9RmgRaWDRJ2_UeyEyxIZZG-AQCJJmpahpIuF542U4LUJkow_xjpt8T3Xb-WauSNac5moMkDghErkTibIzYjvFv-y0ld0BjLXeOdVH5lTillIqJJe6OXbhyLj76VIGxUD-xxlSg-3AQVzZ-Ly-Ef5qnUbx8LyYSLTbOh7PB_W4LfdvmsoTMx2EUVwdLSlkN5Xmu5temNE78GCF6f9qYpwbPynyUtgLEE64q1_o-Wf3RWUC8u_6i12GvaHf-s" alt="Island Victor Chang" className="w-full h-full object-cover object-center grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-['Neiko'] font-bold text-[32px] md:text-[40px] leading-[1.2] text-white uppercase">Island Victor Chang</h3>
+                <h4 className="font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase" style={{ color: '#ff003c' }}>Innovation Lead // Panelist</h4>
+                <div className="font-Nonito text-[16px] text-[#e7bdb6] mt-2 space-y-3">
+                  <p>A hands-on engineer, technology entrepreneur, and product developer with over 15 years of experience in engineering, research, and product innovation. He has a deep passion for building practical, innovative solutions across mechanical, electrical, electronics, and IoT domains.</p>
+                  <p>Over the years, he has developed a wide range of technologies, including electric bikes, tree climbers, incinerators, smart stoves, smart furniture, sow stimulation systems, industrial jigs, and other engineering solutions. He has also led the development of key innovations such as SGDMS (IoT-powered waste management) and ZOULES (sustainable electric mobility for wheelchairs).</p>
+                  <p>Currently, he serves as the Head of Research & Development at Zeliang Codetech Pvt. Ltd., leading the design, prototyping, and development of eco-friendly, cross-disciplinary technologies.</p>
                 </div>
               </div>
             </article>
