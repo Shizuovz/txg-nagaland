@@ -37,11 +37,67 @@ const Speakers = () => {
         {/* Profiles Roster Grid */}
         <section className="max-w-[1440px] mx-auto px-6 pb-32">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Speaker 1: Ahmed Ameen Khan (Red) */}
-            <article className="bg-[#1c1b1b] border border-[#353534] p-6 relative flex flex-col gap-6 group hud-bracket hud-bracket-full" style={{ color: '#ef4444' }}>
+            {/* Speaker 1: Lokesh Suji (Emerald) */}
+            <article className="bg-[#1c1b1b] border border-[#353534] p-6 relative flex flex-col gap-6 group hud-bracket hud-bracket-full" style={{ color: '#10b981' }}>
               <div></div>
               <div className="flex justify-between items-start font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase">
                 <span className="text-[#e5e2e1]">ID: SP-01</span>
+                <span className="border px-2 py-0.5" style={{ borderColor: '#10b981' }}>SPEAKER</span>
+              </div>
+              <div className="relative aspect-square w-full bg-black overflow-hidden border border-[#353534] p-2">
+                <div className="absolute inset-0 border m-2 z-10 pointer-events-none opacity-50" style={{ borderColor: '#10b981' }}>
+                  <div className="absolute top-1/2 left-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-1/2 right-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-0 left-1/2 w-px h-2 bg-current"></div>
+                  <div className="absolute bottom-0 left-1/2 w-px h-2 bg-current"></div>
+                </div>
+                <div className="scanner-line"></div>
+                <img src="/speakers/lokesh_suji.jpeg" alt="Mr. Lokesh Suji" className="w-full h-full object-cover object-top grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-['Neiko'] font-bold text-[32px] md:text-[40px] leading-[1.2] text-white uppercase">Mr. Lokesh Suji</h3>
+                <h4 className="font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase" style={{ color: '#10b981' }}>Hon. Gen. Sec., ESFI</h4>
+                <div className="font-Nonito text-[16px] text-[#e7bdb6] mt-2 space-y-3">
+                  <p>Mr. Lokesh Suji is a pioneer in India's competitive gaming landscape, blending an 18-year telecom leadership career with 12 years of relentless advocacy for elevating esports to mainstream sport status.</p>
+                  <p>As the Honorary General Secretary of the Electronic Sports Federation of India (ESFI) and Vice President (South Asia) of AESF, his strategic vision has been central to regulatory breakthroughs and India's medal-winning performances.</p>
+                  <p>Also known as dAwesomeNinja, his stewardship has led to multiple international medals and the inclusion of esports as a recognized sport in India, fostering grassroots development and high-performance centers.</p>
+                </div>
+              </div>
+            </article>
+
+            {/* Speaker 2: Dr. Vipul Lunawat (Amber) */}
+            <article className="bg-[#1c1b1b] border border-[#353534] p-6 relative flex flex-col gap-6 group hud-bracket hud-bracket-full" style={{ color: '#f59e0b' }}>
+              <div></div>
+              <div className="flex justify-between items-start font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase">
+                <span className="text-[#e5e2e1]">ID: SP-02</span>
+                <span className="border px-2 py-0.5" style={{ borderColor: '#f59e0b' }}>SPEAKER</span>
+              </div>
+              <div className="relative aspect-square w-full bg-black overflow-hidden border border-[#353534] p-2">
+                <div className="absolute inset-0 border m-2 z-10 pointer-events-none opacity-50" style={{ borderColor: '#f59e0b' }}>
+                  <div className="absolute top-1/2 left-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-1/2 right-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-0 left-1/2 w-px h-2 bg-current"></div>
+                  <div className="absolute bottom-0 left-1/2 w-px h-2 bg-current"></div>
+                </div>
+                <div className="scanner-line"></div>
+                <img src="/speakers/vipul.jpeg" alt="Dr. Vipul Lunawat" className="w-full h-full object-cover object-top grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-['Neiko'] font-bold text-[32px] md:text-[40px] leading-[1.2] text-white uppercase">Dr. Vipul Lunawat</h3>
+                <h4 className="font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase" style={{ color: '#f59e0b' }}>Founder Director, ISST</h4>
+                <div className="font-Nonito text-[16px] text-[#e7bdb6] mt-2 space-y-3">
+                  <p>Dr. Vipul Lunawat is the Founder Director at the Institute of Sports Science & Technology. Holding a Ph.D. in Sports Management, he brings a wealth of knowledge with his experience in the sports and management industry spanning over 20+ years.</p>
+                  <p>An international roller and ice skater, he has represented India in various international events and World Championships as an athlete, coach, and administrator. His achievements include various national awards and the completion of the "Young Entrepreneurs Programme" from IIM, Ahmedabad.</p>
+                  <p>He is the President of the Maharashtra Esports Association and a Board Member of the Esports Federation of India. A fitness enthusiast and marketing expert, he loves to talk about Sports & Fitness as a way of life.</p>
+                </div>
+              </div>
+            </article>
+
+            {/* Speaker 3: Ahmed Ameen Khan (Red) */}
+            <article className="bg-[#1c1b1b] border border-[#353534] p-6 relative flex flex-col gap-6 group hud-bracket hud-bracket-full" style={{ color: '#ef4444' }}>
+              <div></div>
+              <div className="flex justify-between items-start font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase">
+                <span className="text-[#e5e2e1]">ID: SP-03</span>
                 <span className="border px-2 py-0.5" style={{ borderColor: '#ef4444' }}>SPEAKER</span>
               </div>
               <div className="relative aspect-square w-full bg-black overflow-hidden border border-[#353534] p-2">
@@ -64,11 +120,11 @@ const Speakers = () => {
               </div>
             </article>
 
-            {/* Speaker 2: Zang (Cyan) */}
+            {/* Speaker 4: Zang (Cyan) */}
             <article className="bg-[#1c1b1b] border border-[#353534] p-6 relative flex flex-col gap-6 group hud-bracket hud-bracket-full" style={{ color: '#06b6d4' }}>
               <div></div>
               <div className="flex justify-between items-start font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase">
-                <span className="text-[#e5e2e1]">ID: SP-02</span>
+                <span className="text-[#e5e2e1]">ID: SP-04</span>
                 <span className="border px-2 py-0.5" style={{ borderColor: '#06b6d4' }}>SPEAKER</span>
               </div>
               <div className="relative aspect-square w-full bg-black overflow-hidden border border-[#353534] p-2">
@@ -90,11 +146,11 @@ const Speakers = () => {
               </div>
             </article>
 
-            {/* Speaker 3: Masuk Ahmed (Violet) */}
+            {/* Speaker 5: Masuk Ahmed (Violet) */}
             <article className="bg-[#1c1b1b] border border-[#353534] p-6 relative flex flex-col gap-6 group hud-bracket hud-bracket-full" style={{ color: '#8b5cf6' }}>
               <div></div>
               <div className="flex justify-between items-start font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase">
-                <span className="text-[#e5e2e1]">ID: SP-03</span>
+                <span className="text-[#e5e2e1]">ID: SP-05</span>
                 <span className="border px-2 py-0.5" style={{ borderColor: '#8b5cf6' }}>SPEAKER</span>
               </div>
               <div className="relative aspect-square w-full bg-black overflow-hidden border border-[#353534] p-2">

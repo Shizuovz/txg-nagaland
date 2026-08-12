@@ -3107,6 +3107,25 @@ const RegistrationSection = () => {
           </motion.div>
 
           <motion.div
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 cursor-pointer h-full flex flex-col group"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            onClick={() => window.open("https://indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd", "_blank")}
+          >
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
+              <GamingIcon iconId={GamingIcons.STAR} size={24} color="#6366f1" />
+            </div>
+            <div className="flex-grow flex flex-col justify-between">
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">Game Jam</h3>
+              <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
+                Register for the 48-hour TXG Nagaland Game Jam 2026
+              </p>
+            </div>
+            <Button className="w-full text-sm sm:text-base group-hover:bg-indigo-500 group-hover:text-white group-hover:border-indigo-500 transition-colors" variant="outline">Register Now</Button>
+          </motion.div>
+
+          <motion.div
             className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

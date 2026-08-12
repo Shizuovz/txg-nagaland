@@ -53,7 +53,7 @@ const seminars = [
   }
 ];
 
-const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0 }) => {
+const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, containImage = false }) => {
   let avatarGlow = "border-2 border-[#FF5F4F] shadow-[0_0_12px_rgba(255,95,79,0.4)]";
   let bulletColor = "bg-[#FF5F4F]";
   let pillBg = "bg-[#FF5F4F]/10";
@@ -92,7 +92,7 @@ const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0 }) =
         <img
           src={image}
           alt={name}
-          className={`w-16 h-16 md:w-20 md:h-20 rounded-full object-cover ${avatarGlow} shrink-0 bg-[#222]`}
+          className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${containImage ? 'object-contain bg-white p-1.5' : 'object-cover bg-[#222]'} ${avatarGlow} shrink-0`}
           onError={(e) => {
             e.currentTarget.src = "/placeholder.svg";
           }}
@@ -121,38 +121,48 @@ const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0 }) =
   );
 };
 
-const day1Speakers = [
+const day1Speakers1 = [
   { role: "Tech Speaker based on Robotics", name: "Kevin Khezhie", org: "NagaBots", image: "speakers/kevin.png" },
-  { role: "International Border Industry Development", name: "Zang", org: "Startup Game Dev, Minecraft", image: "speakers/zang.png" }
+  { role: "Speaker", name: "NIELIT", org: "NIELIT", image: "NIELIT.png", containImage: true }
+];
+
+const day1PanelistsA = [
+  { role: "Panelist", name: "Victor Chang", org: "TBD", image: "speakers/victor.png" },
+  // { role: "Panelist", name: "STPI", org: "STPI", image: "speakers/stpi.png" },
+  // { role: "Panelist", name: "Advisor Khekrie", org: "TBD", image: "speakers/khekri.png" },
+  // { role: "Panelist", name: "NIELIT", org: "NIELIT", image: "NIELIT.png", containImage: true }
+];
+
+const day1Speakers2 = [
+  { role: "Speaker", name: "Lokesh Suji", org: "ESFI", image: "speakers/lokesh_suji.jpeg" }
+];
+
+const day1PanelistsB = [
+  { role: "Panelist", name: "Dr. Vipul Lunawat", org: "ISST", image: "speakers/vipul.jpeg" },
+  { role: "Panelist", name: "Sabayasachi", org: "TBD", image: "speakers/sabayasachi.png" },
+  { role: "Panelist", name: "Battle Buck", org: "Battle Buck", image: "speakers/battle_buck.png" }
 ];
 
 const day2Speakers = [
-  { role: "Concept Art", name: "Ahmed Ameen Khan", org: "Founder, AKSDA", image: "speakers/ahmed.png" },
-  { role: "Outsource Work", name: "Masuk Ahmed", org: "Art Director, Formless Studio", image: "speakers/masuk.png" }
-];
-
-const day1Panelists = [
-  { role: "TBD", name: "TBD", org: "TBD", image: "speakers/panelist1.png" },
-  { role: "TBD", name: "TBD", org: "TBD", image: "speakers/panelist2.png" },
-  { role: "TBD", name: "TBD", org: "TBD", image: "speakers/panelist3.png" },
-  { role: "TBD", name: "TBD", org: "TBD", image: "speakers/panelist4.png" }
+  { role: "International Border Industry Development", name: "Zang", org: "Startup Game Dev, Minecraft", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCDpLrB2EFa1Bc1A0qoFa-7XOTDartarsps92sSxM4pfP_Ak1j5kRfXxYSZJY19-EtvhSJ8GujBPmtayqAuBBBpJsDijZjXLWIGjWRrzdyQkeZa5bsb_QolgA__JxrFDcWS5tz5squxgLAh3L-CeNfy8DCZm4fQ3xJSXScbFRmkoYF9jqADQgTlOjXTsUd10kptbnuQf0IvTY2JFoQj4qQVeh_E2OvTwFQnDCLEoSIUHDXhNeTb3GzvTzKwPSJby1G0cio" }
 ];
 
 const day2Panelists = [
-  { role: "Game Tester", name: "Hichen Kath", org: "Project Manager, PTW", image: "speakers/panelist5.png" },
-  { role: "Mic Journey", name: "Jayant", org: "Pro, Night Tiger Animation Studio", image: "speakers/jayant.png" },
   { role: "Game Dev Awareness", name: "Pekru", org: "Co-founder, Redimension Games", image: "speakers/pekru.png" },
-  { role: "TBD", name: "TBD", org: "TBD", image: "speakers/panelist8.png" }
+  { role: "Outsource Work", name: "Masuk Ahmed", org: "Art Director, Formless Studio", image: "speakers/masuk.png" },
+  { role: "Concept Art", name: "Ahmed Ameen Khan", org: "Founder, AKSDA", image: "speakers/ahmed.png" },
+  { role: "Panelist", name: "Varun", org: "TBD", image: "speakers/varun.png" },
+  { role: "Game Tester", name: "Hichen Kath", org: "Project Manager, PTW", image: "speakers/panelist5.png" }
 ];
 
 const day1Trainers = [
-  { role: "Drone + Robotics", name: "Kevin Khezhie", org: "NagaBots", image: "speakers/kevin.png" },
-  { role: "TBD", name: "TBD", org: "TBD", image: "speakers/trainer2.png" }
+  { role: "Workshop", name: "Nagabots", org: "Nagabots", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAmV4wRVUfzC7s4HRIVKd_B-SVDndIXZbmcQZ3EWSQ6aKDHLKbWbrfF3nOpoWg9KQgDY5qCUlLal_S-KRmEAgnmzTdFixAT5RqPdKosDqyJ1C1YvyNy-LIq7zIikTycpcLsc2yUUd8m_IjJPmxUR-uJhbVd3_V6lEr8uCUQnly13iirYgTToH7wV8SCmIVBYxlOmJFenX0HKvfIdK8xH2-DThPYL9u9MtYGMySmE4JXEyTzQOwax0qExN4QEoPz8lh3zSs" },
+  { role: "Workshop", name: "Formless", org: "Game Development", image: "speakers/masuk.png" }
 ];
 
 const day2Trainers = [
-  { role: "TBD", name: "Pekru", org: "Co-founder, Redimension Games", image: "speakers/pekru.png" },
-  { role: "TBD", name: "TBD", org: "TBD", image: "speakers/trainer4.png" }
+  { role: "Workshop", name: "NIELIT", org: "NIELIT", image: "NIELIT.png", containImage: true },
+  { role: "Workshop", name: "Karty", org: "Karty Courses", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBQhIEqiL9y-CDXodumTsQ0bXq1DuPdVBSsN4yD0c2LScLfRe7E59dPYBcHvm7OT_1htIkk-nKn1cNRcLy9Xa8as6krgaT5yTw7MZhR96MA9yWZ5fb2alznr4eVS8xxncvm1nitco0JJWzLHULGH59pqUBVlUxkGW6wQhpjT2yRl0FW_98DJfm1EkeU7ftCRlANRVDUmZgko2H5z5YM1rkeJ0sRD36MKHBaWh4QRXTZ1TVWduTHpWziX1hIM0GjukAE2S0" }
 ];
 
 const SeminarsSection = () => {
@@ -244,7 +254,7 @@ const SeminarsSection = () => {
         {/* Speakers Section (Stitch Layout) */}
         <div className="w-full max-w-[1200px] mx-auto py-16 space-y-16">
 
-          {/* Day 1 Speakers */}
+          {/* Day 1 Speaker 1 */}
           <section className="space-y-4">
             <div className="flex items-center justify-between border-b border-[#353534] pb-2">
               <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
@@ -254,8 +264,56 @@ const SeminarsSection = () => {
               <span className="bg-[#2a2a2a] border border-[#ffb4a2]/30 text-[#ffb4a2] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,180,162,0.1)]">30 Min</span>
             </div>
             <div className="flex flex-col gap-3">
-              {day1Speakers.map((person, i) => (
+              {day1Speakers1.map((person, i) => (
                 <PersonCard key={i} {...person} colorGroup="primary" />
+              ))}
+            </div>
+          </section>
+
+          {/* Day 1 Panelists A */}
+          <section className="space-y-4 pt-4">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#e8b3ff] block"></span>
+                <span>Day 1 Panelist A</span>
+              </h2>
+              <span className="bg-[#2a2a2a] border border-[#e8b3ff]/30 text-[#e8b3ff] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(232,179,255,0.1)]">1 Hour</span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {day1PanelistsA.map((person, i) => (
+                <PersonCard key={i} {...person} colorGroup="tertiary" />
+              ))}
+            </div>
+          </section>
+
+          {/* Day 1 Speaker 2 */}
+          <section className="space-y-4 pt-4">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#ffb4a2] block"></span>
+                <span>Day 1 Speakers</span>
+              </h2>
+              <span className="bg-[#2a2a2a] border border-[#ffb4a2]/30 text-[#ffb4a2] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,180,162,0.1)]">30 Min</span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {day1Speakers2.map((person, i) => (
+                <PersonCard key={i} {...person} colorGroup="primary" />
+              ))}
+            </div>
+          </section>
+
+          {/* Day 1 Panelists B */}
+          <section className="space-y-4 pt-4">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
+              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
+                <span className="w-3 h-8 bg-[#e8b3ff] block"></span>
+                <span>Day 1 Panelist B</span>
+              </h2>
+              <span className="bg-[#2a2a2a] border border-[#e8b3ff]/30 text-[#e8b3ff] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(232,179,255,0.1)]">1 Hour</span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {day1PanelistsB.map((person, i) => (
+                <PersonCard key={i} {...person} colorGroup="tertiary" />
               ))}
             </div>
           </section>
@@ -276,22 +334,6 @@ const SeminarsSection = () => {
             </div>
           </section>
 
-          {/* Day 1 Panelists */}
-          <section className="space-y-4 pt-4">
-            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
-              <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
-                <span className="w-3 h-8 bg-[#e8b3ff] block"></span>
-                <span>Day 1 Panelists</span>
-              </h2>
-              <span className="bg-[#2a2a2a] border border-[#e8b3ff]/30 text-[#e8b3ff] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(232,179,255,0.1)]">1 Hour For Both Day Each</span>
-            </div>
-            <div className="flex flex-col gap-3">
-              {day1Panelists.map((person, i) => (
-                <PersonCard key={i} {...person} colorGroup="tertiary" />
-              ))}
-            </div>
-          </section>
-
           {/* Day 2 Panelists */}
           <section className="space-y-4 pt-4">
             <div className="flex items-center justify-between border-b border-[#353534] pb-2">
@@ -299,7 +341,7 @@ const SeminarsSection = () => {
                 <span className="w-3 h-8 bg-[#e8b3ff] block"></span>
                 <span>Day 2 Panelists</span>
               </h2>
-              <span className="bg-[#2a2a2a] border border-[#e8b3ff]/30 text-[#e8b3ff] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(232,179,255,0.1)]">1 Hour For Both Day Each</span>
+              <span className="bg-[#2a2a2a] border border-[#e8b3ff]/30 text-[#e8b3ff] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(232,179,255,0.1)]">1 Hour</span>
             </div>
             <div className="flex flex-col gap-3">
               {day2Panelists.map((person, i) => (
@@ -310,27 +352,28 @@ const SeminarsSection = () => {
 
           {/* Day 1 Workshop Trainers */}
           <section className="space-y-4 pt-4">
-            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#353534] pb-2 gap-2">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
               <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
-                <span className="w-3 h-8 bg-[#ffb4a2] block opacity-70"></span>
-                <span>Day 1 Workshop Trainers</span>
+                <span className="w-3 h-8 bg-[#10b981] block"></span>
+                <span>Day 1 Workshop</span>
               </h2>
-              <span className="bg-[#2a2a2a] border border-[#ffb4a2]/20 text-[#ffb4a2]/80 font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full">2 Hour For Both Day Each</span>
+              <span className="bg-[#2a2a2a] border border-[#10b981]/30 text-[#10b981] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.1)]">1 Hour</span>
             </div>
             <div className="flex flex-col gap-3">
               {day1Trainers.map((person, i) => (
-                <PersonCard key={i} {...person} colorGroup="primary" />
+                <PersonCard key={i} {...person} colorGroup="secondary" />
               ))}
             </div>
           </section>
 
           {/* Day 2 Workshop Trainers */}
           <section className="space-y-4 pt-4">
-            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#353534] pb-2 gap-2">
+            <div className="flex items-center justify-between border-b border-[#353534] pb-2">
               <h2 className="font-['Inter'] text-[20px] md:text-[24px] font-bold text-[#e5e2e1] flex items-center space-x-3">
-                <span className="w-3 h-8 bg-[#a2e7ff] block opacity-70"></span>
-                <span>Day 2 Workshop Trainers</span>
+                <span className="w-3 h-8 bg-[#3b82f6] block"></span>
+                <span>Day 2 Workshop</span>
               </h2>
+              <span className="bg-[#2a2a2a] border border-[#3b82f6]/30 text-[#3b82f6] font-['Inter'] font-semibold text-[12px] tracking-[0.05em] uppercase px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.1)]">1 Hour</span>
             </div>
             <div className="flex flex-col gap-3">
               {day2Trainers.map((person, i) => (
