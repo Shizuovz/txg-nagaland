@@ -1,272 +1,115 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
 
-const exhibitors = [
-  {
-    name: "Varun Ramanna",
-    role: "Flip Flop Fury (Indie Game Studio), Animation Director & Founder",
-    image: "speakers/varun.png",
-    color: "from-[#FF3B30] to-[#FF9500]",
-    isLogo: false
-  }
+const partners = [
+  { name: "East Gate Hotel", title: "Accommodation Partner", id: "01", image: "/images/partners/east-gate.jpg" },
+  { name: "Dough Re Me", title: "Catering Partner", id: "02", image: "/images/partners/dough.jpg" },
+  { name: "Nagaland Flatfenders Club", title: "Heritage Partner", id: "03", image: "/images/partners/flatfeenders.png" },
+  { name: "Ahibi", title: "Ticketing Partner", id: "04", image: "/images/partners/Ahibi logo b.png" },
+  { name: "D'Palazzo", title: "Accommodation Partner", id: "05", image: "/images/partners/palazzo.png" },
+  { name: "Infinity Inc", title: "Entertainment Partner", id: "06", image: "/images/partners/inf.png" },
+  { name: "Zub Zub", title: "Sustainability Partner", id: "07", image: "/images/partners/zub.png" },
+  { name: "Novaturient", title: "Talent Partner", id: "08", image: "/images/partners/nova.png" },
+  { name: "NE8 & Nagaland Post", title: "Media Partner", id: "09", image: "/images/partners/NE8.jpg" },
+  { name: "AK Events", title: "Pandal Partner", id: "10", image: "/images/partners/ak-events.png" },
+  { name: "NAJ", title: "Cosplay Partner", id: "11", image: "/images/partners/images.jpg" },
+  { name: "Sound Tech", title: "Production Partner", id: "12", image: "/images/partners/sound tech.png" },
+  { name: "NE Truss", title: "Truss Partner", id: "13", image: "/images/partners/ne-truss.jpeg" },
+  { name: "NIELIT", title: "Education Partner", id: "14", image: "/images/partners/nielit.webp" },
+  { name: "Kaki Marketing", title: "Marketing Partner", id: "15", image: "/images/partners/kaki.png" },
+  { name: "Alpha Travels", title: "Travel Partner", id: "16", image: "/images/partners/alpha travels.png" },
+  { name: "GDAI", title: "GameJam Partner", id: "17", image: "/images/partners/gadi.png" },
+  { name: "Educentre", title: "Training Partner", id: "18", image: "/images/partners/edu centre.png" },
+  { name: "YouthNet", title: "Local Career Partner", id: "19", image: "/images/partners/youth net.png" },
+  { name: "The Little Attic", title: "Gaming & Giveaway Partner", id: "20", image: "/images/partners/little.png" }
 ];
-
-const sponsors = [
-  {
-    name: "Karty Courses",
-    role: "Jungshi Jamir",
-    image: "images/karty.jpg",
-    color: "from-[#00FFFF] to-[#74A9FF]",
-    isLogo: true
-  },
-  {
-    name: "ISUZU",
-    role: "Official Sponsor",
-    image: "images/isuzu.png",
-    color: "from-[#FF00FF] to-[#74A9FF]",
-    isLogo: true
-  }
-];
-
-const partnerships = [
-  {
-    name: "ESFI",
-    role: "Esport Federation of India",
-    image: "images/partners/esfi.png",
-    color: "from-[#FF3B30] to-[#FF9500]",
-  },
-  // {
-  //   name: "Trinity Gaming",
-  //   role: "Sport Partner",
-  //   image: "images/partners/trinity-gaming.png",
-  //   color: "from-[#00FFFF] to-[#74A9FF]",
-  //   noPadding: true
-  // },
-  // {
-  //   name: "Gimi Michi",
-  //   role: "Food Partner",
-  //   image: "images/partners/gimi-michi.avif",
-  //   color: "from-[#50D075] to-[#00FFFF]",
-  // },
-  {
-    name: "Fingerprint Nagaland",
-    role: "Print Partner",
-    image: "images/partners/fingerprint-nagaland.jpg",
-    color: "from-[#FF00FF] to-[#74A9FF]",
-  },
-  {
-    name: "Zub Zub",
-    role: "House Keeping Partner",
-    image: "images/partners/zub-zub.jpg",
-    color: "from-[#FFFF00] to-[#FF5F4F]",
-  },
-  {
-    name: "El Palazzo",
-    role: "Accommodation Partner",
-    image: "images/partners/elpalazzo.jpg",
-    color: "from-[#FF5F4F] to-[#FF00FF]",
-  },
-  // {
-  //   name: "Orion",
-  //   role: "Production Partner",
-  //   image: "images/orion.png",
-  //   color: "from-[#00FFFF] to-[#FF00FF]",
-  // },
-  {
-    name: "AK Events",
-    role: "Tent Partner",
-    image: "images/partners/ak-events.png",
-    color: "from-[#FF3B30] to-[#FF9500]",
-  },
-  {
-    name: "Novaturient",
-    role: "Talent Partner",
-    image: "images/partners/nova.png",
-    color: "from-[#FFFF00] to-[#FF5F4F]",
-  },
-  {
-    name: "NE Truss",
-    role: "Truss Partner",
-    image: "images/partners/ne-truss.jpeg",
-    color: "from-[#00FFFF] to-[#74A9FF]",
-  }
-];
-
-// Circular avatar card for main exhibitors/sponsors
-interface MainPartnerCardProps {
-  name: string;
-  role: string;
-  image: string;
-  color: string;
-  delay?: number;
-  isLogo?: boolean;
-}
-
-const MainPartnerCard = ({ name, role, image, color, delay, isLogo }: MainPartnerCardProps) => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay, duration: 0.6 }}
-    className="group flex flex-col items-center text-center max-w-sm mx-auto"
-  >
-    <div className="relative w-48 h-48 md:w-56 md:h-56 mb-8 cursor-pointer">
-      <div className={`absolute inset-0 rounded-full bg-gradient-to-tr ${color} blur-2xl opacity-20 group-hover:opacity-50 transition-opacity duration-500`} />
-      <div className="relative w-full h-full rounded-full border border-white/10 group-hover:border-transparent transition-colors duration-500 overflow-hidden bg-[#111]">
-        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-br ${color} transition-opacity duration-500`} style={{ padding: '2px' }}>
-          <div className="w-full h-full bg-[#111] rounded-full overflow-hidden flex items-center justify-center p-2">
-            <div className={`w-full h-full rounded-full overflow-hidden flex items-center justify-center ${isLogo ? 'p-6 bg-white' : ''}`}>
-              <img src={image} alt={name} className={`w-full h-full ${isLogo ? 'object-contain' : 'object-cover'} group-hover:scale-110 transition-transform duration-500`} onError={(e) => (e.currentTarget.style.display = 'none')} />
-            </div>
-          </div>
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center p-[2px]">
-          <div className="w-full h-full bg-[#111] rounded-full overflow-hidden flex items-center justify-center p-2">
-            <div className={`w-full h-full rounded-full overflow-hidden flex items-center justify-center ${isLogo ? 'p-6 bg-white' : ''}`}>
-              <img src={image} alt={name} className={`w-full h-full ${isLogo ? 'object-contain' : 'object-cover'} transition-transform duration-500`} onError={(e) => (e.currentTarget.style.display = 'none')} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <h3 className={`font-['Nonito'] text-2xl font-bold mb-2 tracking-wide text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r ${color} transition-all duration-300`}>
-      {name}
-    </h3>
-    <p className="text-[#a0a0a0] font-['Nonito'] text-base leading-relaxed group-hover:text-[#d0d0d0] transition-colors duration-300">
-      {role}
-    </p>
-  </motion.div>
-);
-
-// Dynamic interactive card for Partnerships
-interface InteractivePartnershipCardProps {
-  name: string;
-  role: string;
-  image: string;
-  color: string;
-  delay?: number;
-  noPadding?: boolean;
-}
-
-const InteractivePartnershipCard = ({ name, role, image, color, delay, noPadding }: InteractivePartnershipCardProps) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay, duration: 0.5 }}
-      className="group relative bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] border border-white/5 rounded-2xl p-[2px] overflow-hidden cursor-pointer hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] transition-all duration-500 w-full"
-    >
-      {/* Animated glowing border effect on hover */}
-      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-r ${color} transition-opacity duration-500`} />
-
-      <div className="relative bg-[#0d0d0d] rounded-[14px] h-[220px] flex flex-col items-center justify-center p-6 gap-2 z-10 overflow-hidden">
-        {/* Background glow radiating from logo */}
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full opacity-0 group-hover:opacity-15 bg-gradient-to-br ${color} blur-2xl transition-opacity duration-700 pointer-events-none`}></div>
-
-        {/* Logo Container */}
-        <div className={`w-20 h-20 sm:w-24 sm:h-24 ${noPadding ? 'bg-transparent p-0' : 'bg-white p-3'} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500 border border-white/10 shrink-0 overflow-hidden`}>
-          <img src={image} alt={name} className={`max-w-full max-h-full ${noPadding ? 'object-cover w-full h-full' : 'object-contain'}`} onError={(e) => (e.currentTarget.style.display = 'none')} />
-        </div>
-
-        {/* Text Container - Name is visible, Role slides in */}
-        <div className="text-center mt-3 translate-y-3 group-hover:translate-y-0 transition-transform duration-500 flex flex-col items-center">
-          <h4 className="font-['Neiko'] text-lg sm:text-xl text-white tracking-wide">
-            {name}
-          </h4>
-          <div className="overflow-hidden h-0 group-hover:h-6 transition-all duration-500 mt-1">
-            <span className={`font-['Nonito'] text-[11px] sm:text-xs tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r ${color} font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 whitespace-nowrap`}>
-              {role}
-            </span>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 
 const PartnersSection = () => {
   return (
-    <section className="py-20 md:py-28 bg-[#050505] relative overflow-hidden">
-      {/* Background Ambience */}
-      <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-[#FF3B30]/5 rounded-full blur-[150px] pointer-events-none"></div>
-      <div className="absolute bottom-1/3 right-0 w-[500px] h-[500px] bg-[#00FFFF]/5 rounded-full blur-[150px] pointer-events-none"></div>
+    <section id="partners" className="bg-[#0f0f0f] text-[#e5e2e1] w-full py-20 px-4 md:px-20 scan-lines bg-industrial-grid relative z-10 overflow-hidden font-['Nonito']">
+      <div className="max-w-[1440px] mx-auto space-y-16 relative">
+        {/* Hero Section */}
+        <div className="space-y-4 border-l-4 border-[#ff00ff] pl-6">
+          <div className="text-[10px] font-bold text-[#ff00ff] tracking-widest uppercase opacity-70 font-['Nonito']">SYS.MODULE.PARTNERS</div>
+          <h2 className="text-4xl md:text-5xl text-[#e5e2e1] uppercase tracking-tight font-bold font-['Neiko']">
+            Partner Matrix
+          </h2>
+          <p className="text-base text-[#9ca3af] max-w-2xl font-['Nonito']">
+            &gt; Connecting critical nodes. Powering the TXG infrastructure.
+          </p>
+        </div>
 
-      <div className="container mx-auto px-4 relative z-10 max-w-7xl">
+        {/* Featured Matrix */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 border border-white/20 p-px">
+          {/* Tier 1: Title Sponsor */}
+          <div className="bg-[#0f0f0f] p-6 md:p-8 relative overflow-hidden group cursor-pointer hover:bg-[#1f1f1f] transition-colors flex flex-col">
+            <div className="absolute top-0 right-0 p-2 text-[10px] text-[#9ca3af] opacity-50 font-['Nonito']">NODE: T1-DUG</div>
+            <div className="flex justify-between items-start mb-6">
+              <span className="inline-block bg-[#ff00ff] text-[#330033] text-[10px] font-bold px-2 py-1 font-['Nonito']">TITLE_SPONSOR</span>
+              <span className="material-symbols-outlined text-[#ff00ff] opacity-50">memory</span>
+            </div>
+            <div className="flex-1 flex flex-col justify-center items-center py-8">
+              <div className="w-full max-w-[380px] aspect-video border border-[#ff00ff]/40 bg-white rounded-lg flex items-center justify-center relative shadow-sm group-hover:border-[#ff00ff] group-hover:shadow-[0_0_15px_rgba(255,0,255,0.2)] transition-all p-2">
+                <div className="absolute inset-0 border border-black/5 scale-95 rounded"></div>
+                <img className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300" alt="Double Uppercut Games logo" src="/images/partners/dug.png" />
+              </div>
+            </div>
+            <div className="mt-6 border-t border-white/10 pt-4">
+              <h3 className="text-xl font-bold text-[#e5e2e1] mb-2 font-['Neiko']">Double Uppercut Games</h3>
+              <p className="text-sm text-[#9ca3af] font-['Nonito']">
+                SYS.DESC: Leading the charge in immersive competitive gaming experiences.
+              </p>
+            </div>
+          </div>
 
-        {/* Exhibitor Section */}
-        <div className="mb-24">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="font-['Neiko'] text-4xl md:text-5xl font-bold text-white mb-6 tracking-wide flex items-center justify-center gap-4">
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#FF3B30] hidden md:block"></span>
-              Exhibitor
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#FF3B30] hidden md:block"></span>
-            </h2>
-          </motion.div>
-          <div className="flex justify-center">
-            {exhibitors.map((item, index) => (
-              <MainPartnerCard key={index} {...item} delay={index * 0.1} />
-            ))}
+          {/* Tier 2: Brand Sponsor */}
+          <div className="bg-[#0f0f0f] p-6 md:p-8 relative overflow-hidden group cursor-pointer hover:bg-[#1f1f1f] transition-colors flex flex-col">
+            <div className="absolute top-0 right-0 p-2 text-[10px] text-[#9ca3af] opacity-50 font-['Nonito']">NODE: T2-ISZ</div>
+            <div className="flex justify-between items-start mb-6">
+              <span className="inline-block border border-[#9ca3af] text-[#9ca3af] text-[10px] font-bold px-2 py-1 font-['Nonito']">BRAND_SPONSOR</span>
+              <span className="material-symbols-outlined text-[#9ca3af] opacity-50">settings_input_component</span>
+            </div>
+            <div className="flex-1 flex flex-col justify-center items-center py-8">
+              <div className="w-full max-w-[320px] aspect-video border border-white/20 bg-white rounded-lg flex items-center justify-center relative shadow-sm group-hover:border-white/50 group-hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all p-2">
+                <div className="absolute inset-0 border border-black/5 scale-95 rounded"></div>
+                <img className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300" alt="Isuzu logo" src="/images/isuzu.png" />
+              </div>
+            </div>
+            <div className="mt-6 border-t border-white/10 pt-4">
+              <h3 className="text-xl font-bold text-[#e5e2e1] mb-2 font-['Neiko']">Isuzu</h3>
+              <p className="text-sm text-[#9ca3af] font-['Nonito']">
+                SYS.DESC: Driving innovation and providing robust mobility solutions.
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Sponsors Section */}
-        <div className="mb-32">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="font-['Neiko'] text-4xl md:text-5xl font-bold text-white mb-6 tracking-wide flex items-center justify-center gap-4">
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#00FFFF] hidden md:block"></span>
-              Sponsors
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#00FFFF] hidden md:block"></span>
-            </h2>
-          </motion.div>
-          <div className="grid md:grid-cols-2 gap-12 max-w-3xl mx-auto">
-            {sponsors.map((item, index) => (
-              <MainPartnerCard key={index} {...item} delay={index * 0.1} />
-            ))}
+        {/* Tier 3: Partner Grid */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-4 border-b border-white/20 pb-2">
+            <h3 className="text-xl font-bold text-[#e5e2e1] uppercase tracking-wider font-['Neiko']">Ecosystem Modules</h3>
+            <div className="flex-1 h-px bg-white/10"></div>
+            <span className="text-[10px] font-bold text-[#9ca3af] font-['Nonito']">COUNT: {partners.length}</span>
           </div>
-        </div>
-
-        {/* Dynamic Partnerships Section */}
-        <div className="relative">
-          {/* Subtle background highlight for this specific area */}
-          <div className="absolute inset-0 bg-white/[0.02] rounded-3xl -mx-4 md:-mx-12 blur-xl pointer-events-none"></div>
-
-          <motion.div
-            className="text-center mb-16 relative z-10"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="font-['Neiko'] text-4xl md:text-5xl font-bold text-white mb-6 tracking-wide flex items-center justify-center gap-4">
-              <span className="w-12 h-[2px] bg-gradient-to-r from-transparent to-[#FF00FF] hidden md:block"></span>
-              Partnerships
-              <span className="w-12 h-[2px] bg-gradient-to-l from-transparent to-[#FF00FF] hidden md:block"></span>
-            </h2>
-            <p className="text-[#888] font-['Nonito'] text-lg">The brands and communities bringing the event to life.</p>
-          </motion.div>
-
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 relative z-10">
-            {partnerships.map((item, index) => (
-              <div key={index} className="w-[calc(50%-8px)] sm:w-[220px] md:w-[250px] lg:w-[260px]">
-                <InteractivePartnershipCard {...item} delay={index * 0.1} />
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-px bg-white/10 border border-white/20 p-px">
+            {partners.map((partner) => (
+              <div key={partner.id} className="bg-[#0f0f0f] p-3 flex flex-col justify-between hover:bg-[#1f1f1f] transition-colors cursor-pointer group min-h-[100px]">
+                <div className="w-full h-20 sm:h-24 mb-3 border border-white/20 bg-white rounded-md flex items-center justify-center p-2 group-hover:border-[#ff00ff] transition-colors shadow-sm">
+                  {partner.image ? (
+                    <img src={partner.image} alt={partner.name} className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                  ) : (
+                    <span className="material-symbols-outlined text-[20px] text-black opacity-30 group-hover:text-[#ff00ff] group-hover:opacity-100">image</span>
+                  )}
+                </div>
+                <div className="flex items-start mb-1 font-['Nonito']">
+                  <span className="text-[10px] font-bold text-[#ff00ff] opacity-90 uppercase leading-snug line-clamp-2">{partner.title}</span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-[#e5e2e1] group-hover:text-[#ff00ff] transition-colors line-clamp-2 truncate font-['Neiko']">{partner.name}</h4>
+                </div>
               </div>
             ))}
           </div>
         </div>
-
       </div>
     </section>
   );

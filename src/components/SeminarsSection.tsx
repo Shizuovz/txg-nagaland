@@ -139,9 +139,9 @@ const day1Speakers2 = [
 ];
 
 const day1PanelistsB = [
-  { role: "Panelist", name: "Dr. Vipul Lunawat", org: "ISST", image: "speakers/vipul.jpeg" },
-  { role: "Panelist", name: "Sabayasachi", org: "TBD", image: "speakers/sabayasachi.png" },
-  { role: "Panelist", name: "Battle Buck", org: "Battle Buck", image: "speakers/battle_buck.png" }
+  { role: "Panelist", name: "Dr. Vipul Lunawat", org: "ISST", image: "/speakers/vipul.jpeg" },
+  { role: "Panelist", name: "Sabyasachi", org: "TBD", image: "/speakers/sabyasachi.jpeg", objectPosition: "top" },
+  { role: "Panelist", name: "Vishal Sighar", org: "BattleBucks", image: "/speakers/Vishal Sighar.jpeg", objectPosition: "top" }
 ];
 
 const day2Speakers = [

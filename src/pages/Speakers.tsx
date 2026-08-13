@@ -201,6 +201,34 @@ const Speakers = () => {
                 </div>
               </div>
             </article>
+
+            {/* Speaker 7: Vishal Sighar (Blue) */}
+            <article className="bg-[#1c1b1b] border border-[#353534] p-6 relative flex flex-col gap-6 group hud-bracket hud-bracket-full" style={{ color: '#3b82f6' }}>
+              <div></div>
+              <div className="flex justify-between items-start font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase">
+                <span className="text-[#e5e2e1]">ID: SP-07</span>
+                <span className="border px-2 py-0.5" style={{ borderColor: '#3b82f6' }}>PANELIST</span>
+              </div>
+              <div className="relative aspect-square w-full bg-black overflow-hidden border border-[#353534] p-2">
+                <div className="absolute inset-0 border m-2 z-10 pointer-events-none opacity-50" style={{ borderColor: '#3b82f6' }}>
+                  <div className="absolute top-1/2 left-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-1/2 right-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-0 left-1/2 w-px h-2 bg-current"></div>
+                  <div className="absolute bottom-0 left-1/2 w-px h-2 bg-current"></div>
+                </div>
+                <div className="scanner-line"></div>
+                <img src="/speakers/Vishal Sighar.jpeg" alt="Vishal Sighar" className="w-full h-full object-cover object-top grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-['Neiko'] font-bold text-[32px] md:text-[40px] leading-[1.2] text-white uppercase">Vishal Sighar</h3>
+                <h4 className="font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase" style={{ color: '#3b82f6' }}>Co-Founder & COO // Panelist</h4>
+                <div className="font-Nonito text-[16px] text-[#e7bdb6] mt-2 space-y-3">
+                  <p>I am Co-Founder & COO at BattleBucks (Singularity Games), where I oversee operations, platform strategy, and growth in the gaming space.</p>
+                  <p>Before venturing into tech and gaming as a first-time founder, I built my operational leadership experience as a Director at Vibrant Hospital, Gurugram, and Partner at Snal Infra LLP. An alumnus of Amity University, Noida and DPS Vasant Kunj, I am passionate about helping the next generation of builders leverage technology to scale their careers.</p>
+                  <p><strong className="text-white opacity-80">Panel Topic:</strong> Leveling Up with AI: Boosting Your Progression Across All Disciplines</p>
+                </div>
+              </div>
+            </article>
           </div>
         </section>
 
