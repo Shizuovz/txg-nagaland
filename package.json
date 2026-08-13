@@ -67,6 +67,7 @@
     "tailwindcss-animate": "^1.0.7",
     "the-noun-project-v2": "^1.0.4",
     "vaul": "^0.9.9",
+    "vercel": "^58.10.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {

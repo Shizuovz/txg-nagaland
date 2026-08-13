@@ -83,6 +83,12 @@ const partnerships = [
     role: "Talent Partner",
     image: "images/partners/nova.png",
     color: "from-[#FFFF00] to-[#FF5F4F]",
+  },
+  {
+    name: "NE Truss",
+    role: "Truss Partner",
+    image: "images/partners/ne-truss.jpeg",
+    color: "from-[#00FFFF] to-[#74A9FF]",
   }
 ];
 
