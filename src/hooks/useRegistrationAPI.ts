@@ -497,7 +497,7 @@ export const useRegistrationAPI = () => {
       const errorMessage = err instanceof Error ? err.message : 'Failed to check mini tournament limit';
       setError(errorMessage);
       setLoading(false);
-      return { allowed: false, current: 0, limit: gameName.toLowerCase() === 'ludo' ? 16 : 32 };
+      return { allowed: false, current: 0, limit: 16 };
     }
   };
 

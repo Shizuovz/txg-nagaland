@@ -9,7 +9,7 @@ export class RegistrationAPI {
 
   // Registration Limits
   private readonly MOBA_TEAM_LIMIT = 32;
-  private readonly MINI_TOURNAMENT_LIMIT = 32;
+  private readonly MINI_TOURNAMENT_LIMIT = 16;
 
   // Check team registration limit
   async checkTeamRegistrationLimit(registrationType: 'college' | 'open_category'): Promise<{ allowed: boolean; current: number; limit: number }> {
@@ -24,7 +24,7 @@ export class RegistrationAPI {
   // Check mini tournament registration limit
   async checkMiniTournamentLimit(gameName: string): Promise<{ allowed: boolean; current: number; limit: number }> {
     const current = await this.firebaseService.getMiniTournamentRegistrationCountByGame(gameName);
-    const limit = gameName.toLowerCase() === 'ludo' ? 16 : this.MINI_TOURNAMENT_LIMIT;
+    const limit = this.MINI_TOURNAMENT_LIMIT;
     return {
       allowed: current < limit,
       current,
@@ -71,6 +71,7 @@ export class RegistrationAPI {
     livestreamConsent?: boolean;
     coordinatorName?: string;
     coordinatorPhone?: string;
+    collegeLogoUpload?: File | null;
   }): Promise<{ success: boolean; data?: TeamRegistration; message?: string; error?: string }> {
     try {
       // Check if team name already exists
