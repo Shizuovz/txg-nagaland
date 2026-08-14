@@ -3866,17 +3866,17 @@ const AdminDashboard = () => {
                             <h4 className="font-semibold text-gray-800 border-b pb-1 text-sm">Video Details</h4>
                             <div className="grid grid-cols-2 gap-2 text-xs">
                               <span className="font-medium text-gray-600">Title:</span>
-                              <span className="truncate" title={registration.message?.includes('Video Title:') ? registration.message.split('Video Title:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
+                              <span className="line-clamp-1 hover:line-clamp-none break-words whitespace-normal cursor-pointer hover:bg-white hover:shadow-md hover:z-10 relative hover:p-1 rounded transition-all duration-200" title={registration.message?.includes('Video Title:') ? registration.message.split('Video Title:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
                                 {registration.message?.includes('Video Title:') ? registration.message.split('Video Title:')[1]?.split('\n')[0]?.trim() : 'N/A'}
                               </span>
                               
                               <span className="font-medium text-gray-600">Description:</span>
-                              <span className="truncate" title={registration.message?.includes('Video Description:') ? registration.message.split('Video Description:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
+                              <span className="line-clamp-1 hover:line-clamp-none break-words whitespace-normal cursor-pointer hover:bg-white hover:shadow-md hover:z-10 relative hover:p-1 rounded transition-all duration-200" title={registration.message?.includes('Video Description:') ? registration.message.split('Video Description:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
                                 {registration.message?.includes('Video Description:') ? registration.message.split('Video Description:')[1]?.split('\n')[0]?.trim() : 'N/A'}
                               </span>
                               
                               <span className="font-medium text-gray-600">AI Tools:</span>
-                              <span className="truncate" title={registration.message?.includes('AI Tools Used:') ? registration.message.split('AI Tools Used:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
+                              <span className="line-clamp-1 hover:line-clamp-none break-words whitespace-normal cursor-pointer hover:bg-white hover:shadow-md hover:z-10 relative hover:p-1 rounded transition-all duration-200" title={registration.message?.includes('AI Tools Used:') ? registration.message.split('AI Tools Used:')[1]?.split('\n')[0]?.trim() : 'N/A'}>
                                 {registration.message?.includes('AI Tools Used:') ? registration.message.split('AI Tools Used:')[1]?.split('\n')[0]?.trim() : 'N/A'}
                               </span>
                               
@@ -3896,7 +3896,7 @@ const AdminDashboard = () => {
                             <h4 className="font-semibold text-gray-800 border-b pb-1 text-sm">Participant Info</h4>
                             <div className="grid grid-cols-2 gap-2 text-xs">
                               <span className="font-medium text-gray-600">Email:</span>
-                              <span className="truncate" title={registration.email}>{registration.email}</span>
+                              <span className="line-clamp-1 hover:line-clamp-none break-words whitespace-normal cursor-pointer hover:bg-white hover:shadow-md hover:z-10 relative hover:p-1 rounded transition-all duration-200" title={registration.email}>{registration.email}</span>
                               
                               <span className="font-medium text-gray-600">Mobile:</span>
                               <span>{registration.phone}</span>
@@ -3911,10 +3911,10 @@ const AdminDashboard = () => {
                               <span>{registration.message?.includes('Gender:') ? registration.message.split('Gender:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
                               
                               <span className="font-medium text-gray-600">District:</span>
-                              <span className="truncate" title={registration.address || 'N/A'}>{registration.address || 'N/A'}</span>
+                              <span className="line-clamp-1 hover:line-clamp-none break-words whitespace-normal cursor-pointer hover:bg-white hover:shadow-md hover:z-10 relative hover:p-1 rounded transition-all duration-200" title={registration.address || 'N/A'}>{registration.address || 'N/A'}</span>
                               
                               <span className="font-medium text-gray-600">Institution:</span>
-                              <span className="truncate" title={registration.collegeName || 'N/A'}>{registration.collegeName || 'N/A'}</span>
+                              <span className="line-clamp-1 hover:line-clamp-none break-words whitespace-normal cursor-pointer hover:bg-white hover:shadow-md hover:z-10 relative hover:p-1 rounded transition-all duration-200" title={registration.collegeName || 'N/A'}>{registration.collegeName || 'N/A'}</span>
                               
                               <span className="font-medium text-gray-600">Type:</span>
                               <span>{registration.message?.includes('Participant Type:') ? registration.message.split('Participant Type:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
@@ -3931,10 +3931,10 @@ const AdminDashboard = () => {
                               {registration.message?.includes('Team Name:') && registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim() && registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim() !== 'N/A' && (
                                 <>
                                   <span className="font-medium text-gray-600">Team Name:</span>
-                                  <span className="truncate" title={registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim()}>{registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim()}</span>
+                                  <span className="line-clamp-1 hover:line-clamp-none break-words whitespace-normal cursor-pointer hover:bg-white hover:shadow-md hover:z-10 relative hover:p-1 rounded transition-all duration-200" title={registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim()}>{registration.message.split('Team Name:')[1]?.split('\n')[0]?.trim()}</span>
                                   
                                   <span className="font-medium text-gray-600">Team Members:</span>
-                                  <span className="truncate" title={registration.message?.includes('Team Members:') ? registration.message.split('Team Members:')[1]?.split('\n')[0]?.trim() : 'N/A'}>{registration.message?.includes('Team Members:') ? registration.message.split('Team Members:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
+                                  <span className="line-clamp-1 hover:line-clamp-none break-words whitespace-normal cursor-pointer hover:bg-white hover:shadow-md hover:z-10 relative hover:p-1 rounded transition-all duration-200" title={registration.message?.includes('Team Members:') ? registration.message.split('Team Members:')[1]?.split('\n')[0]?.trim() : 'N/A'}>{registration.message?.includes('Team Members:') ? registration.message.split('Team Members:')[1]?.split('\n')[0]?.trim() : 'N/A'}</span>
                                 </>
                               )}
                               
