@@ -302,8 +302,8 @@ const RegistrationSection = () => {
                 registrationType === 'exhibitor' ? 'EXH' :
                   registrationType === 'sponsor' ? 'SPN' :
                     registrationType === 'media' ? 'MDA' :
-                      registrationType === 'mini-tournament' ? 'MIN' : 
-                        registrationType === 'digital-art' ? 'ART' : 
+                      registrationType === 'mini-tournament' ? 'MIN' :
+                        registrationType === 'digital-art' ? 'ART' :
                           registrationType === 'ai-video' ? 'AIV' : 'VST';
         const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
         const id = `${prefix}${randomNum}`;
@@ -521,7 +521,7 @@ const RegistrationSection = () => {
             return;
           }
         }
-        
+
         if (formData.backgroundAudioUpload) {
           try {
             const ext = formData.backgroundAudioUpload.name.split('.').pop() || 'mp3';
@@ -663,7 +663,7 @@ const RegistrationSection = () => {
           setIsSubmitting(false);
           return;
         }
-        
+
         const wordCount = formData.aiVideoDescription.trim().split(/\s+/).length;
         if (wordCount > 50) {
           toast({
@@ -710,7 +710,7 @@ const RegistrationSection = () => {
           setIsSubmitting(false);
           return;
         }
-        
+
         let teamInfo = '';
         if (formData.entryType === 'Team') {
           const formattedTeamMembers = formData.teamMembers[0].fullName.replace(/\n/g, ', ');
@@ -1456,7 +1456,7 @@ const RegistrationSection = () => {
                         <li>All are requested to be mindful and respectful towards those around you. Kindly adhere to venue guidelines.</li>
                       </ol>
                     </div>
-                    
+
                     <div>
                       <h4 className="text-lg font-bold text-white mb-2 uppercase">Judging Criteria</h4>
                       <ul className="list-disc pl-5 space-y-2 text-[#c8c6c5]">
@@ -2275,148 +2275,148 @@ const RegistrationSection = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="captainName">Full Name *</Label>
-                      <Input
-                        id="captainName"
-                        value={formData.captainName}
-                        onChange={(e) => handleInputChange("captainName", e.target.value)}
-                        placeholder="Your full name"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="nickName">Nick Name (for tournament overlay) *</Label>
-                      <Input
-                        id="nickName"
-                        value={formData.nickName}
-                        onChange={(e) => handleInputChange("nickName", e.target.value)}
-                        placeholder="Your gaming nickname"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="captainEmail">Email Address *</Label>
-                    <Input
-                      id="captainEmail"
-                      type="email"
-                      value={formData.captainEmail}
-                      onChange={(e) => handleInputChange("captainEmail", e.target.value)}
-                      placeholder="your.email@example.com"
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="whatsappPhone">WhatsApp Phone Number *</Label>
-                      <Input
-                        id="whatsappPhone"
-                        value={formData.whatsappPhone}
-                        onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
-                        placeholder="+91 98765 43210"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="phoneCallNumber">Phone Call Number *</Label>
-                      <Input
-                        id="phoneCallNumber"
-                        value={formData.phoneCallNumber}
-                        onChange={(e) => handleInputChange("phoneCallNumber", e.target.value)}
-                        placeholder="+91 98765 43210"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="age">Age *</Label>
-                      <Input
-                        id="age"
-                        type="number"
-                        value={formData.age}
-                        onChange={(e) => handleInputChange("age", e.target.value)}
-                        placeholder="Your age"
-                        min="12"
-                        max="60"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="gender">Gender *</Label>
-                      <select
-                        id="gender"
-                        value={formData.gender || ''}
-                        onChange={(e) => handleInputChange("gender", e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        required
-                      >
-                        <option value="">Select gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="address">Address *</Label>
-                    <Input
-                      id="address"
-                      value={formData.address}
-                      onChange={(e) => handleInputChange("address", e.target.value)}
-                      placeholder="Street address"
-                      required
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="city">City *</Label>
-                      <Input
-                        id="city"
-                        value={formData.city}
-                        onChange={(e) => handleInputChange("city", e.target.value)}
-                        placeholder="City"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="state">State/Region *</Label>
-                      <Input
-                        id="state"
-                        value={formData.state}
-                        onChange={(e) => handleInputChange("state", e.target.value)}
-                        placeholder="State/Region"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="pinCode">PIN Code *</Label>
-                    <Input
-                      id="pinCode"
-                      value={formData.pinCode}
-                      onChange={(e) => handleInputChange("pinCode", e.target.value)}
-                      placeholder="PIN/Zip Code"
-                      required
-                    />
-                  </div>
-
-                  <TermsAndConditions
-                    accepted={formData.agreeTerms}
-                    onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
-                    registrationType="mini-tournament"
+                <div>
+                  <Label htmlFor="captainName">Full Name *</Label>
+                  <Input
+                    id="captainName"
+                    value={formData.captainName}
+                    onChange={(e) => handleInputChange("captainName", e.target.value)}
+                    placeholder="Your full name"
+                    required
                   />
+                </div>
+                <div>
+                  <Label htmlFor="nickName">Nick Name (for tournament overlay) *</Label>
+                  <Input
+                    id="nickName"
+                    value={formData.nickName}
+                    onChange={(e) => handleInputChange("nickName", e.target.value)}
+                    placeholder="Your gaming nickname"
+                    required
+                  />
+                </div>
+              </div>
 
-                  <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
-                    {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for Mini Tournament'}
-                  </Button>
+              <div>
+                <Label htmlFor="captainEmail">Email Address *</Label>
+                <Input
+                  id="captainEmail"
+                  type="email"
+                  value={formData.captainEmail}
+                  onChange={(e) => handleInputChange("captainEmail", e.target.value)}
+                  placeholder="your.email@example.com"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="whatsappPhone">WhatsApp Phone Number *</Label>
+                  <Input
+                    id="whatsappPhone"
+                    value={formData.whatsappPhone}
+                    onChange={(e) => handleInputChange("whatsappPhone", e.target.value)}
+                    placeholder="+91 98765 43210"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phoneCallNumber">Phone Call Number *</Label>
+                  <Input
+                    id="phoneCallNumber"
+                    value={formData.phoneCallNumber}
+                    onChange={(e) => handleInputChange("phoneCallNumber", e.target.value)}
+                    placeholder="+91 98765 43210"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="age">Age *</Label>
+                  <Input
+                    id="age"
+                    type="number"
+                    value={formData.age}
+                    onChange={(e) => handleInputChange("age", e.target.value)}
+                    placeholder="Your age"
+                    min="12"
+                    max="60"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="gender">Gender *</Label>
+                  <select
+                    id="gender"
+                    value={formData.gender || ''}
+                    onChange={(e) => handleInputChange("gender", e.target.value)}
+                    className="w-full p-2 border rounded-md"
+                    required
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="address">Address *</Label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => handleInputChange("address", e.target.value)}
+                  placeholder="Street address"
+                  required
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="city">City *</Label>
+                  <Input
+                    id="city"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    placeholder="City"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="state">State/Region *</Label>
+                  <Input
+                    id="state"
+                    value={formData.state}
+                    onChange={(e) => handleInputChange("state", e.target.value)}
+                    placeholder="State/Region"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="pinCode">PIN Code *</Label>
+                <Input
+                  id="pinCode"
+                  value={formData.pinCode}
+                  onChange={(e) => handleInputChange("pinCode", e.target.value)}
+                  placeholder="PIN/Zip Code"
+                  required
+                />
+              </div>
+
+              <TermsAndConditions
+                accepted={formData.agreeTerms}
+                onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
+                registrationType="mini-tournament"
+              />
+
+              <Button type="submit" className="w-full" disabled={!formData.agreeTerms || isSubmitting || registrationLimit?.isFull}>
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for Mini Tournament'}
+              </Button>
             </form>
           </CardContent>
         </Card>
@@ -2434,10 +2434,10 @@ const RegistrationSection = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <RegistrationLimitDisplay 
-                limit={registrationLimit} 
-                isLoading={isCheckingLimit} 
-                type="digital-art" 
+              <RegistrationLimitDisplay
+                limit={registrationLimit}
+                isLoading={isCheckingLimit}
+                type="digital-art"
               />
               <div className="space-y-4 pb-2 border-b border-white/10">
                 <h3 className="font-['Nonito'] text-lg text-[#e5e2e1] font-bold">Participant Details</h3>
@@ -2569,13 +2569,13 @@ const RegistrationSection = () => {
 
               <div className="space-y-3 pt-2 pb-4">
                 <h3 className="font-['Nonito'] text-lg text-[#e5e2e1] font-bold mb-4">Required Confirmations</h3>
-                
+
                 <TermsAndConditions
                   accepted={formData.digitalArtRules}
                   onAccept={(accepted) => handleInputChange("digitalArtRules", accepted)}
                   registrationType="digital-art-rules"
                 />
-                
+
                 <TermsAndConditions
                   accepted={formData.digitalArtTerms}
                   onAccept={(accepted) => handleInputChange("digitalArtTerms", accepted)}
@@ -2583,9 +2583,9 @@ const RegistrationSection = () => {
                 />
 
                 <div className="flex items-start gap-3">
-                  <input 
+                  <input
                     type="checkbox"
-                    id="digitalArtDevice" 
+                    id="digitalArtDevice"
                     checked={formData.digitalArtDevice}
                     onChange={(e) => handleInputChange("digitalArtDevice", e.target.checked)}
                     className="mt-1 w-4 h-4 accent-primary"
@@ -2596,9 +2596,9 @@ const RegistrationSection = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <input 
+                  <input
                     type="checkbox"
-                    id="digitalArtNoProvide" 
+                    id="digitalArtNoProvide"
                     checked={formData.digitalArtNoProvide}
                     onChange={(e) => handleInputChange("digitalArtNoProvide", e.target.checked)}
                     className="mt-1 w-4 h-4 accent-primary"
@@ -2609,9 +2609,9 @@ const RegistrationSection = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <input 
+                  <input
                     type="checkbox"
-                    id="digitalArtNoAI" 
+                    id="digitalArtNoAI"
                     checked={formData.digitalArtNoAI}
                     onChange={(e) => handleInputChange("digitalArtNoAI", e.target.checked)}
                     className="mt-1 w-4 h-4 accent-primary"
@@ -2622,9 +2622,9 @@ const RegistrationSection = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <input 
+                  <input
                     type="checkbox"
-                    id="digitalArtConsent" 
+                    id="digitalArtConsent"
                     checked={formData.digitalArtConsent}
                     onChange={(e) => handleInputChange("digitalArtConsent", e.target.checked)}
                     className="mt-1 w-4 h-4 accent-primary"
@@ -2639,17 +2639,17 @@ const RegistrationSection = () => {
                 <p className="text-sm text-[#e7bdb3] mb-4 p-3 bg-[#ff003c]/10 border border-[#ff003c]/20 rounded-md">
                   No artwork upload is required during online registration. The completed artwork and editable working file will be collected at the Digital Art section before <strong>4:00 PM on Day 1</strong>.
                 </p>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-[#ff003c] to-[#ff4d79] text-white hover:opacity-90 font-bold tracking-widest uppercase border-none" 
+
+                <Button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-[#ff003c] to-[#ff4d79] text-white hover:opacity-90 font-bold tracking-widest uppercase border-none"
                   disabled={
-                    !formData.digitalArtRules || 
-                    !formData.digitalArtTerms || 
-                    !formData.digitalArtDevice || 
-                    !formData.digitalArtNoProvide || 
-                    !formData.digitalArtNoAI || 
-                    !formData.digitalArtConsent || 
+                    !formData.digitalArtRules ||
+                    !formData.digitalArtTerms ||
+                    !formData.digitalArtDevice ||
+                    !formData.digitalArtNoProvide ||
+                    !formData.digitalArtNoAI ||
+                    !formData.digitalArtConsent ||
                     isSubmitting
                   }
                 >
@@ -2673,10 +2673,10 @@ const RegistrationSection = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <RegistrationLimitDisplay 
-                limit={registrationLimit} 
-                isLoading={isCheckingLimit} 
-                type="ai-video" 
+              <RegistrationLimitDisplay
+                limit={registrationLimit}
+                isLoading={isCheckingLimit}
+                type="ai-video"
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -2946,7 +2946,7 @@ const RegistrationSection = () => {
 
               <div className="space-y-4 pt-4 border-t border-[#353534]">
                 <h4 className="font-bold text-[#e5e2e1] uppercase">Declaration</h4>
-                
+
                 <div className="flex items-start space-x-2">
                   <Checkbox
                     id="originalWorkDeclaration"
@@ -2960,7 +2960,7 @@ const RegistrationSection = () => {
                     I confirm that this submission is my/our original work and complies with the Creative Guidelines.
                   </label>
                 </div>
-                
+
                 <TermsAndConditions
                   accepted={formData.agreeTerms}
                   onAccept={(accepted) => handleInputChange("agreeTerms", accepted)}
@@ -3054,7 +3054,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0 * 0.15 }}
-            // onClick={() => setRegistrationType("college")}
+          // onClick={() => setRegistrationType("college")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.USERS} size={24} color="#00ff88" />
@@ -3168,7 +3168,7 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            onClick={() => window.open("https://indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd", "_blank")}
+            onClick={() => window.open("https://www.indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd", "_blank")}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#6366f1" />

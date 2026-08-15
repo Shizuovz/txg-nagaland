@@ -7,10 +7,10 @@ const GameJamSection = () => {
   return (
     <section className="py-20 relative bg-[#0a0a0a] border-t border-[#1a1a1a]/50 overflow-hidden">
       <div className="container mx-auto px-4 md:px-8 w-full max-w-[1200px] relative z-10">
-        
+
         {/* Hero Section */}
         <div className="w-full flex flex-col md:flex-row items-center justify-between bg-[#111]/80 backdrop-blur-md border border-[#2a2a2a] rounded-xl p-8 md:p-16 mb-24 shadow-2xl relative">
-          
+
           <div className="relative z-10 max-w-2xl text-left w-full md:w-1/2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -22,19 +22,19 @@ const GameJamSection = () => {
                 NAGALAND'S FIRST
               </div>
               <h1 className="font-['Neo_Triad'] text-4xl md:text-5xl lg:text-6xl text-white mb-4 uppercase tracking-wider" style={{ fontFamily: "'Neo_Triad', sans-serif" }}>
-                GAME JAM:<br/>BUILD <span className="text-[#00ff88]">|</span> PLAY <span className="text-[#00ff88]">|</span> GAME
+                GAME JAM:<br />BUILD <span className="text-[#00ff88]">|</span> PLAY <span className="text-[#00ff88]">|</span> GAME
               </h1>
               <p className="font-['Nonito'] text-lg text-[#d0d0d0] mb-8 max-w-lg border-l-2 border-[#00ff88] pl-4">
                 Join the ultimate 48-hour challenge. Push your limits, create something extraordinary, and present it to the world.
               </p>
               <Button asChild className="bg-gradient-to-r from-[#50D075] to-[#FFFF00]/70 hover:from-[#50D075] hover:to-[#FFFF00] text-black font-bold px-8 py-6 rounded-lg text-lg uppercase" style={{ fontFamily: "'Neo_Triad', sans-serif" }}>
-                <a href="https://indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd" target="_blank" rel="noopener noreferrer">Register Now</a>
+                <a href="https://www.indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd" target="_blank" rel="noopener noreferrer">Register Now</a>
               </Button>
             </motion.div>
           </div>
 
           <div className="relative z-10 w-full md:w-1/2 mt-12 md:mt-0 flex justify-center md:justify-end">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -42,9 +42,9 @@ const GameJamSection = () => {
               className="relative w-full max-w-lg hover:scale-105 transition-transform duration-500 ease-out"
             >
               <div className="absolute inset-0 bg-[#00ff88] opacity-20 blur-3xl rounded-full mix-blend-screen"></div>
-              <img 
-                alt="Game Controller Asset" 
-                className="w-full h-auto object-contain relative z-20 drop-shadow-[0_0_30px_rgba(0,255,136,0.2)]" 
+              <img
+                alt="Game Controller Asset"
+                className="w-full h-auto object-contain relative z-20 drop-shadow-[0_0_30px_rgba(0,255,136,0.2)]"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCawL4MpcyZmD25iehS5HxR1MT6N6GeQkytIPSLnBkyyTpSs5lzWyYD_VjK1Ag7jsM8vTnasjURGUKZAfcF31nGlS-RBCIJtD6X9dYxDvy7BAarogzgx0zM0a8-t_CXwWucHOSfdUCPnGqR9k7e1BSl2vzyHc9uc7adRNIxEXIrykJtrtZJrSt8Z_ANTYfPPokxgebv3EntiGLLFFQ-YbBOC6TjaLJq5JfkPAWx9xPed4p8QQL19EHkYGfOijHqTZdwZio"
               />
             </motion.div>
@@ -59,10 +59,10 @@ const GameJamSection = () => {
             <span className="text-[#00ff88] font-['Nonito'] text-sm font-bold tracking-widest uppercase">// MISSION PARAMETERS</span>
             <div className="h-px bg-[#2a2a2a] flex-grow"></div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Main Feature */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -75,7 +75,7 @@ const GameJamSection = () => {
             </motion.div>
 
             {/* Secondary Feature 1 */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -88,7 +88,7 @@ const GameJamSection = () => {
             </motion.div>
 
             {/* Secondary Feature 2 */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -101,7 +101,7 @@ const GameJamSection = () => {
             </motion.div>
 
             {/* Bottom Row */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -113,7 +113,7 @@ const GameJamSection = () => {
               <p className="font-['Nonito'] text-sm text-[#a0a0a0]">Top prototypes receive gear and recognition.</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -136,9 +136,9 @@ const GameJamSection = () => {
             YOUR GAME JAM JOURNEY
           </h2>
           <div className="relative border-l-2 border-[#2a2a2a] ml-4 md:ml-12 pl-8 space-y-12 max-w-4xl mx-auto">
-            
+
             {/* Step 1 */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -156,7 +156,7 @@ const GameJamSection = () => {
             </motion.div>
 
             {/* Step 2 */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -170,7 +170,7 @@ const GameJamSection = () => {
             </motion.div>
 
             {/* Step 3 */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
