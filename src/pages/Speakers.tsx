@@ -298,6 +298,42 @@ const Speakers = () => {
                 </p>
               </div>
             </article>
+
+            {/* Workshop 3: Masuk Ahmed (Violet) */}
+            <article className="bg-[#1c1b1b] border border-[#353534] p-6 md:p-10 relative flex flex-col md:flex-row gap-8 md:gap-12 group hud-bracket hud-bracket-full items-start" style={{ color: '#8b5cf6' }}>
+              <div></div>
+              <div className="relative aspect-square md:aspect-video w-full md:w-[45%] bg-black overflow-hidden border border-[#353534] p-2 shrink-0">
+                <div className="absolute inset-0 border m-2 z-10 pointer-events-none opacity-50" style={{ borderColor: '#8b5cf6' }}>
+                  <div className="absolute top-1/2 left-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-1/2 right-0 w-2 h-px bg-current"></div>
+                  <div className="absolute top-0 left-1/2 w-px h-2 bg-current"></div>
+                  <div className="absolute bottom-0 left-1/2 w-px h-2 bg-current"></div>
+                </div>
+                <div className="scanner-line"></div>
+                <img alt="Masuk Ahmed" className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 relative z-0 object-top" src="speakers/masuk2.png" />
+              </div>
+              <div className="flex flex-col gap-4 flex-1 py-4">
+                <div className="flex justify-between items-start font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase">
+                  <span className="text-[#e5e2e1]">ID: WS-03</span>
+                  <span className="border px-2 py-0.5" style={{ borderColor: '#8b5cf6' }}>GAME.DESIGN</span>
+                </div>
+                <div>
+                  <h3 className="font-['Neiko'] font-bold text-[32px] md:text-[48px] leading-[1.2] text-white uppercase">Masuk Ahmed</h3>
+                  <h4 className="font-Nonito text-[12px] font-medium tracking-[0.1em] uppercase" style={{ color: '#8b5cf6' }}>Formless Studio // Workshop</h4>
+                </div>
+                <div className="font-Nonito text-[16px] md:text-[18px] text-[#e7bdb6] mt-2 leading-relaxed max-w-3xl space-y-4">
+                  <p>
+                    <strong className="text-white">Workshop Topic:</strong> From Idea to Icon: Designing Characters for Games
+                  </p>
+                  <p>
+                    Art Director and Senior Character Artist with over 12 years of leadership experience delivering visual excellence for elite AAA titles, real-time cinematics, and co-development projects.
+                  </p>
+                  <p>
+                    Expert at bridging creative vision with technical execution, specializing in setting high-end visual targets, engineering scalable pipeline workflows in Unreal Engine 5, and directing distributed global teams. Proven track record of managing character quality, likeness fidelity, and studio mentorship for blockbuster franchises including Diablo IV, Horizon Forbidden West, and Ghost of Tsushima.
+                  </p>
+                </div>
+              </div>
+            </article>
           </div>
         </section>
       </main>

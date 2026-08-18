@@ -53,7 +53,7 @@ const seminars = [
   }
 ];
 
-const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, containImage = false, objectPosition = "center" }) => {
+const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, containImage = false, objectPosition = "center", topic, desc }) => {
   let avatarGlow = "border-2 border-[#FF5F4F] shadow-[0_0_12px_rgba(255,95,79,0.4)]";
   let bulletColor = "bg-[#FF5F4F]";
   let pillBg = "bg-[#FF5F4F]/10";
@@ -100,8 +100,8 @@ const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, con
         />
       )}
 
-      <div className="flex-grow flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4">
-        <div>
+      <div className="flex-grow flex flex-col md:flex-row md:items-start justify-between gap-2 md:gap-4 mt-2 md:mt-0">
+        <div className="flex-grow">
           <h3 className="font-['Nonito'] text-lg md:text-xl text-[#e5e2e1] font-bold">
             {name}
           </h3>
@@ -113,8 +113,18 @@ const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, con
               </>
             )}
           </div>
+          {topic && (
+            <div className="mt-3 text-[#e5e2e1] font-['Nonito'] font-semibold text-base">
+              Topic: <span className="text-white">{topic}</span>
+            </div>
+          )}
+          {desc && (
+            <p className="mt-2 text-[#a0a0a0] font-['Nonito'] text-sm leading-relaxed hidden md:block">
+              {desc}
+            </p>
+          )}
         </div>
-        <div className={`font-['Nonito'] font-bold text-xs md:text-sm ${pillText} uppercase md:text-right shrink-0 ${pillBg} px-3 py-1.5 md:px-4 md:py-2 rounded-md tracking-wider`}>
+        <div className={`font-['Nonito'] font-bold text-xs md:text-sm ${pillText} uppercase md:text-right shrink-0 ${pillBg} px-3 py-1.5 md:px-4 md:py-2 rounded-md tracking-wider h-fit`}>
           {role}
         </div>
       </div>
@@ -157,8 +167,22 @@ const day2Panelists = [
 ];
 
 const day1Trainers = [
-  { role: "Workshop", name: "Nagabots", org: "Nagabots", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAmV4wRVUfzC7s4HRIVKd_B-SVDndIXZbmcQZ3EWSQ6aKDHLKbWbrfF3nOpoWg9KQgDY5qCUlLal_S-KRmEAgnmzTdFixAT5RqPdKosDqyJ1C1YvyNy-LIq7zIikTycpcLsc2yUUd8m_IjJPmxUR-uJhbVd3_V6lEr8uCUQnly13iirYgTToH7wV8SCmIVBYxlOmJFenX0HKvfIdK8xH2-DThPYL9u9MtYGMySmE4JXEyTzQOwax0qExN4QEoPz8lh3zSs" },
-  { role: "Workshop", name: "Formless", org: "Game Development", image: "speakers/masuk.png" }
+  {
+    role: "Workshop",
+    name: "Er. Avilie Khate",
+    org: "NAGABOTS Tech Ventures Pvt. Ltd.",
+    image: "speakers/khate.png",
+    topic: "The spirit of Tinkering: A hands-on workshop",
+    desc: "Senior Technical Associate (R&D) at NAGABOTS Tech Ventures Pvt. Ltd., guiding aspiring innovators as they turn ideas into working prototypes. He brings deep expertise across drone technology, robotics, Arduino systems, embedded electronics, and 3D printing."
+  },
+  {
+    role: "Workshop",
+    name: "Masuk Ahmed",
+    org: "Formless Studio",
+    image: "speakers/masuk.png",
+    topic: "From Idea to Icon: Designing Characters for Games",
+    desc: "Art Director and Senior Character Artist with over 12 years of leadership experience delivering visual excellence for elite AAA titles, real-time cinematics, and co-development projects. Proven track record of managing character quality for blockbuster franchises including Diablo IV, Horizon Forbidden West, and Ghost of Tsushima."
+  }
 ];
 
 const day2Trainers = [
