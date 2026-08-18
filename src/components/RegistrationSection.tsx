@@ -3168,7 +3168,15 @@ const RegistrationSection = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            onClick={() => window.open("https://www.indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd", "_blank")}
+            onClick={() => {
+              if (typeof window !== 'undefined' && (window as any).gtag) {
+                (window as any).gtag('event', 'click_register_gamejam_card', {
+                  'event_category': 'registration',
+                  'event_label': 'Game Jam Card'
+                });
+              }
+              window.open("https://www.indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd", "_blank");
+            }}
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#6366f1" />

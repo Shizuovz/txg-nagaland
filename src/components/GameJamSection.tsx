@@ -28,7 +28,19 @@ const GameJamSection = () => {
                 Join the ultimate 48-hour challenge. Push your limits, create something extraordinary, and present it to the world.
               </p>
               <Button asChild className="bg-gradient-to-r from-[#50D075] to-[#FFFF00]/70 hover:from-[#50D075] hover:to-[#FFFF00] text-black font-bold px-8 py-6 rounded-lg text-lg uppercase" style={{ fontFamily: "'Neo_Triad', sans-serif" }}>
-                <a href="https://www.indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd" target="_blank" rel="noopener noreferrer">Register Now</a>
+                <a 
+                  href="https://www.indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && (window as any).gtag) {
+                      (window as any).gtag('event', 'click_register_gamejam_hero', {
+                        'event_category': 'registration',
+                        'event_label': 'Game Jam Hero'
+                      });
+                    }
+                  }}
+                >Register Now</a>
               </Button>
             </motion.div>
           </div>
