@@ -53,7 +53,20 @@ const seminars = [
   }
 ];
 
-const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, containImage = false, objectPosition = "center", topic, desc }) => {
+interface PersonCardProps {
+  name: string;
+  role: string;
+  org: string;
+  image?: string;
+  colorGroup?: string;
+  delay?: number;
+  containImage?: boolean;
+  objectPosition?: string;
+  topic?: string;
+  desc?: string;
+}
+
+const PersonCard = ({ name, role, org, image, colorGroup = "red", delay = 0, containImage = false, objectPosition = "center", topic, desc }: PersonCardProps) => {
   let avatarGlow = "border-2 border-[#FF5F4F] shadow-[0_0_12px_rgba(255,95,79,0.4)]";
   let bulletColor = "bg-[#FF5F4F]";
   let pillBg = "bg-[#FF5F4F]/10";
