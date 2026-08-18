@@ -162,8 +162,7 @@ const day2Panelists = [
   { role: "Game Dev Awareness", name: "Pekru", org: "Co-founder, Redimension Games", image: "speakers/pekru.png" },
   { role: "Outsource Work", name: "Masuk Ahmed", org: "Art Director, Formless Studio", image: "speakers/masuk.png" },
   { role: "Concept Art", name: "Ahmed Ameen Khan", org: "Founder, AKSDA", image: "speakers/ahmed.png" },
-  { role: "Panelist", name: "Varun", org: "TBD", image: "speakers/varun.png" },
-  { role: "Game Tester", name: "Hichen Kath", org: "Project Manager, PTW", image: "speakers/panelist5.png" }
+  { role: "Panelist", name: "Varun", org: "TBD", image: "speakers/varun.png" }
 ];
 
 const day1Trainers = [
