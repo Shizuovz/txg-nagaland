@@ -67,8 +67,9 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <motion.a
-            href="#"
-            className="flex-shrink-0 flex items-center gap-3 font-['Rajdhani'] text-xl md:text-2xl font-bold"
+            href="/"
+            onClick={(e) => handleSmoothScroll(e, "/")}
+            className="flex-shrink-0 flex items-center gap-3 font-['Rajdhani'] text-xl md:text-2xl font-bold cursor-pointer"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
