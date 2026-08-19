@@ -1417,6 +1417,24 @@ const RegistrationSection = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Registration Timeline */}
+              <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 mt-0.5 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/50">
+                    <span className="text-xs font-bold">i</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-blue-400">
+                      Registration Timeline
+                    </p>
+                    <div className="text-sm text-blue-300/90 mt-1.5 space-y-1">
+                      <p>• <strong className="text-blue-300">Online registration:</strong> Open till 27th August 2026</p>
+                      <p>• <strong className="text-blue-300">Onsite registration:</strong> Open from 28th August till 11:00 AM of 29th August.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Cosplay Character Rule Warning */}
               <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
                 <div className="flex items-start gap-3">
