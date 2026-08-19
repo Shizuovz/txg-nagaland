@@ -798,6 +798,35 @@ const RegistrationSection = () => {
       );
     }
 
+    if (registrationType === 'cosplayer') {
+      const isCosplayOnlineRegistrationClosed = new Date() > new Date('2026-08-27T23:59:59+05:30');
+      if (isCosplayOnlineRegistrationClosed) {
+        return (
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <GamingIcon iconId={GamingIcons.STAR} size={20} color="#ec4899" />
+                Cosplayer Registration
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="py-8 text-center space-y-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 mb-2">
+                  <AlertCircle className="w-8 h-8 text-red-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-red-500 mb-2">Online Registrations Closed</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    Online registration for the Cosplay Competition is now closed. However, you can still register onsite from 28th August till 11:00 AM of 29th August.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      }
+    }
+
     const forms = {
       college: (
         <Card className="max-w-2xl mx-auto">
