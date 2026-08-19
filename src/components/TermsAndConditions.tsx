@@ -72,7 +72,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
       case 'digital-art-rules':
         return 'Digital Art Competition Rules & Regulations';
       case 'ai-video':
-        return 'AI Creative Video Challenge Registration';
+        return 'The TXG AI Ideation Challenge Registration';
       case 'cosplayer':
         return 'Cosplayer Registration';
       case 'vendor':
@@ -718,9 +718,9 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                 </>
               ) : registrationType === 'ai-video' ? (
                 <>
-                  <h3 className="font-semibold text-base">AI Creative Video Challenge – Terms & Conditions</h3>
+                  <h3 className="font-semibold text-base">The TXG AI Ideation Challenge – Terms & Conditions</h3>
                   <p className="mb-4">
-                    By registering for and submitting an entry to the AI Creative Video Challenge, participants agree to the following Terms & Conditions:
+                    By registering for and submitting an entry to The TXG AI Ideation Challenge, participants agree to the following Terms & Conditions:
                   </p>
                   
                   <section>
@@ -740,7 +740,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                       <li>The competition follows an open theme, and participants may create a video on any subject or concept of their choice.</li>
                       <li>AI video-generation technology must form a meaningful part of the creation process.</li>
                       <li>Participants must provide the Video Title, Video Description, AI Tool(s) Used, and final Video during submission.</li>
-                      <li>All entries must comply with the AI Creative Video Challenge Creative Guidelines.</li>
+                      <li>All entries must comply with The TXG AI Ideation Challenge Creative Guidelines.</li>
                     </ul>
                   </section>
 
@@ -784,7 +784,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                   <section>
                     <h4 className="font-semibold mb-2">7. Promotional Use</h4>
                     <ul className="list-disc list-inside ml-4 space-y-1">
-                      <li>Participants grant the organisers permission to use the submitted video, excerpts, screenshots, title, and creator/team name for purposes directly related to the AI Creative Video Challenge and TXG Expo, including event promotion, social media, documentation, and post-event coverage.</li>
+                      <li>Participants grant the organisers permission to use the submitted video, excerpts, screenshots, title, and creator/team name for purposes directly related to The TXG AI Ideation Challenge and TXG Expo, including event promotion, social media, documentation, and post-event coverage.</li>
                       <li>Wherever reasonably practical, the creator or team will be credited.</li>
                       <li>This permission does not transfer copyright ownership of the submitted work to the organisers.</li>
                     </ul>
@@ -822,12 +822,12 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
                   <section>
                     <h4 className="font-semibold mb-2">11. Acceptance</h4>
                     <p>
-                      By submitting an entry, the participant confirms that they have read, understood, and agreed to these Terms & Conditions and the AI Creative Video Challenge Creative Guidelines.
+                      By submitting an entry, the participant confirms that they have read, understood, and agreed to these Terms & Conditions and The TXG AI Ideation Challenge Creative Guidelines.
                     </p>
                   </section>
 
                   <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
-                    <p>TXG AI Creative Video Challenge Terms & Conditions</p>
+                    <p>The TXG AI Ideation Challenge Terms & Conditions</p>
                     <p>© 2026 TXG-Nagaland. All rights reserved.</p>
                   </div>
                 </>
@@ -4186,7 +4186,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
               : registrationType === 'digital-art-rules'
               ? "I have read and agree to follow the Rules and Regulations. *"
               : registrationType === 'ai-video'
-              ? "I have read and agree to the AI Creative Video Challenge Terms & Conditions. *"
+              ? "I have read and agree to The TXG AI Ideation Challenge Terms & Conditions. *"
               : "I confirm that I have read and agree to the Terms and Conditions of Nagaland Esports Society (NES). I confirm that the information submitted is true. *"}
           </Label>
           {!accepted && (

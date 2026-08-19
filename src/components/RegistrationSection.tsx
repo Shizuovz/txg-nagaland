@@ -728,7 +728,7 @@ const RegistrationSection = () => {
           registrationId: registrationId,
           collegeName: formData.collegeName || 'N/A', // Storing Institution
           message: `Age: ${formData.age}\nGender: ${formData.gender}\nWhatsApp: ${formData.whatsappPhone || formData.captainPhone}\nParticipant Type: ${formData.participantType}\nEntry Type: ${formData.entryType}${teamInfo}\nVideo Title: ${formData.aiVideoTitle}\nVideo Description: ${formData.aiVideoDescription.replace(/\n/g, ' ')}\nAI Tools Used: ${formData.aiToolsUsed.replace(/\n/g, ', ')}\nVideo URL: ${videoUrl}\nOriginal Work Declaration: Yes`
-        }, 'AI Creative Video Challenge registration submitted successfully!');
+        }, 'The TXG AI Ideation Challenge registration submitted successfully!');
       }
 
       // Reset form state after successful submission
@@ -2665,7 +2665,7 @@ const RegistrationSection = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GamingIcon iconId={GamingIcons.GAMEPAD} size={20} color="#be0000" />
-              AI Creative Video Challenge Registration
+              The TXG AI Ideation Challenge Registration
             </CardTitle>
             {registrationId && (
               <p className="hidden text-sm text-muted-foreground">Registration ID: {registrationId}</p>
@@ -2918,10 +2918,10 @@ const RegistrationSection = () => {
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-[#131313] border-[#353534] text-[#e5e2e1]">
                     <DialogHeader>
                       <DialogTitle className="text-xl md:text-2xl font-bold text-[#e5e2e1] uppercase border-b border-[#353534] pb-4 mb-4">
-                        AI Creative Video Challenge — Creative Guidelines
+                        The TXG AI Ideation Challenge — Creative Guidelines
                       </DialogTitle>
                       <DialogDescription className="hidden">
-                        Guidelines for the AI Creative Video Challenge
+                        Guidelines for The TXG AI Ideation Challenge
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-6 text-sm md:text-base leading-relaxed">
@@ -2969,7 +2969,7 @@ const RegistrationSection = () => {
               </div>
 
               <Button type="submit" className="w-full bg-[#be0000] hover:bg-[#a00000] text-white" disabled={!formData.agreeTerms || !formData.originalWorkDeclaration || isSubmitting || registrationLimit?.isFull}>
-                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for AI Video Challenge'}
+                {registrationLimit?.isFull ? 'Registration Full' : isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />Submitting...</> : 'Register for The TXG AI Ideation Challenge'}
               </Button>
             </form>
           </CardContent>
@@ -3155,7 +3155,7 @@ const RegistrationSection = () => {
               <GamingIcon iconId={GamingIcons.GAMEPAD} size={24} color="#be0000" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
-              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">AI Video Challenge</h3>
+              <h3 className="font-['Neiko'] text-lg sm:text-xl font-bold text-white mb-3">The TXG AI Ideation Challenge</h3>
               <p className="text-[#d0d0d0] text-xs sm:text-sm leading-relaxed mb-4 font-['Nonito']">
                 Submit your 30-second AI-generated masterpiece
               </p>

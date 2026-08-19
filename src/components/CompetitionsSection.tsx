@@ -22,7 +22,7 @@ const competitions = [
     color: "from-[#50D075] to-[#00FFFF]", // Green to Cyan
   },
   {
-    title: "AI Creative Video Competition",
+    title: "The TXG AI Ideation Challenge",
     description: "Unleash your imagination by creating a stunning video using AI tools. Show us the future of visual storytelling and stand a chance to win exciting prizes.",
     image: "/ai_creative_hero.png",
     color: "from-[#FFA500] to-[#FF00FF]", // Orange to Pink

@@ -39,8 +39,8 @@ const AICreativeVideoSection = () => {
               </span>
               
               <h1 className="font-['Neo_Triad'] text-3xl md:text-4xl lg:text-5xl text-[#e5e2e1] mb-4 uppercase tracking-wider" style={{ fontFamily: "'Neo_Triad', sans-serif" }}>
-                AI CREATIVE<br/>
-                <span className="text-[#be0000]">VIDEO CHALLENGE</span>
+                THE TXG AI<br/>
+                <span className="text-[#be0000]">IDEATION CHALLENGE</span>
               </h1>
               
               <p className="font-['Nonito'] text-base md:text-lg text-[#c8c6c5] max-w-lg border-l-2 border-[#5d3f3b] pl-4 mb-6 leading-relaxed">
@@ -95,7 +95,7 @@ const AICreativeVideoSection = () => {
                 <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-[#131313] border-[#353534] text-[#e5e2e1]">
                   <DialogHeader>
                     <DialogTitle className="text-xl md:text-2xl font-bold text-[#e5e2e1] font-['Neo_Triad'] uppercase tracking-wider border-b border-[#353534] pb-4 mb-4" style={{ fontFamily: "'Neo_Triad', sans-serif" }}>
-                      AI Creative Video Challenge — Creative Guidelines
+                      The TXG AI Ideation Challenge — Creative Guidelines
                     </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-6 font-['Nonito'] text-sm md:text-base leading-relaxed">

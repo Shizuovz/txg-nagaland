@@ -3817,8 +3817,8 @@ const AdminDashboard = () => {
               <div className="space-y-6">
                 <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">AI Video Challenge Registrations</h3>
-                    <p className="text-sm text-gray-500">Manage participants for the AI Creative Video Challenge</p>
+                    <h3 className="text-lg font-bold text-gray-900">TXG AI Ideation Challenge Registrations</h3>
+                    <p className="text-sm text-gray-500">Manage participants for The TXG AI Ideation Challenge</p>
                   </div>
                   <div className="flex gap-2 items-center">
                     <Badge className="bg-gray-100 text-gray-800 h-6">
@@ -3977,7 +3977,7 @@ const AdminDashboard = () => {
                     <div className="col-span-full py-12 text-center text-gray-500 bg-gray-50 rounded-lg border border-dashed">
                       <GamingIcon iconId={GamingIcons.GAMEPAD} size={48} className="mx-auto text-gray-300 mb-4" />
                       <p className="text-lg font-medium">No registrations yet</p>
-                      <p className="text-sm mt-1">AI Video Challenge registrations will appear here.</p>
+                      <p className="text-sm mt-1">TXG AI Ideation Challenge registrations will appear here.</p>
                     </div>
                   )}
                 </div>

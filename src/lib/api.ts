@@ -376,7 +376,7 @@ export class RegistrationAPI {
         if (!limitCheck.allowed) {
           return {
             success: false,
-            message: `Registration is full for AI Video Challenge. We have reached the maximum limit of ${limitCheck.limit} participants.`,
+            message: `Registration is full for The TXG AI Ideation Challenge. We have reached the maximum limit of ${limitCheck.limit} participants.`,
             error: 'REGISTRATION_LIMIT_REACHED'
           };
         }
