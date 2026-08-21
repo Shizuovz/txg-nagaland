@@ -12,6 +12,7 @@ import ProfileSection from "@/components/ProfileSection";
 import GameJamSection from "@/components/GameJamSection";
 import VisitorExperienceSection from "@/components/VisitorExperienceSection";
 import PartnersSection from "@/components/PartnersSection";
+import StampquestGiveawaySection from "@/components/StampquestGiveawaySection";
 import FoodVendorsSection from "@/components/FoodVendorsSection";
 import GovernmentSupportSection from "@/components/GovernmentSupportSection";
 import EventMapSection from "@/components/EventMapSection";
@@ -31,6 +32,7 @@ const Tournaments = () => {
       <SeminarsSection />
       <TechExhibitionSection />
       {/* <ProfileSection /> */}
+      <StampquestGiveawaySection />
       <CompetitionsSection />
       <GameJamSection />
       <CosplaySection />

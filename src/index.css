@@ -733,3 +733,76 @@ html {
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
+
+/* Stampquest Giveaway Custom CSS */
+.hud-brackets::before, .hud-brackets::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: #BE0000;
+    border-style: solid;
+}
+.hud-brackets::before {
+    top: 0;
+    left: 0;
+    border-width: 2px 0 0 2px;
+}
+.hud-brackets::after {
+    bottom: 0;
+    right: 0;
+    border-width: 0 2px 2px 0;
+}
+
+.scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0) 50%,
+        rgba(0, 0, 0, 0.2) 50%,
+        rgba(0, 0, 0, 0.2)
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.3;
+}
+
+.scanner-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(190, 0, 0, 0.8);
+    box-shadow: 0 0 10px rgba(190, 0, 0, 0.5);
+    animation: scan-bar 4s linear infinite;
+    z-index: 20;
+    pointer-events: none;
+}
+
+@keyframes scan-bar {
+    0% { top: 0; opacity: 0; }
+    5% { opacity: 1; }
+    95% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+.grid-bg {
+    background-image: 
+        linear-gradient(rgba(190, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(190, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+.glass-panel {
+    background: rgba(26, 26, 26, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid #333333;
+}
+
