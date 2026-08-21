@@ -23,13 +23,7 @@ const tournaments = [
   }
 ];
 
-const miniTournaments = [
-  { name: "FC 26", logo: "/logos/FC26 White.png", color: "black" },
-  { name: "Clash Royale", logo: "/logos/Clash Royale.png", color: "white" },
-  { name: "Tekken 8", logo: "/logos/Tekken-8-logo White.png", color: "black" },
-  { name: "Street Fighter 6", logo: "/logos/Street_Fighter_6_Logo.png", color: "black" },
-  { name: "Ludo", logo: "/logos/Ludo Logo.png", color: "white" },
-];
+
 
 const GamesSection = () => {
   const navigate = useNavigate();
@@ -237,76 +231,112 @@ const GamesSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ delay: 0.6 }}
+          className="mt-24"
         >
-          <div className="text-center mb-8">
-            <h3 className="font-['Neiko'] text-2xl md:text-3xl font-bold text-white mb-2">
-              Mini <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFFF00] to-[#FF00FF]">Tournaments</span>
+          <div className="text-center mb-12">
+            <h3 className="font-['Neiko'] text-4xl md:text-6xl font-bold text-white mb-2">
+              Mini <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#50D075] to-[#FFFF00]">Tournaments</span>
             </h3>
-            <p className="text-[#FFFF00] font-medium mb-2 font-['Nonito']">Prize Pool: INR 1,00,000</p>
-            <p className="text-[#d0d0d0] font-['Nonito']">Quick action games with instant rewards</p>
+            <p className="text-[#FFFF00] font-medium text-lg md:text-xl tracking-[0.2em] mb-6 font-['Nonito']">28 — 29 AUGUST 2026</p>
+            
+            <div className="flex flex-col items-center justify-center gap-2 mb-8 text-sm md:text-base font-semibold tracking-wider text-[#d0d0d0] uppercase font-['Nonito']">
+              <p>Organised by NES</p>
+              <p>Powered by The Little Attic</p>
+            </div>
+
+            <div className="inline-block bg-black/40 backdrop-blur-sm border border-[#50D075]/50 rounded-full px-6 md:px-10 py-3 mb-3 shadow-[0_0_15px_rgba(80,208,117,0.15)]">
+              <p className="text-[#50D075] font-bold text-lg md:text-xl tracking-wider uppercase font-['Neiko']">Prize Money: ₹20,000 PER GAME</p>
+            </div>
+            <p className="text-gray-400 italic text-sm mb-8 font-['Nonito']">Applies to all mini tournaments</p>
+
+            <div className="flex items-center justify-center gap-4 text-[#d0d0d0] tracking-widest text-sm uppercase font-bold font-['Nonito']">
+              <span>Knockouts Only</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF00FF]"></span>
+              <span>11 AM — 2 PM</span>
+            </div>
           </div>
           
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-3 md:gap-4 max-w-5xl mx-auto">
-            {miniTournaments.map((mini, i) => (
-              <motion.div
-                key={i}
-                className="relative group"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: false }}
-                transition={{ delay: 0.8 + i * 0.1 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-              >
-                <div className="relative aspect-[4/3] rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm overflow-hidden transition-all duration-300 group-hover:border-[#50D075]/50 group-hover:shadow-lg group-hover:shadow-[#50D075]/20">
-                  {/* Logo Container */}
-                  <div className="absolute inset-0 flex items-center justify-center p-3">
-                    <div className={`w-full h-full flex items-center justify-center ${mini.color === 'white' ? 'bg-white/90' : 'bg-black/90'} rounded-lg p-2 transition-all duration-300 group-hover:scale-105`}>
-                      {/* Actual Logo Image */}
-                      <img 
-                        src={mini.logo} 
-                        alt={mini.name}
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          // Fallback to text if image fails to load
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          if (target.nextElementSibling) {
-                            (target.nextElementSibling as HTMLElement).style.display = 'flex';
-                          }
-                        }}
-                      />
-                      {/* Fallback Text */}
-                      <div className={`absolute inset-0 flex flex-col items-center justify-center text-xs font-bold ${mini.color === 'white' ? 'text-black' : 'text-white'}`} style={{ display: 'none' }}>
-                        <div className="text-lg mb-1">
-                          {mini.name.includes('Clash') ? 'CR' : 
-                           mini.name.includes('Dirt') ? 'DR' : 
-                           mini.name.includes('Dragon') ? 'DBFZ' : 
-                           mini.name.includes('FC') ? 'FC' : 
-                           mini.name.includes('Guilty') ? 'GGS' : 
-                           mini.name.includes('King') ? 'KOF' : 
-                           mini.name.includes('Ludo') ? 'LUDO' : 
-                           mini.name.includes('Mortal') ? 'MK' : 
-                           mini.name.includes('NBA') ? 'NBA' : 
-                           mini.name.includes('Street') ? 'SF' : 
-                           mini.name.includes('Tekken') ? 'TEK' : 'TETRIS'}
-                        </div>
-                        <div className="text-center">
-                          {mini.name.split(' ')[0]}
-                        </div>
-                      </div>
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto font-['Nonito']">
+            {/* Day 1 */}
+            <div className="bg-black/40 backdrop-blur-md border border-[#50D075]/30 rounded-2xl overflow-hidden shadow-xl hover:shadow-[#50D075]/20 hover:border-[#50D075]/50 transition-all duration-300">
+              <div className="bg-gradient-to-r from-[#50D075]/20 to-transparent border-b border-[#50D075]/30 text-center py-4">
+                <h4 className="text-[#50D075] font-bold tracking-widest uppercase font-['Neiko'] text-xl md:text-2xl">Day 1 — 28 August</h4>
+              </div>
+              <div className="p-8 space-y-10">
+                {/* Tekken 8 */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                    <img src="/logos/Tekken-8-logo White.png" alt="Tekken 8" className="h-10 object-contain" />
+                    <span className="text-white/80 font-bold bg-white/10 px-3 py-1 rounded text-sm tracking-wider">PS5</span>
                   </div>
-                  
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Game Name on Hover */}
-                  <div className="absolute bottom-3 left-3 right-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p className="text-white text-xs font-bold font-['Nonito'] drop-shadow-md">{mini.name}</p>
-                  </div>
+                  <ul className="text-[#d0d0d0] text-sm md:text-base space-y-2 list-disc list-inside ml-2">
+                    <li>BO1 till Quarterfinals</li>
+                    <li>Semifinals BO3</li>
+                    <li>Finals BO5</li>
+                  </ul>
                 </div>
-              </motion.div>
-            ))}
+                {/* FC26 */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                    <img src="/logos/FC26 White.png" alt="FC26" className="h-10 object-contain" />
+                    <span className="text-white/80 font-bold bg-white/10 px-3 py-1 rounded text-sm tracking-wider">PS5</span>
+                  </div>
+                  <ul className="text-[#d0d0d0] text-sm md:text-base space-y-2 list-disc list-inside ml-2">
+                    <li>BO1 till Quarterfinals</li>
+                  </ul>
+                </div>
+                {/* Clash Royale */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                    <img src="/logos/Clash Royale.png" alt="Clash Royale" className="h-12 object-contain bg-white/10 rounded px-2 py-1" />
+                  </div>
+                  <ul className="text-[#d0d0d0] text-sm md:text-base space-y-2 list-disc list-inside ml-2">
+                    <li>Till Finals</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Day 2 */}
+            <div className="bg-black/40 backdrop-blur-md border border-[#FF00FF]/30 rounded-2xl overflow-hidden shadow-xl hover:shadow-[#FF00FF]/20 hover:border-[#FF00FF]/50 transition-all duration-300">
+              <div className="bg-gradient-to-r from-[#FF00FF]/20 to-transparent border-b border-[#FF00FF]/30 text-center py-4">
+                <h4 className="text-[#FF00FF] font-bold tracking-widest uppercase font-['Neiko'] text-xl md:text-2xl">Day 2 — 29 August</h4>
+              </div>
+              <div className="p-8 space-y-10">
+                {/* Street Fighter 6 */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                    <img src="/logos/Street_Fighter_6_Logo.png" alt="Street Fighter 6" className="h-10 object-contain invert brightness-0 saturate-100" />
+                    <span className="text-white/80 font-bold bg-white/10 px-3 py-1 rounded text-sm tracking-wider">PS5</span>
+                  </div>
+                  <ul className="text-[#d0d0d0] text-sm md:text-base space-y-2 list-disc list-inside ml-2">
+                    <li>BO1 till Quarterfinals</li>
+                    <li>Semifinals BO3</li>
+                    <li>Finals BO5</li>
+                  </ul>
+                </div>
+                {/* FC26 */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                    <img src="/logos/FC26 White.png" alt="FC26" className="h-10 object-contain" />
+                    <span className="text-white/80 font-bold bg-white/10 px-3 py-1 rounded text-sm tracking-wider">PS5</span>
+                  </div>
+                  <ul className="text-[#d0d0d0] text-sm md:text-base space-y-2 list-disc list-inside ml-2">
+                    <li>Semifinals BO3</li>
+                    <li>Finals BO5</li>
+                  </ul>
+                </div>
+                {/* Ludo King */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                    <img src="/logos/Ludo Logo.png" alt="Ludo King" className="h-12 object-contain bg-white/10 rounded px-2 py-1" />
+                  </div>
+                  <ul className="text-[#d0d0d0] text-sm md:text-base space-y-2 list-disc list-inside ml-2">
+                    <li>Till Finals</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
 
