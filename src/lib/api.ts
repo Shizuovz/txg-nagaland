@@ -24,7 +24,7 @@ export class RegistrationAPI {
   // Check mini tournament registration limit
   async checkMiniTournamentLimit(gameName: string): Promise<{ allowed: boolean; current: number; limit: number }> {
     const current = await this.firebaseService.getMiniTournamentRegistrationCountByGame(gameName);
-    const limit = this.MINI_TOURNAMENT_LIMIT;
+    const limit = gameName === 'FC 26' ? 32 : this.MINI_TOURNAMENT_LIMIT;
     return {
       allowed: current < limit,
       current,
