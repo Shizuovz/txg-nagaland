@@ -20,12 +20,6 @@ const foodVendors = [
     id: "03"
   },
   {
-    name: "Chia",
-    role: "Nagaland",
-    image: "images/vendors/chia.png",
-    id: "04"
-  },
-  {
     name: "Towé",
     role: "Nagaland",
     image: "images/vendors/towe.jpg",
@@ -55,7 +49,7 @@ const FoodVendorsSection = () => {
             <div className="flex-1 h-px bg-white/10"></div>
             <span className="text-[10px] font-bold text-[#9ca3af] font-['Nonito']">COUNT: {foodVendors.length}</span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-px bg-white/10 border border-white/20 p-px">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 border border-white/20 p-px">
             {foodVendors.map((vendor) => (
               <div key={vendor.id} className="bg-[#0f0f0f] p-3 flex flex-col justify-between hover:bg-[#1f1f1f] transition-colors cursor-pointer group min-h-[120px]">
                 <div className="w-full h-20 sm:h-24 mb-3 border border-white/20 bg-white rounded-md flex items-center justify-center p-2 group-hover:border-[#ff9500] transition-colors shadow-sm">

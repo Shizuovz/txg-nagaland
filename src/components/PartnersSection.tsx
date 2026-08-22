@@ -18,8 +18,6 @@ const partners = [
   { name: "Kaki Marketing", title: "Marketing Partner", id: "15", image: "/images/partners/kaki.png" },
   { name: "Alpha Travels", title: "Travel Partner", id: "16", image: "/images/partners/alpha travels.png" },
   { name: "GDAI", title: "GameJam Partner", id: "17", image: "/images/partners/gadi.png" },
-  { name: "Educentre", title: "Training Partner", id: "18", image: "/images/partners/edu centre.png" },
-  { name: "YouthNet", title: "Local Career Partner", id: "19", image: "/images/partners/youth net.png" },
   { name: "The Little Attic", title: "Gaming & Giveaway Partner", id: "20", image: "/images/partners/little.png" }
 ];
 
@@ -90,7 +88,7 @@ const PartnersSection = () => {
             <div className="flex-1 h-px bg-white/10"></div>
             <span className="text-[10px] font-bold text-[#9ca3af] font-['Nonito']">COUNT: {partners.length}</span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-px bg-white/10 border border-white/20 p-px">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-px bg-white/10 border border-white/20 p-px">
             {partners.map((partner) => (
               <div key={partner.id} className="bg-[#0f0f0f] p-3 flex flex-col justify-between hover:bg-[#1f1f1f] transition-colors cursor-pointer group min-h-[100px]">
                 <div className="w-full h-20 sm:h-24 mb-3 border border-white/20 bg-white rounded-md flex items-center justify-center p-2 group-hover:border-[#ff00ff] transition-colors shadow-sm">
