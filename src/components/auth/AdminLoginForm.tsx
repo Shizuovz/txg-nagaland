@@ -150,23 +150,7 @@ const AdminLoginForm = () => {
               </Button>
             </form>
 
-            <div className="mt-6 pt-4 border-t border-border/50">
-              <div className="bg-muted/50 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground font-medium mb-2">
-                  🔐 Admin Credentials:
-                </p>
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Email:</span>
-                    <span className="font-mono">admin@nge2026.com</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Password:</span>
-                    <span className="font-mono">nge2026admin123</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+
 
             <div className="mt-4 text-center">
               <Button
