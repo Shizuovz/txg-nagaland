@@ -101,13 +101,15 @@ const CosplaySection = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 mb-5 relative z-20">
-              <div
-                className="bg-[#333333] text-[#aaaaaa] text-[12px] md:text-[14px] font-bold uppercase px-4 py-2 tracking-wider flex items-center justify-center gap-1.5 w-fit border border-[#444444] cursor-not-allowed"
-                style={{ fontFamily: "'Neo_Triad', sans-serif" }}
-                title="Registration update coming soon"
-              >
-                COMING SOON
-              </div>
+              <Link to="/register" className="w-fit">
+                <button
+                  className="bg-[#be0000] text-white text-[12px] md:text-[14px] font-bold uppercase px-4 py-2 tracking-wider flex items-center justify-center gap-1.5 w-fit border border-[#be0000] hover:bg-transparent hover:text-[#be0000] transition-all duration-300"
+                  style={{ fontFamily: "'Neo_Triad', sans-serif" }}
+                  title="Register for Cosplay Championship"
+                >
+                  REGISTER NOW
+                </button>
+              </Link>
               
               <Dialog>
                 <DialogTrigger asChild>
