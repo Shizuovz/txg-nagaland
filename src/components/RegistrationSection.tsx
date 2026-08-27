@@ -3093,6 +3093,17 @@ const RegistrationSection = () => {
           <p className="text-[#d0d0d0] text-lg max-w-2xl mx-auto font-['Nonito']">
             Join Southeast Asia's premier gaming event. Choose your registration type below.
           </p>
+          <div className="mt-8 inline-flex items-center justify-center p-4 bg-red-500/10 border border-red-500/30 rounded-lg max-w-2xl mx-auto">
+            <div className="flex items-start gap-3 text-left">
+              <AlertCircle className="w-6 h-6 text-red-500 mt-0.5 shrink-0" />
+              <div>
+                <h3 className="text-lg font-bold text-red-500">All Registrations are Closed</h3>
+                <p className="text-sm text-red-300 mt-1 font-['Nonito']">
+                  Thank you for your overwhelming interest! Online registrations for all events and categories are now closed.
+                </p>
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
@@ -3135,13 +3146,13 @@ const RegistrationSection = () => {
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/10 cursor-pointer h-full flex flex-col group"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            onClick={() => setRegistrationType("mini-tournament")}
+            // onClick={() => setRegistrationType("mini-tournament")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.GAMEPAD} size={24} color="#ff6b6b" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -3150,17 +3161,17 @@ const RegistrationSection = () => {
                 Register for quick action games and instant rewards
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-colors" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-pink-500/50 hover:shadow-lg hover:shadow-pink-500/10 cursor-pointer h-full flex flex-col group"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            onClick={() => setRegistrationType("cosplayer")}
+            // onClick={() => setRegistrationType("cosplayer")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#ec4899" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -3169,17 +3180,17 @@ const RegistrationSection = () => {
                 Register as a cosplayer and showcase your talent
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base group-hover:bg-pink-500 group-hover:text-white group-hover:border-pink-500 transition-colors" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-teal-500/50 hover:shadow-lg hover:shadow-teal-500/10 cursor-pointer h-full flex flex-col group"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            onClick={() => setRegistrationType("digital-art")}
+            // onClick={() => setRegistrationType("digital-art")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-teal-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-teal-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.MONITOR} size={24} color="#14b8a6" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -3188,17 +3199,17 @@ const RegistrationSection = () => {
                 Compete in the live digital art creation challenge
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base group-hover:bg-teal-500 group-hover:text-white group-hover:border-teal-500 transition-colors" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 cursor-pointer h-full flex flex-col group"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            onClick={() => setRegistrationType("ai-video")}
+            // onClick={() => setRegistrationType("ai-video")}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.GAMEPAD} size={24} color="#be0000" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -3207,25 +3218,25 @@ const RegistrationSection = () => {
                 Submit your 30-second AI-generated masterpiece
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base group-hover:bg-red-500 group-hover:text-white group-hover:border-red-500 transition-colors" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
-            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 cursor-pointer h-full flex flex-col group"
+            className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center transition-all cursor-not-allowed opacity-60 h-full flex flex-col"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            onClick={() => {
-              if (typeof window !== 'undefined' && (window as any).gtag) {
-                (window as any).gtag('event', 'click_register_gamejam_card', {
-                  'event_category': 'registration',
-                  'event_label': 'Game Jam Card'
-                });
-              }
-              window.open("https://www.indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd", "_blank");
-            }}
+            // onClick={() => {
+            //   if (typeof window !== 'undefined' && (window as any).gtag) {
+            //     (window as any).gtag('event', 'click_register_gamejam_card', {
+            //       'event_category': 'registration',
+            //       'event_label': 'Game Jam Card'
+            //     });
+            //   }
+            //   window.open("https://www.indieconnect.in/game-jams/txg-nagaland-game-jam-2026-msg7ficd", "_blank");
+            // }}
           >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform group-hover:scale-110">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 transition-transform">
               <GamingIcon iconId={GamingIcons.STAR} size={24} color="#6366f1" />
             </div>
             <div className="flex-grow flex flex-col justify-between">
@@ -3234,7 +3245,7 @@ const RegistrationSection = () => {
                 Register for the 48-hour TXG Nagaland Game Jam 2026
               </p>
             </div>
-            <Button className="w-full text-sm sm:text-base group-hover:bg-indigo-500 group-hover:text-white group-hover:border-indigo-500 transition-colors" variant="outline">Register Now</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" disabled>Closed</Button>
           </motion.div>
 
           <motion.div
@@ -3315,34 +3326,17 @@ const RegistrationSection = () => {
           </motion.div>
         </div>
 
-        {/* Become a Partner Section */}
+        {/* Become a Partner Section - Disabled */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
-          className="text-center mt-12"
+          className="text-center mt-12 opacity-60"
         >
-          <div className="inline-flex items-center gap-2 text-[#d0d0d0] hover:text-white transition-colors cursor-pointer group"
-            onClick={() => {
-              setRegistrationType("sponsor");
-              // Scroll to sponsor card after it renders
-              setTimeout(() => {
-                // Try multiple selectors to find the sponsor card
-                let element = document.querySelector('[data-registration-type="sponsor"]');
-                if (!element) {
-                  // Fallback: look for any card with sponsor text
-                  element = Array.from(document.querySelectorAll('.motion-div')).find(el =>
-                    el.textContent?.includes('Sponsor') || el.textContent?.includes('Partner')
-                  );
-                }
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-              }, 500);
-            }}>
+          <div className="inline-flex items-center gap-2 text-[#d0d0d0] cursor-not-allowed">
             <span className="text-lg font-['Nonito']">Interested in partnership opportunities?</span>
-            <span className="text-[#50D075] group-hover:text-[#00ff88] font-semibold transition-colors">
-              Become a Partner →
+            <span className="text-[#50D075] font-semibold">
+              Currently Closed
             </span>
           </div>
         </motion.div>
